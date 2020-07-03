@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 
 import socket
+import sys
 
 HOST = ''  # Standard loopback interface address (localhost)
 PORT = 5000        # Port to listen on (non-privileged ports are > 1023)
+
+if len(sys.argv) > 1:
+    try:
+        PORT = int(sys.argv[1])
+    except Exception as e:
+        print(e)
+
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
