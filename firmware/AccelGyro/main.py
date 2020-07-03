@@ -25,6 +25,9 @@ def send_duration(duration_ms=1000, host='192.168.1.128', port=5000):
     acc = init_acc()
     init_network()
     sock = None
+    led = machine.Pin(2, machine.Pin.OUT)
+    led_val = 0
+    led(led_val)
     while True:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -43,8 +46,9 @@ def send_duration(duration_ms=1000, host='192.168.1.128', port=5000):
                     cnt += 1
                 t3 = utime.ticks_ms()
                 sock.send(values)
+                led_val ^= 1
+                led(led_val)
                 t4 = utime.ticks_ms()
-
                 print('count = ' + str(cnt))
                 print('loop_time = ' + str(utime.ticks_diff(t3, t1)))
                 print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
@@ -56,10 +60,13 @@ def send_duration(duration_ms=1000, host='192.168.1.128', port=5000):
                 sock.close()
 
 
-def send_amount(amount=500, host='192.168.1.128', port=5000):
+def send_amount(amount=300, host='192.168.1.128', port=5000):
     acc = init_acc()
     init_network()
     sock = None
+    led = machine.Pin(2, machine.Pin.OUT)
+    led_val = 0
+    led(led_val)
     while True:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -76,6 +83,8 @@ def send_amount(amount=500, host='192.168.1.128', port=5000):
                     cnt += 1
                 t3 = utime.ticks_ms()
                 sock.send(values)
+                led_val ^= 1
+                led(led_val)
                 t4 = utime.ticks_ms()
 
                 print('count = ' + str(cnt))
