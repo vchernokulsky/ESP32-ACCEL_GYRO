@@ -1,6 +1,5 @@
 import utime
 import machine
-import uasyncio
 from Accelerometer import Accelerometer as Accel
 import usocket as socket
 import network
@@ -25,6 +24,7 @@ def init_network(network_name='Home92', network_password='24012017'):
 def send_duration(duration_ms=1000, host='192.168.1.128', port=5000):
     acc = init_acc()
     init_network()
+    sock = None
     while True:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -51,13 +51,15 @@ def send_duration(duration_ms=1000, host='192.168.1.128', port=5000):
                 print(" ")
         except Exception as e:
             print(e)
-            utime.sleep_ms(1)
-        sock.close
+            utime.sleep_ms(2)
+            if sock is not None:
+                sock.close()
 
 
 def send_amount(amount=500, host='192.168.1.128', port=5000):
     acc = init_acc()
     init_network()
+    sock = None
     while True:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -83,4 +85,6 @@ def send_amount(amount=500, host='192.168.1.128', port=5000):
 
         except Exception as e:
             print(e)
-        sock.close
+            utime.sleep_ms(2)
+            if sock is not None:
+                sock.close()
