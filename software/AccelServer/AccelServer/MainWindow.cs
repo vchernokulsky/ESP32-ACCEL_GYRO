@@ -1,14 +1,14 @@
 ﻿using System;
 using Gtk;
+using AccelServer;
 
 public partial class MainWindow: Gtk.Window
 {
-	private AccelServer.SocketServer socket;
+	
 	public MainWindow () : base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
 	
-		socket = new AccelServer.SocketServer("Hello world!!!");
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -19,6 +19,7 @@ public partial class MainWindow: Gtk.Window
 
 	protected void OnButton4Clicked (object sender, EventArgs e)
 	{
-		socket.PrintStr (10);
+		ConnectionController c = new ConnectionController ();
+		c.SendIp ();
 	}
 }
