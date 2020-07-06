@@ -97,3 +97,17 @@ def send_amount(amount=300, host='192.168.1.128', port=5000):
             utime.sleep_ms(2)
             if sock is not None:
                 sock.close()
+
+
+def udp_client(port=9876):
+    init_network()
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    # sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.bind(("", port))
+    while True:
+        # Thanks @seym45 for a fix
+        data, addr = sock.recvfrom(1024)
+        print("received message: %s" % data)
+
