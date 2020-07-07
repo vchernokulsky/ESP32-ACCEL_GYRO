@@ -111,3 +111,20 @@ def udp_client(port=9876):
         data, addr = sock.recvfrom(1024)
         print("received message: %s" % data)
 
+
+def get_server_ip(port=9876):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    # sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.bind(("", port))
+
+    data, addr = sock.recvfrom(1024)
+    host = data.decode("utf-8")
+    print("server_host: %s" % host)
+    return host
+
+
+def main():
+    init_network()
+    host = get_server_ip()
+
