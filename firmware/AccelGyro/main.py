@@ -3,6 +3,8 @@ import machine
 from Accelerometer import Accelerometer as Accel
 import usocket as socket
 import network
+import ujson
+import uselect
 
 
 def init_acc():
@@ -19,6 +21,7 @@ def init_network(network_name='Home92', network_password='24012017'):
         while not sta_if.isconnected():
             pass
     print('network config:', sta_if.ifconfig())
+    return sta_if.ifconfig()[0]
 
 
 def send_duration(duration_ms=1000, host='192.168.1.128', port=5000):
@@ -119,12 +122,38 @@ def get_server_ip(port=9876):
     sock.bind(("", port))
 
     data, addr = sock.recvfrom(1024)
+    sock.close()
     host = data.decode("utf-8")
     print("server_host: %s" % host)
     return host
 
 
+def sync_info(server_ip, jbytes, server_port=9875):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((server_ip, server_port))
+    sock.send(jbytes)
+    poller = uselect.poll()
+    poller.register(sock, uselect.POLLIN)
+    res = poller.poll(5000)
+    port = None
+    if res:
+        data = res[0][0].recv(1024)
+        jdict = ujson.loads(data.decode("utf-8"))
+        if "port" in jdict:
+            port = jdict["port"]
+    print(port)
+    sock.close()
+    return port
+
+
 def main():
-    init_network()
-    host = get_server_ip()
+    id = 1
+    type = 1
+    self_ip = init_network()
+    server_ip = get_server_ip()
+
+    jdict = {'id': id, 'type': type, 'ip': self_ip}
+    jbytes = ujson.dumps(jdict).encode("utf-8")
+    print(jbytes)
+    server_port = sync_info(server_ip, jbytes)
 
