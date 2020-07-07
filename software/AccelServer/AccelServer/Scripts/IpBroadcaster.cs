@@ -6,10 +6,10 @@ using System.Threading;
 
 namespace AccelServer
 {
-	public class ConnectionController
+	public class IpBroadcaster
 	{
 		private int port;
-		public ConnectionController (int port)
+		public IpBroadcaster (int port)
 		{
 			this.port = port;
 		}

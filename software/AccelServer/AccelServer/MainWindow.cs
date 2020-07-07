@@ -11,9 +11,11 @@ public partial class MainWindow: Gtk.Window
 		Build ();
 
 		int port = 9876;
-		ConnectionController controller = new ConnectionController (port);
+		IpBroadcaster controller = new IpBroadcaster (port);
 		Thread ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
 		ipBroadcaster.Start();
+
+		DeviceSynchronizer.StartListening ();
 	
 	}
 
@@ -25,6 +27,6 @@ public partial class MainWindow: Gtk.Window
 
 	protected void OnButton4Clicked (object sender, EventArgs e)
 	{
-		AsynchronousSocketListener.StartListening ();
+		
 	}
 }

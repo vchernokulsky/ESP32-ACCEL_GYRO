@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 
 
@@ -37,11 +38,14 @@ public class PortInfo
 	}
 }
 
-public class AsynchronousSocketListener {
+public class DeviceSynchronizer {
 	// Thread signal.
+	private static Mutex mut = new Mutex();
 	public static ManualResetEvent allDone = new ManualResetEvent(false);
+	public static Dictionary<int, DeviceInfo> deviceList = new Dictionary<int, DeviceInfo>();
+	public static int cur_device_port = 10000;
 
-	public AsynchronousSocketListener() {
+	public DeviceSynchronizer() {
 	}
 
 	public static void StartListening() {
@@ -128,11 +132,21 @@ public class AsynchronousSocketListener {
 			try
 			{
 				//JObject json = JObject.Parse(content);
-				DeviceInfo info = JsonConvert.DeserializeObject<DeviceInfo>(content);			 
-				info.Port = 9874;
-				PortInfo portInfo = new PortInfo(info.Port);
-				String output = JsonConvert.SerializeObject(portInfo);
-				Send(handler, output);
+				DeviceInfo info = JsonConvert.DeserializeObject<DeviceInfo>(content);
+				mut.WaitOne();
+				if(deviceList.ContainsKey(info.Id))
+				{
+					Console.WriteLine("device with id={0} has synchronized", info.Id);
+				}
+				else
+				{
+					info.Port = cur_device_port++;
+					deviceList.Add(info.Id, info);
+					PortInfo portInfo = new PortInfo(info.Port);
+					String output = JsonConvert.SerializeObject(portInfo);
+					Send(handler, output);
+				}
+				mut.ReleaseMutex();
 			}
 			catch (Exception e)
 			{
