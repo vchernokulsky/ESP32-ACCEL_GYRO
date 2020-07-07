@@ -25,6 +25,6 @@ public partial class MainWindow: Gtk.Window
 
 	protected void OnButton4Clicked (object sender, EventArgs e)
 	{
-		
+		AsynchronousSocketListener.StartListening ();
 	}
 }

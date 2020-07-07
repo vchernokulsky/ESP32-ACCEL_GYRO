@@ -139,8 +139,8 @@ def sync_info(server_ip, jbytes, server_port=9875):
     if res:
         data = res[0][0].recv(1024)
         jdict = ujson.loads(data.decode("utf-8"))
-        if "port" in jdict:
-            port = jdict["port"]
+        if "Port" in jdict:
+            port = jdict["Port"]
     print(port)
     sock.close()
     return port
@@ -152,7 +152,7 @@ def main():
     self_ip = init_network()
     server_ip = get_server_ip()
 
-    jdict = {'id': id, 'type': type, 'ip': self_ip}
+    jdict = {'Id': id, 'Type': type, 'Ip': self_ip}
     jbytes = ujson.dumps(jdict).encode("utf-8")
     print(jbytes)
     server_port = sync_info(server_ip, jbytes)
