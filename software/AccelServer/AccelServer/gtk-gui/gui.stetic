@@ -20,15 +20,32 @@
         <child>
           <widget class="Gtk.Button" id="button4">
             <property name="MemberName" />
+            <property name="WidthRequest">84</property>
+            <property name="HeightRequest">34</property>
             <property name="CanFocus">True</property>
             <property name="Type">TextOnly</property>
-            <property name="Label" translatable="yes">GtkButton</property>
+            <property name="Label" translatable="yes">Start</property>
             <property name="UseUnderline">True</property>
             <signal name="Clicked" handler="OnButton4Clicked" />
           </widget>
           <packing>
             <property name="X">157</property>
             <property name="Y">131</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="button1">
+            <property name="MemberName" />
+            <property name="WidthRequest">78</property>
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Stop</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="OnButton1Clicked" />
+          </widget>
+          <packing>
+            <property name="X">163</property>
+            <property name="Y">187</property>
           </packing>
         </child>
       </widget>

@@ -73,6 +73,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\IpBroadcaster.cs" />
     <Compile Include="Scripts\DeviceSynchronizer.cs" />
+    <Compile Include="Scripts\DataReceiver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

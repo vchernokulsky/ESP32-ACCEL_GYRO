@@ -6,6 +6,8 @@ public partial class MainWindow
 	private global::Gtk.Fixed fixed1;
 	
 	private global::Gtk.Button button4;
+	
+	private global::Gtk.Button button1;
 
 	protected virtual void Build ()
 	{
@@ -20,14 +22,27 @@ public partial class MainWindow
 		this.fixed1.HasWindow = false;
 		// Container child fixed1.Gtk.Fixed+FixedChild
 		this.button4 = new global::Gtk.Button ();
+		this.button4.WidthRequest = 84;
+		this.button4.HeightRequest = 34;
 		this.button4.CanFocus = true;
 		this.button4.Name = "button4";
 		this.button4.UseUnderline = true;
-		this.button4.Label = global::Mono.Unix.Catalog.GetString ("GtkButton");
+		this.button4.Label = global::Mono.Unix.Catalog.GetString ("Start");
 		this.fixed1.Add (this.button4);
 		global::Gtk.Fixed.FixedChild w1 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.button4]));
 		w1.X = 157;
 		w1.Y = 131;
+		// Container child fixed1.Gtk.Fixed+FixedChild
+		this.button1 = new global::Gtk.Button ();
+		this.button1.WidthRequest = 78;
+		this.button1.CanFocus = true;
+		this.button1.Name = "button1";
+		this.button1.UseUnderline = true;
+		this.button1.Label = global::Mono.Unix.Catalog.GetString ("Stop");
+		this.fixed1.Add (this.button1);
+		global::Gtk.Fixed.FixedChild w2 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.button1]));
+		w2.X = 163;
+		w2.Y = 187;
 		this.Add (this.fixed1);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
@@ -37,5 +52,6 @@ public partial class MainWindow
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
 		this.button4.Clicked += new global::System.EventHandler (this.OnButton4Clicked);
+		this.button1.Clicked += new global::System.EventHandler (this.OnButton1Clicked);
 	}
 }

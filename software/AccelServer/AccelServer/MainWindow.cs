@@ -15,8 +15,8 @@ public partial class MainWindow: Gtk.Window
 		Thread ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
 		ipBroadcaster.Start();
 
-		DeviceSynchronizer.StartListening ();
-	
+		Thread synchronizer = new Thread(new ThreadStart(DeviceSynchronizer.StartListening));
+		synchronizer.Start();
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -27,6 +27,15 @@ public partial class MainWindow: Gtk.Window
 
 	protected void OnButton4Clicked (object sender, EventArgs e)
 	{
-		
+		DataReceiver.running = true;
+		DataReceiver dt_recv = new DataReceiver (10000);
+
+		Thread data_receiver = new Thread(new ThreadStart(dt_recv.StartListening));
+		data_receiver.Start();
+	}
+
+	protected void OnButton1Clicked (object sender, EventArgs e)
+	{
+		DataReceiver.running = false;
 	}
 }

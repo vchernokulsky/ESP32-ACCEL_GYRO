@@ -24,7 +24,7 @@ def init_network(network_name='Home92', network_password='24012017'):
     return sta_if.ifconfig()[0]
 
 
-def send_amount(amount=300, host='192.168.1.128', port=5000):
+def send_amount(amount=300, host='192.168.1.128', port=5000, send_cnt=1):
     acc = init_acc()
     sock = None
     led = machine.Pin(2, machine.Pin.OUT)
@@ -33,6 +33,7 @@ def send_amount(amount=300, host='192.168.1.128', port=5000):
     led(led_val)
     while True:
         try:
+            total_send = 0
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((host, port))
             while True:
@@ -51,13 +52,19 @@ def send_amount(amount=300, host='192.168.1.128', port=5000):
                 led(led_val)
                 t4 = utime.ticks_ms()
 
+                total_send += len(values)
                 print('count = ' + str(cnt))
+                print('sent_bytes = ' + str(len(values)))
+                print('total_send = ' + str(total_send))
                 print('loop_time = ' + str(utime.ticks_diff(t3, t1)))
                 print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
                 print(" ")
+                # send_cnt -= 1
+                # if send_cnt == 0:
+                #     return
 
         except Exception as e:
-            #print(e)
+            # print(e)
             err_cnt += 1
             if err_cnt >= 20:
                 led_val ^= 3
@@ -112,7 +119,7 @@ def sync_info(server_ip, jbytes, server_port=9875):
     return port
 
 
-def main():
+def main(cnt=1):
     device_id = 1
     device_type = 1
     self_ip = init_network()
@@ -122,5 +129,5 @@ def main():
     jbytes = ujson.dumps(jdict).encode("utf-8")
     print(jbytes)
     server_port = sync_info(server_ip, jbytes)
-    send_amount(host=server_ip, port=server_port)
+    send_amount(host=server_ip, port=server_port, send_cnt=cnt)
 
