@@ -10,7 +10,7 @@ public partial class MainWindow: Gtk.Window
 	{
 		Build ();
 
-		int port = 9876;
+		int port = 15000;
 		IpBroadcaster controller = new IpBroadcaster (port);
 		Thread ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
 		ipBroadcaster.Start();
