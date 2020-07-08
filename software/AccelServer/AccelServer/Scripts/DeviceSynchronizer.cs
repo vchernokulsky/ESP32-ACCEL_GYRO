@@ -137,6 +137,9 @@ public class DeviceSynchronizer {
 				if(deviceList.ContainsKey(info.Id))
 				{
 					Console.WriteLine("device with id={0} has synchronized", info.Id);
+					PortInfo portInfo = new PortInfo(deviceList[info.Id].Port);
+					String output = JsonConvert.SerializeObject(portInfo);
+					Send(handler, output);
 				}
 				else
 				{

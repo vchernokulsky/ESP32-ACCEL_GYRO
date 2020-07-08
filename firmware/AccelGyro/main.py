@@ -24,51 +24,12 @@ def init_network(network_name='Home92', network_password='24012017'):
     return sta_if.ifconfig()[0]
 
 
-def send_duration(duration_ms=1000, host='192.168.1.128', port=5000):
-    acc = init_acc()
-    init_network()
-    sock = None
-    led = machine.Pin(2, machine.Pin.OUT)
-    led_val = 0
-    led(led_val)
-    while True:
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((host, port))
-            while True:
-                values = bytes()
-                t1 = utime.ticks_ms()
-                dt = utime.ticks_diff(t1, t1)
-                cnt = 0
-                while dt < duration_ms:
-                    raw_val = acc.get_raw_values()
-                    t2 = utime.ticks_ms()
-                    dt = utime.ticks_diff(t2, t1)
-                    values += t2.to_bytes(4, 'little')
-                    values += bytes(raw_val)
-                    cnt += 1
-                t3 = utime.ticks_ms()
-                sock.send(values)
-                led_val ^= 1
-                led(led_val)
-                t4 = utime.ticks_ms()
-                print('count = ' + str(cnt))
-                print('loop_time = ' + str(utime.ticks_diff(t3, t1)))
-                print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
-                print(" ")
-        except Exception as e:
-            print(e)
-            utime.sleep_ms(2)
-            if sock is not None:
-                sock.close()
-
-
 def send_amount(amount=300, host='192.168.1.128', port=5000):
     acc = init_acc()
-    init_network()
     sock = None
     led = machine.Pin(2, machine.Pin.OUT)
     led_val = 0
+    err_cnt = 0
     led(led_val)
     while True:
         try:
@@ -96,7 +57,12 @@ def send_amount(amount=300, host='192.168.1.128', port=5000):
                 print(" ")
 
         except Exception as e:
-            print(e)
+            #print(e)
+            err_cnt += 1
+            if err_cnt >= 20:
+                led_val ^= 3
+                led(led_val)
+                err_cnt = 0
             utime.sleep_ms(2)
             if sock is not None:
                 sock.close()
@@ -147,13 +113,14 @@ def sync_info(server_ip, jbytes, server_port=9875):
 
 
 def main():
-    id = 1
-    type = 1
+    device_id = 1
+    device_type = 1
     self_ip = init_network()
     server_ip = get_server_ip()
 
-    jdict = {'Id': id, 'Type': type, 'Ip': self_ip}
+    jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip}
     jbytes = ujson.dumps(jdict).encode("utf-8")
     print(jbytes)
     server_port = sync_info(server_ip, jbytes)
+    send_amount(host=server_ip, port=server_port)
 
