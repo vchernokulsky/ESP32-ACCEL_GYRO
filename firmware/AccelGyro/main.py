@@ -64,10 +64,10 @@ def send_amount(amount=300, host='192.168.1.128', port=5000, send_cnt=1):
                 #     return
 
         except Exception as e:
-            # print(e)
+            print(e)
             err_cnt += 1
             if err_cnt >= 20:
-                led_val ^= 3
+                led_val ^= 1
                 led(led_val)
                 err_cnt = 0
             utime.sleep_ms(2)
