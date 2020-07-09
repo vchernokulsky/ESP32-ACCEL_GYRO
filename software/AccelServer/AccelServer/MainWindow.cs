@@ -31,8 +31,7 @@ public partial class MainWindow: Gtk.Window
 	protected void OnButton4Clicked (object sender, EventArgs e)
 	{
 		DataReceiver.running = true;
-		//Thread data_receiver = new Thread(new ThreadStart(dt_recv.StartListening));
-		Thread data_receiver = new Thread(new ThreadStart(dt_recv.TryListen));
+		Thread data_receiver = new Thread(new ThreadStart(dt_recv.StartListening));
 		data_receiver.Start();
 	}
 
