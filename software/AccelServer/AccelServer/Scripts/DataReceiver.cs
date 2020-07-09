@@ -98,6 +98,7 @@ namespace AccelServer
 			byte[] bytes = new byte[18];
 			int cur_len = 0;
 			int package_cnt = 0;
+			AccGyroList agList = new AccGyroList (sync_time, sync_ticks);
 			foreach (ReceivedObject recv in byteList) 
 			{
 				int bytes_proceed = 0;
@@ -109,6 +110,7 @@ namespace AccelServer
 					bytes_proceed += copy_len;
 					if(cur_len == package_size)
 					{
+						agList.put (bytes);
 						Console.WriteLine( "found {0} packages", ++package_cnt);
 						cur_len = 0;
 					}
@@ -116,6 +118,7 @@ namespace AccelServer
 				}
 
 			}
+			Console.WriteLine(agList.agList.Count);
 				
 		}
 
