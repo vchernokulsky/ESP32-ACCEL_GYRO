@@ -6,16 +6,33 @@ using System.Collections.Generic;
 
 namespace AccelServer
 {
+	public class ReceivedObject {
+		public int length; 
+		public byte[] bytes;
+
+		public ReceivedObject(int length, byte[] bytes)
+		{
+			this.length = length;
+			this.bytes = bytes;
+		}
+	}
+
+
 	public class DataReceiver
 	{
 		public static bool running = false;
-		private List<byte[]> byteList;
+		private List<ReceivedObject> byteList;
+
+		private int id;
+		private int type;
 		private int port;
 		private int totalRecv;
 
-		public DataReceiver (int port)
+		public DataReceiver (int id, int type, int port)
 		{
-			byteList = new List<byte[]> ();
+			byteList = new List<ReceivedObject> ();
+			this.id = id;
+			this.type = type;
 			this.port = port;
 		}
 			
@@ -44,7 +61,7 @@ namespace AccelServer
 					{
 						bytesRec = handler.Receive(bytes);
 						totalRecv += bytesRec;
-						byteList.Add(bytes);
+						byteList.Add(new ReceivedObject(bytesRec, bytes));
 						Console.WriteLine( "Received {0} bytes", bytesRec);
 						Console.WriteLine( "TOTAL RECEIVED {0} bytes", totalRecv);
 
@@ -56,7 +73,8 @@ namespace AccelServer
 					if(byteList.Count > 0)
 					{
 						Console.WriteLine( "byteList len {0} ", byteList.Count);
-						byteList = new List<byte[]>();
+						ProcessData();
+						byteList = new List<ReceivedObject>();
 					} else {
 						Console.WriteLine( "=== STOPPED ===");
 					}
@@ -66,6 +84,33 @@ namespace AccelServer
 			{
 				Console.WriteLine(ex.Message);
 			}
+		}
+
+		private void ProcessData()
+		{
+			int package_size = 18;
+			byte[] bytes = new byte[18];
+			int cur_len = 0;
+			int package_cnt = 0;
+			foreach (ReceivedObject recv in byteList) 
+			{
+				int bytes_proceed = 0;
+				while(bytes_proceed < recv.length)
+				{
+					int copy_len = Math.Min (package_size - cur_len, recv.length - bytes_proceed);
+					Array.Copy (recv.bytes, bytes_proceed, bytes, cur_len, copy_len);
+					cur_len += copy_len;
+					bytes_proceed += copy_len;
+					if(cur_len == package_size)
+					{
+						Console.WriteLine( "found {0} packages", ++package_cnt);
+						cur_len = 0;
+					}
+
+				}
+
+			}
+				
 		}
 
 	}

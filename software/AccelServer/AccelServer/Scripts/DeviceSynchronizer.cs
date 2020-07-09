@@ -148,7 +148,7 @@ namespace AccelServer
 					else
 					{
 						info.Port = cur_device_port++;
-						info.dt_recv = new DataReceiver (info.Port);
+						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port);
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
 						info.data_receiver = data_receiver;
 						deviceList.Add(info.Id, info);
