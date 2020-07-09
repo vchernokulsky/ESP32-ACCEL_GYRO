@@ -125,7 +125,7 @@ def main(cnt=1):
     self_ip = init_network()
     server_ip = get_server_ip()
 
-    jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip}
+    jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms()}
     jbytes = ujson.dumps(jdict).encode("utf-8")
     print(jbytes)
     server_port = sync_info(server_ip, jbytes)

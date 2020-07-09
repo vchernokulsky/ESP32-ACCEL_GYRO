@@ -25,15 +25,21 @@ namespace AccelServer
 
 		private int id;
 		private int type;
+
+		private int sync_ticks;
+		private DateTime sync_time;
+
 		private int port;
 		private int totalRecv;
 
-		public DataReceiver (int id, int type, int port)
+		public DataReceiver (int id, int type, int port, DateTime sync_time, int sync_ticks)
 		{
 			byteList = new List<ReceivedObject> ();
 			this.id = id;
 			this.type = type;
 			this.port = port;
+			this.sync_time = sync_time;
+			this.sync_ticks = sync_ticks;
 		}
 			
 

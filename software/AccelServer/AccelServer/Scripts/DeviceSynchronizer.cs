@@ -26,6 +26,9 @@ namespace AccelServer
 		public int Id { get; set; }
 		public int Type { get; set; }
 		public string Ip { get; set; }
+		public int SyncTicks { get; set; }
+
+		public DateTime SyncTime { get; set; }
 		public int Port { get; set; }
 
 		public DataReceiver dt_recv { get; set; }
@@ -75,9 +78,7 @@ namespace AccelServer
 
 					// Start an asynchronous socket to listen for connections.
 					Console.WriteLine("Waiting for a connection...");
-					listener.BeginAccept( 
-						new AsyncCallback(AcceptCallback),
-						listener );
+					listener.BeginAccept(new AsyncCallback(AcceptCallback), listener );
 
 					// Wait until a connection is made before continuing.
 					allDone.WaitOne();
@@ -117,6 +118,7 @@ namespace AccelServer
 
 			// Read data from the client socket. 
 			int bytesRead = handler.EndReceive(ar);
+			DateTime cur_time = DateTime.Now;
 
 			if (bytesRead > 0) {
 				// There  might be more data, so store the data received so far.
@@ -137,6 +139,7 @@ namespace AccelServer
 				{
 					//JObject json = JObject.Parse(content);
 					DeviceInfo info = JsonConvert.DeserializeObject<DeviceInfo>(content);
+
 					mut.WaitOne();
 					if(deviceList.ContainsKey(info.Id))
 					{
@@ -148,8 +151,11 @@ namespace AccelServer
 					else
 					{
 						info.Port = cur_device_port++;
-						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port);
+						info.SyncTime = cur_time;
+
+						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port, info.SyncTime, info.SyncTicks);
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
+
 						info.data_receiver = data_receiver;
 						deviceList.Add(info.Id, info);
 						deviceList[info.Id].data_receiver.Start();
