@@ -5,8 +5,6 @@ using System.Threading;
 
 public partial class MainWindow: Gtk.Window
 {
-	private DataReceiver dt_recv;
-	
 	public MainWindow () : base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
@@ -19,7 +17,6 @@ public partial class MainWindow: Gtk.Window
 		Thread synchronizer = new Thread(new ThreadStart(DeviceSynchronizer.StartListening));
 		synchronizer.Start();
 
-		dt_recv = new DataReceiver (10000);
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -31,8 +28,6 @@ public partial class MainWindow: Gtk.Window
 	protected void OnButton4Clicked (object sender, EventArgs e)
 	{
 		DataReceiver.running = true;
-		Thread data_receiver = new Thread(new ThreadStart(dt_recv.StartListening));
-		data_receiver.Start();
 	}
 
 	protected void OnButton1Clicked (object sender, EventArgs e)

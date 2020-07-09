@@ -8,7 +8,7 @@ namespace AccelServer
 {
 	public class DataReceiver
 	{
-		public static bool running;
+		public static bool running = false;
 		private List<byte[]> byteList;
 		private int port;
 		private int totalRecv;
