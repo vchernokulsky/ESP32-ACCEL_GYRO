@@ -48,12 +48,12 @@ namespace AccelServer
 
 		public void SetFromBytes(DateTime SyncTime, int SyncTicks, byte[] bytes)
 		{
-			if (bytes.Length != 18) {
+			if (bytes.Length != 19) {
 				Console.WriteLine ("Wrong package size: {0}", bytes.Length);
 				return;
 			}
 			if (BitConverter.IsLittleEndian) {
-				int ticks = BitConverter.ToInt32 (bytes, 0);
+				uint ticks = BitConverter.ToUInt32 (bytes, 0);
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
 				AcX = BitConverter.ToInt16 (bytes, 4);
 				AcY = BitConverter.ToInt16 (bytes, 6);
@@ -72,7 +72,7 @@ namespace AccelServer
 				AcZ = BitConverter.ToInt16 (bytes, 8);
 				AcY = BitConverter.ToInt16 (bytes, 10);
 				AcX = BitConverter.ToInt16 (bytes, 12);
-				int ticks = BitConverter.ToInt32 (bytes, 14);
+				uint ticks = BitConverter.ToUInt32 (bytes, 14);
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
 			}
 

@@ -43,8 +43,10 @@ def send_amount(amount=300, host='192.168.1.128', port=5000, send_cnt=1):
                 while cnt < amount:
                     raw_val = acc.get_raw_values()
                     t2 = utime.ticks_ms()
-                    values += t2.to_bytes(4, 'little')
-                    values += bytes(raw_val)
+                    pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
+                    values += bytes([255, 255])
+                    values += pkg
+                    values += bytes([(256 - sum(pkg) % 256) % 256])
                     cnt += 1
                 t3 = utime.ticks_ms()
                 sock.send(values)
