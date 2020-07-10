@@ -1,3 +1,6 @@
+import utime
+
+
 class Accelerometer(object):
     def __init__(self, i2c, address=0x68):
         self.iic = i2c
@@ -38,8 +41,21 @@ class Accelerometer(object):
         return vals  # returned in range of Int16
         # # -32768 to 32767
 
+    def raw2dict(self, raw_ints):
+        vals = {"AcX": self.bytes_toint(raw_ints[0], raw_ints[1]), "AcY": self.bytes_toint(raw_ints[2], raw_ints[3]),
+                "AcZ": self.bytes_toint(raw_ints[4], raw_ints[5]), "Tmp": self.bytes_toint(raw_ints[6], raw_ints[7]),
+                "GyX": self.bytes_toint(raw_ints[8], raw_ints[9]), "GyY": self.bytes_toint(raw_ints[10], raw_ints[11]),
+                "GyZ": self.bytes_toint(raw_ints[12], raw_ints[13])}
+        return vals  # returned in range of Int16
+
     def val_test(self):  # ONLY FOR TESTING! Also, fast reading sometimes crashes IIC
         from time import sleep
         while 1:
             print(self.get_values())
             sleep(0.05)
+
+    def get_num_values(self, count=1, timeout=0):
+        for i in range(count):
+            print(self.get_values())
+            utime.sleep_ms(timeout)
+

@@ -24,7 +24,7 @@ def init_network(network_name='Home92', network_password='24012017'):
     return sta_if.ifconfig()[0]
 
 
-def send_amount(amount=300, host='192.168.1.128', port=5000, send_cnt=1):
+def send_amount(amount=250, host='192.168.1.128', port=5000, send_cnt=1):
     acc = init_acc()
     sock = None
     led = machine.Pin(2, machine.Pin.OUT)
@@ -43,6 +43,7 @@ def send_amount(amount=300, host='192.168.1.128', port=5000, send_cnt=1):
                 while cnt < amount:
                     raw_val = acc.get_raw_values()
                     t2 = utime.ticks_ms()
+                    print(acc.raw2dict(raw_val))
                     pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
                     values += bytes([255, 255])
                     values += pkg
@@ -55,6 +56,7 @@ def send_amount(amount=300, host='192.168.1.128', port=5000, send_cnt=1):
                 t4 = utime.ticks_ms()
 
                 total_send += len(values)
+
                 print('count = ' + str(cnt))
                 print('sent_bytes = ' + str(len(values)))
                 print('total_send = ' + str(total_send))

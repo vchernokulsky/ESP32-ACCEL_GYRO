@@ -52,32 +52,37 @@ namespace AccelServer
 				Console.WriteLine ("Wrong package size: {0}", bytes.Length);
 				return;
 			}
+			AcX = BytesToInt (bytes [4], bytes [5]);
+			AcY = BytesToInt (bytes [6], bytes [6]);
+			AcZ = BytesToInt (bytes [8], bytes [9]);
+			Tmp = BytesToInt (bytes [10], bytes [11]);
+			GyX = BytesToInt (bytes [12], bytes [13]);
+			GyY = BytesToInt (bytes [14], bytes [15]);
+			GyZ = BytesToInt (bytes [16], bytes [17]);
+
 			if (BitConverter.IsLittleEndian) {
 				uint ticks = BitConverter.ToUInt32 (bytes, 0);
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
-				AcX = BitConverter.ToInt16 (bytes, 4);
-				AcY = BitConverter.ToInt16 (bytes, 6);
-				AcZ = BitConverter.ToInt16 (bytes, 8);
-				Tmp = BitConverter.ToInt16 (bytes, 10);
-				GyX = BitConverter.ToInt16 (bytes, 12);
-				GyY = BitConverter.ToInt16 (bytes, 14);
-				GyZ = BitConverter.ToInt16 (bytes, 16);
-
 			} else {
 				Array.Reverse (bytes);
-				GyZ = BitConverter.ToInt16 (bytes, 0);
-				GyY = BitConverter.ToInt16 (bytes, 2);
-				GyX = BitConverter.ToInt16 (bytes, 4);
-				Tmp = BitConverter.ToInt16 (bytes, 6);
-				AcZ = BitConverter.ToInt16 (bytes, 8);
-				AcY = BitConverter.ToInt16 (bytes, 10);
-				AcX = BitConverter.ToInt16 (bytes, 12);
 				uint ticks = BitConverter.ToUInt32 (bytes, 14);
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
 			}
 
 
 		}
+		private int BytesToInt(byte firstbyte, byte secondbyte)
+		{
+			int ret;
+			if ((~firstbyte & 0x80) != 0) {
+				ret = firstbyte << 8 | secondbyte;
+			} else {
+				ret = -(((firstbyte ^ 255) << 8) | (secondbyte ^ 255) + 1);
+			}
+			return ret;
+					
+		}
+
 
 		public void WriteToConsole()
 		{
