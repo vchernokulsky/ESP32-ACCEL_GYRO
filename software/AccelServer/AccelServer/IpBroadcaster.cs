@@ -18,11 +18,10 @@ namespace AccelServer
 		public void IpBroadcast()
 		{
 			UdpClient udpClient = new UdpClient();
-			//var endPoint = new IPEndPoint(IPAddress.Parse("192.168.55.116"), port);
-			var endPoint = NetHelper.GetEndPointIPv4(15000, "192.168.55.116");
+			var endPoint = NetHelper.GetEndPointIPv4(15000);
 			udpClient.Client.Bind(endPoint);
 
-			var data = Encoding.UTF8.GetBytes("192.168.55.116");
+			var data = Encoding.UTF8.GetBytes(endPoint.Address.ToString());
 			while(true)
 			{
 				udpClient.Send(data, data.Length, "255.255.255.255", port);

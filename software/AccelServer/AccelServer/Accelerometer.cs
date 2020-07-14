@@ -55,20 +55,11 @@ namespace AccelServer
 
 		public void SetFromBytes(DateTime SyncTime, int SyncTicks, byte[] bytes)
 		{
-			if (bytes.Length != 19) {
+			if (bytes.Length != 18) {
 				Console.WriteLine ("Wrong package size: {0}", bytes.Length);
 				return;
 			}
-<<<<<<< HEAD:software/AccelServer/AccelServer/Scripts/Accelerometer.cs
-			AcX = BytesToInt (bytes [4], bytes [5]);
-			AcY = BytesToInt (bytes [6], bytes [6]);
-			AcZ = BytesToInt (bytes [8], bytes [9]);
-			Tmp = BytesToInt (bytes [10], bytes [11]);
-			GyX = BytesToInt (bytes [12], bytes [13]);
-			GyY = BytesToInt (bytes [14], bytes [15]);
-			GyZ = BytesToInt (bytes [16], bytes [17]);
 
-=======
 
 			AcX = ParseImuBytes(bytes[4], bytes[5]);
 			AcY = ParseImuBytes(bytes[6], bytes[7]);
@@ -77,31 +68,18 @@ namespace AccelServer
 			GyX = ParseImuBytes(bytes[12], bytes[13]);
 			GyY = ParseImuBytes(bytes[14], bytes[15]);
 			GyZ = ParseImuBytes(bytes[16], bytes[17]);
->>>>>>> bef30f4b6a536ca53e8bd2347bd713681489d63b:software/AccelServer/AccelServer/Accelerometer.cs
+
 			if (BitConverter.IsLittleEndian) {
-				uint ticks = BitConverter.ToUInt32 (bytes, 0);
+				int ticks = BitConverter.ToInt32 (bytes, 0);
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
 			} else {
 				Array.Reverse (bytes);
-<<<<<<< HEAD:software/AccelServer/AccelServer/Scripts/Accelerometer.cs
-				uint ticks = BitConverter.ToUInt32 (bytes, 14);
-=======
 				int ticks = BitConverter.ToInt32 (bytes, 14);
->>>>>>> bef30f4b6a536ca53e8bd2347bd713681489d63b:software/AccelServer/AccelServer/Accelerometer.cs
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
 			}
 		}
-		private int BytesToInt(byte firstbyte, byte secondbyte)
-		{
-			int ret;
-			if ((~firstbyte & 0x80) != 0) {
-				ret = firstbyte << 8 | secondbyte;
-			} else {
-				ret = -(((firstbyte ^ 255) << 8) | (secondbyte ^ 255) + 1);
-			}
-			return ret;
-					
-		}
+
+	
 
 
 		public void WriteToConsole()

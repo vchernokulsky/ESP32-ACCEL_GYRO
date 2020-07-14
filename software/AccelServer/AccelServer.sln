@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
+# Visual Studio 2012
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccelServer", "AccelServer\AccelServer.csproj", "{611FE8AF-F31E-4351-AC26-B319E6C359D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{2526D5A4-BAE8-4993-91E3-4A7E3F7F5BEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkGUI", "GtkGUI\GtkGUI.csproj", "{9BB1A375-BE31-446F-9625-1290D2972060}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,12 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Debug|x86.ActiveCfg = Debug|x86
-		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Debug|x86.Build.0 = Debug|x86
-		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Release|Any CPU.ActiveCfg = Release|x86
-		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Release|x86.ActiveCfg = Release|x86
-		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Release|x86.Build.0 = Release|x86
 		{2526D5A4-BAE8-4993-91E3-4A7E3F7F5BEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2526D5A4-BAE8-4993-91E3-4A7E3F7F5BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2526D5A4-BAE8-4993-91E3-4A7E3F7F5BEE}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -29,6 +25,20 @@ Global
 		{2526D5A4-BAE8-4993-91E3-4A7E3F7F5BEE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2526D5A4-BAE8-4993-91E3-4A7E3F7F5BEE}.Release|x86.ActiveCfg = Release|Any CPU
 		{2526D5A4-BAE8-4993-91E3-4A7E3F7F5BEE}.Release|x86.Build.0 = Release|Any CPU
+		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Debug|x86.ActiveCfg = Debug|x86
+		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Debug|x86.Build.0 = Debug|x86
+		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Release|Any CPU.ActiveCfg = Release|x86
+		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Release|x86.ActiveCfg = Release|x86
+		{611FE8AF-F31E-4351-AC26-B319E6C359D2}.Release|x86.Build.0 = Release|x86
+		{9BB1A375-BE31-446F-9625-1290D2972060}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{9BB1A375-BE31-446F-9625-1290D2972060}.Debug|Any CPU.Build.0 = Debug|x86
+		{9BB1A375-BE31-446F-9625-1290D2972060}.Debug|x86.ActiveCfg = Debug|x86
+		{9BB1A375-BE31-446F-9625-1290D2972060}.Debug|x86.Build.0 = Debug|x86
+		{9BB1A375-BE31-446F-9625-1290D2972060}.Release|Any CPU.ActiveCfg = Release|x86
+		{9BB1A375-BE31-446F-9625-1290D2972060}.Release|Any CPU.Build.0 = Release|x86
+		{9BB1A375-BE31-446F-9625-1290D2972060}.Release|x86.ActiveCfg = Release|x86
+		{9BB1A375-BE31-446F-9625-1290D2972060}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

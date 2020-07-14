@@ -45,7 +45,7 @@ namespace AccelServer
 
 		public void StartListening()
 		{
-			IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port, "192.168.55.116");
+			IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
 			Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 			try
@@ -59,10 +59,6 @@ namespace AccelServer
 				{
 					Socket handler = listenSocket.Accept();
 					int bytesRec = 0; 
-<<<<<<< HEAD:software/AccelServer/AccelServer/Scripts/DataReceiver.cs
-					byte[] bytes = new byte[6300]; 
-=======
->>>>>>> bef30f4b6a536ca53e8bd2347bd713681489d63b:software/AccelServer/AccelServer/DataReceiver.cs
 					totalRecv = 0;
 					while(running)
 					{
@@ -95,63 +91,31 @@ namespace AccelServer
 
 		private void ProcessData()
 		{
-			int package_size = 19;
-			byte[] bytes = new byte[19];
+			int package_size = 18;
+			byte[] bytes = new byte[18];
 			int cur_len = 0;
 			int package_cnt = 0;
 			AccGyroList agList = new AccGyroList (sync_time, sync_ticks);
-			int ff_found = 0;
 			foreach (ReceivedObject recv in byteList) 
 			{
 				int bytes_proceed = 0;
 				while(bytes_proceed < recv.length)
 				{
-					if (ff_found == 2) {
-						int copy_len = Math.Min (package_size - cur_len, recv.length - bytes_proceed);
-						Array.Copy (recv.bytes, bytes_proceed, bytes, cur_len, copy_len);
-						cur_len += copy_len;
-						bytes_proceed += copy_len;
-						if (cur_len == package_size) {
-							int chk_sum = 0;
-							foreach (byte b in bytes) {
-								chk_sum += (int) b;
-							}
-							if (chk_sum % 256 == 0) {
-								Console.WriteLine ("found {0} packages", ++package_cnt);
-								agList.put (bytes);
-								cur_len = 0;
-								ff_found = 0;
-							} else {
-								ff_found = 0;
-								for (int i = 0; i < cur_len; i++) {
-									if (bytes [i] == (int)255) {
-										ff_found++;
-									}
-									if (ff_found == 2) {
-										byte[] tmp_bytes = new byte[16];
-										Array.Copy (bytes, i, tmp_bytes, 0, package_size - i - 1);
-										bytes = tmp_bytes;
-										cur_len = package_size - i - 1;
-									} else {
-										cur_len = 0;
-									}
-								}
-							}
-						}
-					} else {
-						if (recv.bytes [bytes_proceed] == (byte)255) {
-							ff_found++;
-						} else {
-							ff_found = 0;
-						}
-						bytes_proceed++;
+					int copy_len = Math.Min (package_size - cur_len, recv.length - bytes_proceed);
+					Array.Copy (recv.bytes, bytes_proceed, bytes, cur_len, copy_len);
+					cur_len += copy_len;
+					bytes_proceed += copy_len;
+					if(cur_len == package_size)
+					{
+						agList.put (bytes);
+						Console.WriteLine( "found {0} packages", ++package_cnt);
+						cur_len = 0;
 					}
 
 				}
 
 			}
-			Console.WriteLine(agList.agList.Count);
-				
+			Console.WriteLine (agList.agList.Count);
 		}
 
 	}
