@@ -1,13 +1,73 @@
 import utime
+from constants import *
 
 
 class Accelerometer(object):
     def __init__(self, i2c, address=0x68):
         self.iic = i2c
         self.addr = address
+        self.rate = 0x20
         self.iic.start()
         self.iic.writeto(self.addr, bytearray([107, 0]))
         self.iic.stop()
+        self.init_device()
+
+    def init_device(self):
+        print('* initializing mpu')
+
+        self.identify()
+
+        # disable sleep mode and select clock source
+        self.write_byte(MPU6050_RA_PWR_MGMT_1, MPU6050_CLOCK_PLL_XGYRO)
+
+        # enable all sensors
+        self.write_byte(MPU6050_RA_PWR_MGMT_2, 0)
+
+        # set sampling rate
+        self.write_byte(MPU6050_RA_SMPLRT_DIV, self.rate)
+
+        # enable dlpf
+        self.write_byte(MPU6050_RA_CONFIG, 1)
+
+        # explicitly set accel/gyro range
+        self.set_accel_range(MPU6050_ACCEL_FS_2)
+        self.set_gyro_range(MPU6050_GYRO_FS_250)
+
+    def identify(self):
+        print('* identifying i2c device')
+        val = self.read_byte(MPU6050_RA_WHO_AM_I)
+        if int.from_bytes(val, "little") != MPU6050_ADDRESS_AD0_LOW:
+            raise OSError("No mpu6050 at address {}".format(self.addr))
+
+    def write_byte(self, reg, val):
+        self.iic.start()
+        self.iic.writeto_mem(self.addr, reg, bytearray(val))
+        self.iic.stop()
+
+    def read_byte(self, reg):
+        self.iic.start()
+        buf = self.iic.readfrom_mem(self.addr, reg, 1)
+        self.iic.stop()
+        return buf
+
+    def set_gyro_range(self, fsr):
+        self.set_bitfield(MPU6050_RA_GYRO_CONFIG,
+                          MPU6050_GCONFIG_FS_SEL_BIT,
+                          MPU6050_GCONFIG_FS_SEL_LENGTH,
+                          fsr)
+
+    def set_accel_range(self, fsr):
+        self.set_bitfield(MPU6050_RA_ACCEL_CONFIG,
+                          MPU6050_ACONFIG_AFS_SEL_BIT,
+                          MPU6050_ACONFIG_AFS_SEL_LENGTH,
+                          fsr)
+
+    def set_bitfield(self, reg, pos, length, val):
+        old = self.read_byte(reg)
+        shift = pos - length + 1
+        mask = (2**length - 1) << shift
+        new = (int.from_bytes(old, "little") & ~mask) | (val << shift)
+        self.write_byte(reg, new)
 
     def get_raw_values(self):
         self.iic.start()

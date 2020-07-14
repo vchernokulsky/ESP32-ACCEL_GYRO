@@ -12,7 +12,7 @@ def init_acc():
     return Accel(i2c)
 
 
-def init_network(network_name='IntemsLab', network_password='Embedded32'):
+def init_network(network_name='Home92', network_password='24012017'):
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
     if not sta_if.isconnected():
@@ -43,7 +43,6 @@ def send_amount(amount=300, host='192.168.55.116', port=5000):
                 while cnt < amount:
                     raw_val = acc.get_raw_values()
                     t2 = utime.ticks_ms()
-                    print(acc.raw2dict(raw_val))
                     pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
                     values += pkg
                     cnt += 1
