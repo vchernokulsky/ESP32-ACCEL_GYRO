@@ -24,11 +24,7 @@ def init_network(network_name='IntemsLab', network_password='Embedded32'):
     return sta_if.ifconfig()[0]
 
 
-<<<<<<< HEAD
-def send_amount(amount=250, host='192.168.1.128', port=5000, send_cnt=1):
-=======
-def send_amount(amount=300, host='192.168.55.116', port=5000, send_cnt=1):
->>>>>>> bef30f4b6a536ca53e8bd2347bd713681489d63b
+def send_amount(amount=300, host='192.168.55.116', port=5000):
     acc = init_acc()
     sock = None
     led = machine.Pin(2, machine.Pin.OUT)
@@ -49,9 +45,7 @@ def send_amount(amount=300, host='192.168.55.116', port=5000, send_cnt=1):
                     t2 = utime.ticks_ms()
                     print(acc.raw2dict(raw_val))
                     pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
-                    values += bytes([255, 255])
                     values += pkg
-                    values += bytes([(256 - sum(pkg) % 256) % 256])
                     cnt += 1
                 t3 = utime.ticks_ms()
                 sock.send(values)
@@ -67,9 +61,7 @@ def send_amount(amount=300, host='192.168.55.116', port=5000, send_cnt=1):
                 print('loop_time = ' + str(utime.ticks_diff(t3, t1)))
                 print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
                 print(" ")
-                # send_cnt -= 1
-                # if send_cnt == 0:
-                #     return
+
 
         except Exception as e:
             print(e)
@@ -128,7 +120,7 @@ def sync_info(server_ip, jbytes, server_port=9875):
     return port
 
 
-def main(cnt=1):
+def main():
     device_id = 1
     device_type = 1
     self_ip = init_network()
@@ -138,5 +130,5 @@ def main(cnt=1):
     jbytes = ujson.dumps(jdict).encode("utf-8")
     print(jbytes)
     server_port = sync_info(server_ip, jbytes)
-    send_amount(host=server_ip, port=server_port, send_cnt=cnt)
+    send_amount(host=server_ip, port=server_port)
 
