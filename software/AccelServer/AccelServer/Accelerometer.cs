@@ -46,42 +46,40 @@ namespace AccelServer
 			SetFromBytes (SyncTime,SyncTicks, bytes);
 		}
 
+		public int ParseImuBytes(byte low, byte high)
+		{
+			if ((~low & 0x80) != 0)
+				return low << 8 | high;
+			return -(((low ^ 255) << 8) | (high ^ 255) + 1);
+		}
+
 		public void SetFromBytes(DateTime SyncTime, int SyncTicks, byte[] bytes)
 		{
 			if (bytes.Length != 18) {
 				Console.WriteLine ("Wrong package size: {0}", bytes.Length);
 				return;
 			}
+
+			AcX = ParseImuBytes(bytes[4], bytes[5]);
+			AcY = ParseImuBytes(bytes[6], bytes[7]);
+			AcZ = ParseImuBytes(bytes[8], bytes[9]);
+			Tmp = ParseImuBytes(bytes[10], bytes[11]);
+			GyX = ParseImuBytes(bytes[12], bytes[13]);
+			GyY = ParseImuBytes(bytes[14], bytes[15]);
+			GyZ = ParseImuBytes(bytes[16], bytes[17]);
 			if (BitConverter.IsLittleEndian) {
 				int ticks = BitConverter.ToInt32 (bytes, 0);
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
-				AcX = BitConverter.ToInt16 (bytes, 4);
-				AcY = BitConverter.ToInt16 (bytes, 6);
-				AcZ = BitConverter.ToInt16 (bytes, 8);
-				Tmp = BitConverter.ToInt16 (bytes, 10);
-				GyX = BitConverter.ToInt16 (bytes, 12);
-				GyY = BitConverter.ToInt16 (bytes, 14);
-				GyZ = BitConverter.ToInt16 (bytes, 16);
-
 			} else {
 				Array.Reverse (bytes);
-				GyZ = BitConverter.ToInt16 (bytes, 0);
-				GyY = BitConverter.ToInt16 (bytes, 2);
-				GyX = BitConverter.ToInt16 (bytes, 4);
-				Tmp = BitConverter.ToInt16 (bytes, 6);
-				AcZ = BitConverter.ToInt16 (bytes, 8);
-				AcY = BitConverter.ToInt16 (bytes, 10);
-				AcX = BitConverter.ToInt16 (bytes, 12);
 				int ticks = BitConverter.ToInt32 (bytes, 14);
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
 			}
-
-
 		}
 
 		public void WriteToConsole()
 		{
-			Console.WriteLine ("---- {0} ----", Time.ToString());
+			Console.WriteLine ("---- {0:MM/dd/yy H:mm:ss fff} ----", Time);
 			Console.WriteLine ("AccX={0}  AccY={1}  AccZ={2}", AcX, AcY, AcZ);
 			Console.WriteLine ("Tmp={0}", Tmp);
 			Console.WriteLine ("GyX={0}  GyY={1}  GyZ={2}", GyX, GyY, GyZ);

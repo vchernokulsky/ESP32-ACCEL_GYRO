@@ -45,9 +45,7 @@ namespace AccelServer
 
 		public void StartListening()
 		{
-			IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-			IPAddress ipAddress = ipHostInfo.AddressList[0];  
-			IPEndPoint ipPoint = new IPEndPoint(ipAddress, port);
+			IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port, "192.168.55.116");
 			Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 			try
@@ -61,16 +59,15 @@ namespace AccelServer
 				{
 					Socket handler = listenSocket.Accept();
 					int bytesRec = 0; 
-					byte[] bytes = new byte[5400]; 
 					totalRecv = 0;
 					while(running)
 					{
+						byte[] bytes = new byte[5400];
 						bytesRec = handler.Receive(bytes);
 						totalRecv += bytesRec;
 						byteList.Add(new ReceivedObject(bytesRec, bytes));
 						Console.WriteLine( "Received {0} bytes", bytesRec);
 						Console.WriteLine( "TOTAL RECEIVED {0} bytes", totalRecv);
-
 					}
 						
 					handler.Shutdown(SocketShutdown.Both);
