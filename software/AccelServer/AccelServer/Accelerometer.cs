@@ -5,21 +5,25 @@ namespace AccelServer
 {
 	public class AccGyroList
 	{
+
+		private float acc2si;
+
 		private DateTime SyncTime;
 		private int SyncTicks;
 
 		public List<Accelerometer> agList;
 
-		public AccGyroList(DateTime SyncTime, int SyncTicks)
+		public AccGyroList(DateTime SyncTime, int SyncTicks, int GMAX=2)
 		{
 			this.SyncTime = SyncTime;
 			this.SyncTicks = SyncTicks;
+			acc2si = (2.0f * (float)GMAX * 9.8f) / 65536.0f;
 			agList = new List<Accelerometer> ();
 		}
 
 		public void put(byte[] bytes)
 		{
-			Accelerometer acc = new Accelerometer (SyncTime, SyncTicks, bytes);
+			Accelerometer acc = new Accelerometer (SyncTime, SyncTicks, bytes, acc2si);
 			acc.WriteToConsole ();
 			agList.Add (acc);
 		}
@@ -28,10 +32,11 @@ namespace AccelServer
 	
 	public class Accelerometer
 	{
+
 		public DateTime Time;
-		public int AcX;
-		public int AcY;
-		public int AcZ;
+		public float AcX;
+		public float AcY;
+		public float AcZ;
 		public float Tmp;
 		public int GyX;
 		public int GyY;
@@ -41,9 +46,9 @@ namespace AccelServer
 		{
 			
 		}
-		public Accelerometer (DateTime SyncTime, int SyncTicks, byte[] bytes)
+		public Accelerometer (DateTime SyncTime, int SyncTicks, byte[] bytes, float acc2si)
 		{
-			SetFromBytes (SyncTime,SyncTicks, bytes);
+			SetFromBytes (SyncTime,SyncTicks, bytes, acc2si);
 		}
 
 		public int ParseImuBytes(byte low, byte high)
@@ -53,7 +58,7 @@ namespace AccelServer
 			return -(((low ^ 255) << 8) | (high ^ 255) + 1);
 		}
 
-		public void SetFromBytes(DateTime SyncTime, int SyncTicks, byte[] bytes)
+		public void SetFromBytes(DateTime SyncTime, int SyncTicks, byte[] bytes, float acc2si)
 		{
 			if (bytes.Length != 18) {
 				Console.WriteLine ("Wrong package size: {0}", bytes.Length);
@@ -61,9 +66,9 @@ namespace AccelServer
 			}
 
 
-			AcX = ParseImuBytes(bytes[4], bytes[5]);
-			AcY = ParseImuBytes(bytes[6], bytes[7]);
-			AcZ = ParseImuBytes(bytes[8], bytes[9]);
+			AcX = acc2si * (float)ParseImuBytes(bytes[4], bytes[5]);
+			AcY = acc2si * (float)ParseImuBytes(bytes[6], bytes[7]);
+			AcZ = acc2si * (float)ParseImuBytes(bytes[8], bytes[9]);
 			Tmp = ParseImuBytes(bytes[10], bytes[11]);
 			GyX = ParseImuBytes(bytes[12], bytes[13]);
 			GyY = ParseImuBytes(bytes[14], bytes[15]);
