@@ -107,8 +107,8 @@ namespace AccelServer
 					bytes_proceed += copy_len;
 					if(cur_len == package_size)
 					{
-						agList.put (bytes);
 						Console.WriteLine( "found {0} packages", ++package_cnt);
+						agList.put (bytes);
 						cur_len = 0;
 					}
 
