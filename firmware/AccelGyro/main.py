@@ -12,7 +12,7 @@ def init_acc():
     return Accel(i2c)
 
 
-def init_network(network_name='Home92', network_password='24012017'):
+def init_network(network_name='IntemsLab', network_password='Embedded32'):
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
     if not sta_if.isconnected():
@@ -24,7 +24,11 @@ def init_network(network_name='Home92', network_password='24012017'):
     return sta_if.ifconfig()[0]
 
 
+<<<<<<< HEAD
 def send_amount(amount=250, host='192.168.1.128', port=5000, send_cnt=1):
+=======
+def send_amount(amount=300, host='192.168.55.116', port=5000, send_cnt=1):
+>>>>>>> bef30f4b6a536ca53e8bd2347bd713681489d63b
     acc = init_acc()
     sock = None
     led = machine.Pin(2, machine.Pin.OUT)
@@ -100,6 +104,7 @@ def get_server_ip(port=15000):
 
     data, addr = sock.recvfrom(1024)
     sock.close()
+
     host = data.decode("utf-8")
     print("server_host: %s" % host)
     return host

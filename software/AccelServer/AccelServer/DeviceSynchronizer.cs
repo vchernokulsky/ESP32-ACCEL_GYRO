@@ -56,13 +56,7 @@ namespace AccelServer
 		}
 
 		public static void StartListening() {
-			// Establish the local endpoint for the socket.
-			// The DNS name of the computer
-			// running the listener is "host.contoso.com".
-			IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-			IPAddress ipAddress = ipHostInfo.AddressList[0];
-			IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9875);
-
+			var localEndPoint = NetHelper.GetEndPointIPv4(9875, "192.168.55.116");
 			// Create a TCP/IP socket.
 			Socket listener = new Socket(AddressFamily.InterNetwork,
 				SocketType.Stream, ProtocolType.Tcp );
