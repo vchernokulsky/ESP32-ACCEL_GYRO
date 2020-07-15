@@ -48,14 +48,14 @@ namespace AccelServer
 	public class DeviceSynchronizer {
 		// Thread signal.
 		private static Mutex mut = new Mutex();
-		public static ManualResetEvent allDone = new ManualResetEvent(false);
-		public static Dictionary<int, DeviceInfo> deviceList = new Dictionary<int, DeviceInfo>();
-		public static int cur_device_port = 10000;
+		public ManualResetEvent allDone = new ManualResetEvent(false);
+		public Dictionary<int, DeviceInfo> deviceList = new Dictionary<int, DeviceInfo>();
+		public int cur_device_port = 10000;
 
 		public DeviceSynchronizer() {
 		}
 
-		public static void StartListening() {
+		public void StartListening() {
 			var localEndPoint = NetHelper.GetEndPointIPv4(9875);
 			// Create a TCP/IP socket.
 			Socket listener = new Socket(AddressFamily.InterNetwork,
@@ -87,7 +87,7 @@ namespace AccelServer
 
 		}
 
-		public static void AcceptCallback(IAsyncResult ar) {
+		public void AcceptCallback(IAsyncResult ar) {
 			// Signal the main thread to continue.
 			allDone.Set();
 
@@ -102,7 +102,7 @@ namespace AccelServer
 				new AsyncCallback(ReadCallback), state);
 		}
 
-		public static void ReadCallback(IAsyncResult ar) {
+		public void ReadCallback(IAsyncResult ar) {
 			String content = String.Empty;
 
 			// Retrieve the state object and the handler socket
@@ -168,7 +168,7 @@ namespace AccelServer
 			}
 		}
 
-		private static void Send(Socket handler, String data) {
+		private void Send(Socket handler, String data) {
 			// Convert the string data to byte data using ASCII encoding.
 
 			Console.WriteLine (data);
@@ -179,7 +179,7 @@ namespace AccelServer
 				new AsyncCallback(SendCallback), handler);
 		}
 
-		private static void SendCallback(IAsyncResult ar) {
+		private void SendCallback(IAsyncResult ar) {
 			try {
 				// Retrieve the socket from the state object.
 				Socket handler = (Socket) ar.AsyncState;

@@ -15,7 +15,8 @@ namespace AccelServer
 			Thread ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
 			ipBroadcaster.Start();
 
-			Thread synchronizer = new Thread(new ThreadStart(DeviceSynchronizer.StartListening));
+			DeviceSynchronizer devSync = new DeviceSynchronizer ();
+			Thread synchronizer = new Thread(new ThreadStart(devSync.StartListening));
 			synchronizer.Start();
 		}
 
