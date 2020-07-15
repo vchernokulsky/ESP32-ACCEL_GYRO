@@ -62,7 +62,7 @@ class Calibration(object):
             data['x'] = (data['x'] + acc['x']) / 2
             data['y'] = (data['y'] + acc['y']) / 2
             data['z'] = (data['z'] + acc['z']) / 2
-        data['z'] = data['z'] - 9.8 * 1000 / self.accel_scale
+        data['z'] = data['z'] - self.accel_scale
         return data
 
     def get_accel_offs(self):
@@ -88,6 +88,7 @@ class Calibration(object):
                 'x': data_offs_min['x'] + (data_offs_max['x'] - data_offs_min['x']) / 2,
                 'y': data_offs_min['y'] + (data_offs_max['y'] - data_offs_min['y']) / 2,
                 'z': data_offs_min['z'] + (data_offs_max['z'] - data_offs_min['z']) / 2}
+        data['z'] = data['z'] - self.accel_scale
         return data
 
     def calibration(self):
@@ -96,9 +97,10 @@ class Calibration(object):
         print("###############################################")
         utime.sleep_ms(5000)
         self.gyro_offs = self.get_gyro_offs()
-        print("Please twirl the MPU-6050 around a minute")
-        print("###############################################")
-        self.accel_offs = self.get_accel_offs()
+        # print("Please twirl the MPU-6050 around a minute")
+        # print("###############################################")
+        self.accel_offs = self.get_accel_offs_avg()
+        self.accel_offs = self.get_accel_offs_avg()
         print("Done. Please change variables")
         print("\"gyro_offs\" and \"accel_offs\"")
         print("to following values in mpu6050.py file:")
