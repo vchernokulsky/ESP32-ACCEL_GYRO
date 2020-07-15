@@ -48,11 +48,21 @@ namespace AccelServer
 	public class DeviceSynchronizer {
 		// Thread signal.
 		private static Mutex mut = new Mutex();
+		private List<Thread> dataRcvList;
 		public ManualResetEvent allDone = new ManualResetEvent(false);
 		public Dictionary<int, DeviceInfo> deviceList = new Dictionary<int, DeviceInfo>();
 		public int cur_device_port = 10000;
 
 		public DeviceSynchronizer() {
+			dataRcvList = new List<Thread> ();
+		}
+
+		public void FinishReceiving()
+		{
+			foreach (Thread t in dataRcvList) {
+				t.Abort ();
+				t.Join ();
+			}
 		}
 
 		public void StartListening() {
@@ -149,6 +159,7 @@ namespace AccelServer
 
 						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port, info.SyncTime, info.SyncTicks);
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
+						dataRcvList.Add(data_receiver);
 
 						info.data_receiver = data_receiver;
 						deviceList.Add(info.Id, info);

@@ -15,6 +15,8 @@ public partial class MainWindow: Gtk.Window
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
+		Accel.FinishThreads ();
+		Console.WriteLine ("!!!EXIT!!!");
 		Application.Quit ();
 		a.RetVal = true;
 	}
