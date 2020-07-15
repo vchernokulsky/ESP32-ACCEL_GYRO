@@ -8,6 +8,9 @@ namespace AccelServer
 		
 		public AccelServer (int broadcasterPort)
 		{
+			while (NetHelper.GetEndPointIPv4 (10000) == null) {
+				Thread.Sleep (3000);
+			}
 			IpBroadcaster controller = new IpBroadcaster(broadcasterPort);
 			Thread ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
 			ipBroadcaster.Start();

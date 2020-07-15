@@ -7,26 +7,35 @@ namespace AccelServer
 {
 	internal static class NetHelper
     {
-		private static string interfaceType = "WIFI";
-
-        public static IPEndPoint GetEndPointIPv4(int port, string ipAddr = "")
+		
+        public static IPEndPoint GetEndPointIPv4(int port)
 		{
 			IPEndPoint localEndPoint = null;
-
-			NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
-
-			var hostName = Dns.GetHostName();
-			var hostEntry = Dns.GetHostEntry(hostName);
-
-			foreach (var address in hostEntry.AddressList)
+			IPAddress address = null;
+			foreach(NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
 			{
-				if (address.AddressFamily == AddressFamily.InterNetwork)
+				if(ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
 				{
-					localEndPoint = new IPEndPoint(address, port);
-					break;
-				}
+					Console.WriteLine(ni.Name);
+					foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
+					{
+						if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+						{
+							address = ip.Address;
+							Console.WriteLine(ip.Address.ToString());
+						}
+					}
+				}  
+			}
+			if (address == null) {
+				Console.WriteLine ("WIFI connetion not found");
+			} else {
+				Console.WriteLine("IP-address: {0}", address.ToString());
+				localEndPoint = new IPEndPoint(address, port);
 			}
 			return localEndPoint;
 		}
-	}
+
+
+}
 }
