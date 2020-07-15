@@ -6,6 +6,8 @@ import network
 import ujson
 import uselect
 
+from Calibration import Calibration
+
 
 def init_acc():
     i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
@@ -130,4 +132,11 @@ def main():
     print(jbytes)
     server_port = sync_info(server_ip, jbytes)
     send_amount(host=server_ip, port=server_port)
+
+
+def calibrate():
+    Accel = init_acc()
+    Calib = Calibration(Accel)
+    Calib.calibration()
+
 
