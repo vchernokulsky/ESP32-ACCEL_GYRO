@@ -135,8 +135,6 @@ def main():
 
 
 def calibrate():
-    Accel = init_acc()
-    Calib = Calibration(Accel)
+    acc = init_acc()
+    Calib = Calibration(acc)
     Calib.calibration()
-
-

@@ -69,6 +69,7 @@
     <Compile Include="DataReceiver.cs" />
     <Compile Include="Accelerometer.cs" />
     <Compile Include="AccelServer.cs" />
+    <Compile Include="MpuCalibraion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

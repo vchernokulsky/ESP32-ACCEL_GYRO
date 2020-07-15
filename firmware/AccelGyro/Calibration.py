@@ -9,9 +9,17 @@ class Calibration(object):
         self.accel_offs = {'y': 0, 'x': 0, 'z': 0}
 
         self.acc = acc
+        # Accel Range +-2g
+        self.accel_scale = 16384.0
+        # Accel Range +-4g
+        # self.accel_scale = 8192.0
+        # Accel Range +-8g
+        # self.accel_scale=4096.0
+        # Accel Range +-16g
+        # self.accel_scale=2048.0
 
         # Gyro Range +-250 degrees/s
-        self.gyro_scale = 131
+        self.gyro_scale = 131.0
         # Gyro Range +-500 degrees/s
         # self.gro_scale=65.5
         # Gyro Range +-1000 degrees/s
@@ -22,6 +30,7 @@ class Calibration(object):
     def get_accel_raw(self):
         acc_gyr = self.acc.get_values()
         data = {
+
             'x': acc_gyr['AcX'],
             'y': acc_gyr['AcY'],
             'z': acc_gyr['AcZ']}
@@ -46,6 +55,16 @@ class Calibration(object):
                 'z': (acc_gyr['GyZ'] - self.gyro_offs['z']) / self.gyro_scale}
         return data
 
+    def get_accel_offs_avg(self):
+        data = {'x': 0.0, 'y': 0.0, 'z': 0.0}
+        for i in range(1000):
+            acc = self.get_accel_raw()
+            data['x'] = (data['x'] + acc['x']) / 2
+            data['y'] = (data['y'] + acc['y']) / 2
+            data['z'] = (data['z'] + acc['z']) / 2
+        data['z'] = data['z'] - 9.8 * 1000 / self.accel_scale
+        return data
+
     def get_accel_offs(self):
         data_offs_min = self.get_accel_raw()
         data_offs_max = self.get_accel_raw()
@@ -55,26 +74,20 @@ class Calibration(object):
             if math.fabs(data_gyro['x']) < 2 and math.fabs(data_gyro['y']) < 2 and math.fabs(data_gyro['z']) < 2:
                 if data['x'] > data_offs_max['x']:
                     data_offs_max['x'] = data['x']
-
                 if data['y'] > data_offs_max['y']:
                     data_offs_max['y'] = data['y']
-
                 if data['z'] > data_offs_max['z']:
                     data_offs_max['z'] = data['z']
-
                 if data['x'] < data_offs_min['x']:
                     data_offs_min['x'] = data['x']
-
                 if data['y'] < data_offs_min['y']:
                     data_offs_min['y'] = data['y']
-
                 if data['z'] < data_offs_min['z']:
                     data_offs_min['z'] = data['z']
-
         data = {
-            'x': data_offs_min['x'] + (data_offs_max['x'] - data_offs_min['x']) / 2,
-            'y': data_offs_min['y'] + (data_offs_max['y'] - data_offs_min['y']) / 2,
-            'z': data_offs_min['z'] + (data_offs_max['z'] - data_offs_min['z']) / 2}
+                'x': data_offs_min['x'] + (data_offs_max['x'] - data_offs_min['x']) / 2,
+                'y': data_offs_min['y'] + (data_offs_max['y'] - data_offs_min['y']) / 2,
+                'z': data_offs_min['z'] + (data_offs_max['z'] - data_offs_min['z']) / 2}
         return data
 
     def calibration(self):

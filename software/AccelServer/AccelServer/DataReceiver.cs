@@ -95,7 +95,7 @@ namespace AccelServer
 			byte[] bytes = new byte[18];
 			int cur_len = 0;
 			int package_cnt = 0;
-			AccGyroList agList = new AccGyroList (sync_time, sync_ticks);
+			AccGyroList agList = new AccGyroList (id, sync_time, sync_ticks);
 			foreach (ReceivedObject recv in byteList) 
 			{
 				int bytes_proceed = 0;
