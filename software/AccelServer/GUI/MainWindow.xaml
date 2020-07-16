@@ -5,20 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Loaded="Window_Loaded"
+        ContentRendered="Window_ContentRendered"
+        Closing="DataWindow_Closing"  
+    >
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+        <!-- Создаем новый VM и соединяем его со View -->
+    </Window.DataContext>
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+    </Window.Resources>
+
     <Grid>
-        <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="385,66,0,0" VerticalAlignment="Top" Width="75" Click="OnBtnStart_Click"/>
-        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="494,66,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click" RenderTransformOrigin="4.101,-7.392"/>
-        <RadioButton x:Name="radioWiFi" Content="WI-FI" HorizontalAlignment="Left" Margin="43,66,0,0" VerticalAlignment="Top" Checked="OnWiFiRadio_Checked"/>
-        <RadioButton x:Name="radioEth" Content="Ethernet" HorizontalAlignment="Left" Margin="122,66,0,0" VerticalAlignment="Top" Checked="OnEthRadio_Checked"/>
-        <Label x:Name="lblIfaceSelect" Content="Выбор сетевого интерфейса&#xD;&#xA;" HorizontalAlignment="Left" Margin="20,26,0,0" VerticalAlignment="Top" Height="28"/>
-        <Label x:Name="lblDev1" Background="Gray" Content="Устройство №1" HorizontalAlignment="Left" Margin="24,182,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lblDev2" Background="Gray" Content="Устройство №2" HorizontalAlignment="Left" Margin="147,182,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lblDev3" Background="Gray" Content="Устройство №3" HorizontalAlignment="Left" Margin="24,236,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.548,2.854"/>
-        <Label x:Name="lblDev4" Background="Gray" Content="Устройство №4" HorizontalAlignment="Left" Margin="147,236,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lblDev5" Background="Gray" Content="Устройство №5" HorizontalAlignment="Left" Margin="24,289,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="lblDev6" Background="Gray" Content="Устройство №6" HorizontalAlignment="Left" Margin="147,289,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="btnIfaceSelect" Content="Ok" HorizontalAlignment="Left" Margin="44,104,0,0" VerticalAlignment="Top" Width="75" Click="btnIfaceSelect_Click"/>
+        <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="494,36,0,0" VerticalAlignment="Top" Width="75" Click="OnBtnStart_Click" IsEnabled="{Binding StartEnabled}" />
+        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="494,66,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
+        <Label x:Name="lblDev1" Background="Gray" Content="Устройство №1" HorizontalAlignment="Left" Margin="24,25,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblDev2" Background="Gray" Content="Устройство №2" HorizontalAlignment="Left" Margin="138,25,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblDev3" Background="Gray" Content="Устройство №3" HorizontalAlignment="Left" Margin="254,25,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.548,2.854"/>
+        <Label x:Name="lblDev4" Background="Gray" Content="Устройство №4" HorizontalAlignment="Left" Margin="24,66,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblDev5" Background="Gray" Content="Устройство №5" HorizontalAlignment="Left" Margin="138,66,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblDev6" Background="Gray" Content="Устройство №6" HorizontalAlignment="Left" Margin="254,68,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

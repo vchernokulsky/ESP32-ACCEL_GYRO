@@ -1,6 +1,7 @@
 ﻿using AccelServer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -22,45 +23,39 @@ namespace GUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private AccelServer.AccelServer Accel;
+
         public MainWindow()
         {
-            InitializeComponent();
-
-            int port = 15000;
-            IpBroadcaster controller = new IpBroadcaster(port);
-            Thread ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
-            ipBroadcaster.Start();
-
-            Thread synchronizer = new Thread(new ThreadStart(DeviceSynchronizer.StartListening));
-            synchronizer.Start();
+            InitializeComponent(); 
         }
 
         private void OnBtnStart_Click(object sender, RoutedEventArgs e)
         {
-            DataReceiver.running = true;
+            Accel.StartReceiving();
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            DataReceiver.running = false;
+            Accel.StopReceiving();
         }
 
-        private void OnWiFiRadio_Checked(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            Console.WriteLine("Loaded");
+           
         }
 
-        private void OnEthRadio_Checked(object sender, RoutedEventArgs e)
+        private void Window_ContentRendered(object sender, EventArgs e)
         {
-
+            Console.WriteLine("ContentRendered");
+            Accel = new AccelServer.AccelServer(15000);
         }
 
-        private void btnIfaceSelect_Click(object sender, RoutedEventArgs e)
+        void DataWindow_Closing(object sender, CancelEventArgs e)
         {
-            if(radioEth.IsChecked.Value)
-            {
-
-            }
+            Accel.FinishThreads();
+            Console.WriteLine("!!!EXIT!!!");
         }
     }
 }
