@@ -23,7 +23,7 @@ namespace GUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private AccelServer.AccelServer Accel;
+        //private AccelServer.AccelServer Accel;
 
         public MainWindow()
         {
@@ -31,31 +31,11 @@ namespace GUI
            
         }
 
-        private void OnBtnStart_Click(object sender, RoutedEventArgs e)
-        {
-            Accel.StartReceiving();
-        }
-
-        private void btnStop_Click(object sender, RoutedEventArgs e)
-        {
-            Accel.StopReceiving();
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Loaded");
-           
-        }
-
-        private void Window_ContentRendered(object sender, EventArgs e)
-        {
-            Console.WriteLine("ContentRendered");
-            Accel = new AccelServer.AccelServer(15000);
-        }
-
+      
+  
         void DataWindow_Closing(object sender, CancelEventArgs e)
         {
-            Accel.FinishThreads();
+            //Accel.FinishThreads();
             Console.WriteLine("!!!EXIT!!!");
         }
     }

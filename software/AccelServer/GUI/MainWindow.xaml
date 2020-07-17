@@ -28,8 +28,8 @@
 
     <Grid>
         <Label x:Name="lblWifiCon" Background="Red" Content="Нет соединения с WiFi-сетью" HorizontalAlignment="Left" Margin="254, 100, 0,0" VerticalAlignment="Top"  Visibility="{Binding Path=NoConnection, Converter={StaticResource BoolToVisConverter}}"/>
-        <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="494,36,0,0" VerticalAlignment="Top" Width="75" Click="OnBtnStart_Click" IsEnabled="{Binding StartEnabled}" />
-        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="494,66,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
+        <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="494,36,0,0" VerticalAlignment="Top" Width="75" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
+        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="494,66,0,0" VerticalAlignment="Top" Width="75" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
         
         <Label x:Name="lblDev1" Background="Gray" Content="Устройство №1" HorizontalAlignment="Left" Margin="24,25,0,0" VerticalAlignment="Top"/>
         <Label x:Name="lblDev2" Background="Gray" Content="Устройство №2" HorizontalAlignment="Left" Margin="138,25,0,0" VerticalAlignment="Top"/>
