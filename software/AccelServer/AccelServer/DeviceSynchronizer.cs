@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-
+using Prism.Mvvm;
 
 namespace AccelServer
 {
@@ -45,7 +45,8 @@ namespace AccelServer
 		}
 	}
 
-	public class DeviceSynchronizer {
+	public class DeviceSynchronizer: BindableBase
+	{
 		// Thread signal.
 		private static Mutex mut = new Mutex();
 		private List<Thread> dataRcvList;
@@ -164,6 +165,10 @@ namespace AccelServer
 						info.data_receiver = data_receiver;
 						deviceList.Add(info.Id, info);
 						deviceList[info.Id].data_receiver.Start();
+
+						
+
+						RaisePropertyChanged("DeviceColor1");
 
 						PortInfo portInfo = new PortInfo(info.Port);
 						String output = JsonConvert.SerializeObject(portInfo);
