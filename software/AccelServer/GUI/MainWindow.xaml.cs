@@ -27,7 +27,8 @@ namespace GUI
 
         public MainWindow()
         {
-            InitializeComponent(); 
+            InitializeComponent();
+           
         }
 
         private void OnBtnStart_Click(object sender, RoutedEventArgs e)

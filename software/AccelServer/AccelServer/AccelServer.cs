@@ -1,33 +1,39 @@
-﻿using System;
+﻿using Prism.Mvvm;
+using System;
 using System.Threading;
 
 namespace AccelServer
 {
-	public class AccelServer
+	public class AccelServer: BindableBase
 	{
 		private int broadcasterPort;
 		private IpBroadcaster controller;
 		private DeviceSynchronizer devSync;
 
+		private Thread main;
+		private Thread ipBroadcaster;
+		private Thread synchronizer;
 
-
-		Thread main;
-		Thread ipBroadcaster;
-		Thread synchronizer;
+		public bool NoConnection = true;
 		
 		public AccelServer (int broadcasterPort)
 		{
 			this.broadcasterPort = broadcasterPort;
-			main = new Thread(new ThreadStart(StartThreads));
-			main.Start();
+		}
+
+		public void CheckConnection()
+		{
+			while (NetHelper.GetEndPointIPv4(10000, "192.168.55.116") == null)
+			{
+				Thread.Sleep(3000);
+			}
+			NoConnection = false;
+			RaisePropertyChanged("NoConnection");
 		}
 
 		public void StartThreads()
 		{
-			while (NetHelper.GetEndPointIPv4(10000) == null)
-			{
-				Thread.Sleep(3000);
-			}
+			
 			controller = new IpBroadcaster(broadcasterPort);
 			ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
 			ipBroadcaster.Start();
