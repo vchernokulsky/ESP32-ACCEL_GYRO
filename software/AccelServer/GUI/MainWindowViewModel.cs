@@ -22,15 +22,19 @@ namespace GUI
         {
             accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 
-            OnContentRendered = new DelegateCommand(() => accelServer.CheckConnection());
+            OnContentRendered = new DelegateCommand(() => accelServer.RunServer());
 
             OnStartClicked = new DelegateCommand(() => accelServer.StartReceiving());
             OnStopClicked = new DelegateCommand(() => accelServer.StopReceiving());
+            OnClosing = new DelegateCommand<object>(obj => accelServer.StopServer());
         }
+
+      
 
         public DelegateCommand OnContentRendered { get; }
         public DelegateCommand OnStartClicked { get; }
         public DelegateCommand OnStopClicked { get; }
+        public DelegateCommand<object> OnClosing { get; }
 
         public bool NoConnection => accelServer.NoConnection;
         public bool StopEnabled => DataReceiver.running;

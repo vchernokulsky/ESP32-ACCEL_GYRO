@@ -66,7 +66,7 @@ namespace AccelServer
 		}
 
 		public void StartListening() {
-			var localEndPoint = NetHelper.GetEndPointIPv4(9875);
+			var localEndPoint = NetHelper.GetEndPointIPv4(9875, "192.168.55.116");
 			// Create a TCP/IP socket.
 			Socket listener = new Socket(AddressFamily.InterNetwork,
 				SocketType.Stream, ProtocolType.Tcp );

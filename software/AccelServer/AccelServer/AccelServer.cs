@@ -10,7 +10,6 @@ namespace AccelServer
 		private IpBroadcaster controller;
 		private DeviceSynchronizer devSync;
 
-		private Thread main;
 		private Thread chkConn;
 		private Thread ipBroadcaster;
 		private Thread synchronizer;
@@ -35,9 +34,10 @@ namespace AccelServer
 			RaisePropertyChanged("NoConnection");
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
+			StartThreads();
 		}
 
-		public void CheckConnection()
+		public void RunServer()
 		{
 			chkConn = ipBroadcaster = new Thread(new ThreadStart(_CheckConnection));
 			chkConn.Start();
@@ -80,13 +80,14 @@ namespace AccelServer
 			}
 		}
 
-		public void FinishThreads()
+		public void StopServer()
 		{
 			Console.WriteLine ("finishing...");
 
-			StopThread(main);
+			StopThread(chkConn);
 			StopThread(ipBroadcaster);
-			devSync.FinishReceiving ();
+			if(devSync != null)
+				devSync.FinishReceiving ();
 			StopThread(synchronizer);
 	
 			Console.WriteLine ("finised");

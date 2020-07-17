@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-        Closing="DataWindow_Closing"  
+      
     >
     <Window.DataContext>
         <local:MainWindowViewModel/>
@@ -24,7 +24,11 @@
         <i:EventTrigger EventName="ContentRendered" >
             <i:InvokeCommandAction Command="{Binding OnContentRendered}"/>
         </i:EventTrigger>
+        <i:EventTrigger EventName="Closing" >
+            <i:InvokeCommandAction Command="{Binding OnClosing}" CommandParameter="{Binding}"/>
+        </i:EventTrigger>
     </i:Interaction.Triggers>
+    
 
     <Grid>
         <Label x:Name="lblWifiCon" Background="Red" Content="Нет соединения с WiFi-сетью" HorizontalAlignment="Left" Margin="254, 100, 0,0" VerticalAlignment="Top"  Visibility="{Binding Path=NoConnection, Converter={StaticResource BoolToVisConverter}}"/>

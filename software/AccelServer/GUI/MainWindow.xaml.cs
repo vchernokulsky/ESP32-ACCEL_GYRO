@@ -31,12 +31,5 @@ namespace GUI
            
         }
 
-      
-  
-        void DataWindow_Closing(object sender, CancelEventArgs e)
-        {
-            //Accel.FinishThreads();
-            Console.WriteLine("!!!EXIT!!!");
-        }
     }
 }
