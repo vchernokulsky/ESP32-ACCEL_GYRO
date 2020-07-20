@@ -26,9 +26,8 @@ namespace AccelServer
 
 		public void SetPropetyRaise()
 		{
-			devSync.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName);
-		};
-}
+			devSync.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+		}
 
 		public bool isSynchronized(int key)
 		{
@@ -38,7 +37,16 @@ namespace AccelServer
 			}
 			return false;
 		}
-		
+
+		public bool isReceiving(int key)
+		{
+			if (devSync != null && devSync.deviceList != null && devSync.deviceList.ContainsKey(key) && devSync.deviceList[key].dt_recv.gettingData)
+			{
+				return true;
+			}
+			return false;
+		}
+
 		private void _CheckConnection()
 		{
 			RaisePropertyChanged("StartEnabled");

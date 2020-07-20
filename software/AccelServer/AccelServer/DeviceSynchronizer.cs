@@ -158,7 +158,9 @@ namespace AccelServer
 						info.Port = cur_device_port++;
 						info.SyncTime = cur_time;
 
+						
 						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port, info.SyncTime, info.SyncTicks);
+						info.dt_recv.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
 						dataRcvList.Add(data_receiver);
 
@@ -167,8 +169,8 @@ namespace AccelServer
 						deviceList[info.Id].data_receiver.Start();
 
 						
-
-						RaisePropertyChanged("DeviceColor1");
+						
+						RaisePropertyChanged(String.Concat("DeviceColor",info.Id.ToString()));
 
 						PortInfo portInfo = new PortInfo(info.Port);
 						String output = JsonConvert.SerializeObject(portInfo);

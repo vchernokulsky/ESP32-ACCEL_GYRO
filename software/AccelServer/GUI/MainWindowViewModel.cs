@@ -18,6 +18,7 @@ namespace GUI
     class MainWindowViewModel: BindableBase
     {
         private AccelServer.AccelServer accelServer = new AccelServer.AccelServer(15000);
+
         private DeviseStatus Device1;
         private DeviseStatus Device2;
         private DeviseStatus Device3;
@@ -29,7 +30,7 @@ namespace GUI
         {
             accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             accelServer.SetPropetyRaise();
-       
+
 
             OnContentRendered = new DelegateCommand(() => accelServer.RunServer());
 
@@ -37,6 +38,7 @@ namespace GUI
             OnStopClicked = new DelegateCommand(() => accelServer.StopReceiving());
             OnClosing = new DelegateCommand<object>(obj => accelServer.StopServer());
 
+            
 
             Device1 = new DeviseStatus(1, accelServer) { Title = "Устройство №1" };
             Device2 = new DeviseStatus(2, accelServer) { Title = "Устройство №2" };
@@ -45,7 +47,8 @@ namespace GUI
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
 
-            
+
+
         }
 
       

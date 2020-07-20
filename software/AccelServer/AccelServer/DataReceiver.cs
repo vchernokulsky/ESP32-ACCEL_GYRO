@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;  
 using System.Text; 
 using System.Collections.Generic;
+using Prism.Mvvm;
 
 namespace AccelServer
 {
@@ -18,8 +19,10 @@ namespace AccelServer
 	}
 
 
-	public class DataReceiver
+	public class DataReceiver: BindableBase
 	{
+		public bool gettingData = false;
+
 		public static bool running = false;
 		private List<ReceivedObject> byteList;
 
@@ -66,14 +69,23 @@ namespace AccelServer
 						bytesRec = handler.Receive(bytes);
 						totalRecv += bytesRec;
 						byteList.Add(new ReceivedObject(bytesRec, bytes));
+                        if (!gettingData)
+                        {
+							gettingData = true;
+							RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+						}
 						Console.WriteLine( "Received {0} bytes", bytesRec);
 						Console.WriteLine( "TOTAL RECEIVED {0} bytes", totalRecv);
 					}
 						
 					handler.Shutdown(SocketShutdown.Both);
 					handler.Close();
-
-					if(byteList.Count > 0)
+					if (gettingData)
+					{
+						gettingData = false;
+						RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+					}
+					if (byteList.Count > 0)
 					{
 						Console.WriteLine( "byteList len {0} ", byteList.Count);
 						ProcessData();
@@ -85,6 +97,11 @@ namespace AccelServer
 			}
 			catch(Exception ex)
 			{
+				if (gettingData)
+				{
+					gettingData = false;
+					RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+				}
 				Console.WriteLine(ex.Message);
 			}
 		}

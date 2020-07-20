@@ -40,7 +40,12 @@ namespace GUI
 
 
         public Brush GetColor()
+
         {
+            if (accelServer.isReceiving(id))
+            {
+                return colors[(int)States.DataReceiving];
+            }
             if (accelServer.isSynchronized(id))
             {
                 return colors[(int)States.Synchronized];
@@ -50,7 +55,7 @@ namespace GUI
         }
 
 
-
+        //public String Title => title;
         public Brush StatusColor => GetColor();
 
     }
