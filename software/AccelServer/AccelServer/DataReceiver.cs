@@ -45,7 +45,7 @@ namespace AccelServer
 
 		public void StartListening()
 		{
-			IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port, "192.168.55.116");
+			IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
 			Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 			try

@@ -43,7 +43,7 @@ namespace AccelServer
 		{
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
-			while (NetHelper.GetEndPointIPv4(10000, "192.168.55.116") == null)
+			while (NetHelper.GetEndPointIPv4(10000) == null)
 			{
 				Thread.Sleep(3000);
 			}
