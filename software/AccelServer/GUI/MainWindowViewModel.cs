@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Input;
 using System.Windows.Media;
 using AccelServer;
@@ -47,11 +48,25 @@ namespace GUI
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
 
+            _data = new ObservableCollection<KeyValuePair<string, int>>();
+            _data.Add(new KeyValuePair<string, int>("Dog", 30));
+            _data.Add(new KeyValuePair<string, int>("Cat", 25));
+            _data.Add(new KeyValuePair<string, int>("Rat", 5));
+            _data.Add(new KeyValuePair<string, int>("Hampster", 8));
+            _data.Add(new KeyValuePair<string, int>("Rabbit", 12));
+
 
 
         }
 
-      
+        private ObservableCollection<KeyValuePair<string, int>> _data;
+        public ObservableCollection<KeyValuePair<string, int>> data
+        {
+            get { return _data; }
+        }
+
+
+
 
         public DelegateCommand OnContentRendered { get; }
         public DelegateCommand OnStartClicked { get; }
