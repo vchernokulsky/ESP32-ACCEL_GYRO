@@ -48,21 +48,16 @@ namespace GUI
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
 
-            _data = new ObservableCollection<KeyValuePair<string, int>>();
-            _data.Add(new KeyValuePair<string, int>("Dog", 30));
-            _data.Add(new KeyValuePair<string, int>("Cat", 25));
-            _data.Add(new KeyValuePair<string, int>("Rat", 5));
-            _data.Add(new KeyValuePair<string, int>("Hampster", 8));
-            _data.Add(new KeyValuePair<string, int>("Rabbit", 12));
+           
 
 
 
         }
 
-        private ObservableCollection<KeyValuePair<string, int>> _data;
-        public ObservableCollection<KeyValuePair<string, int>> data
+        //private ObservableCollection<KeyValuePair<string, int>> _data;
+        public ObservableCollection<KeyValuePair<string, float>> data
         {
-            get { return _data; }
+            get { return accelServer.data; }
         }
 
 

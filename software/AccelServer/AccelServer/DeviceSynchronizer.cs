@@ -6,10 +6,15 @@ using System.Threading;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Prism.Mvvm;
+using System.Collections.ObjectModel;
+using static System.Net.Mime.MediaTypeNames;
+using Prism;
+using Prism.Events;
 
 namespace AccelServer
 {
 
+	
 	public class StateObject {
 		// Client  socket.
 		public Socket workSocket = null;
@@ -54,9 +59,47 @@ namespace AccelServer
 		public Dictionary<int, DeviceInfo> deviceList = new Dictionary<int, DeviceInfo>();
 		public int cur_device_port = 10000;
 
+		private int count = 0;
+
+		private ObservableCollection<KeyValuePair<string, float>> _data;
+		public ObservableCollection<KeyValuePair<string, float>> data => Message();
+		public delegate void MethodContainer();
+
+		//Событие OnCount c типом делегата MethodContainer.
+		
+
 		public DeviceSynchronizer() {
 			dataRcvList = new List<Thread> ();
+			
 		}
+
+		public ObservableCollection<KeyValuePair<string, float>> Message()
+		{
+			
+
+			_data = new ObservableCollection<KeyValuePair<string, float>>();
+			if(deviceList != null && deviceList.ContainsKey(1))
+            {
+				if(deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList!= null && deviceList[1].dt_recv.agList.agList!= null)
+                {
+					foreach(Accelerometer acc in deviceList[1].dt_recv.agList.agList)
+                    {
+						String key = acc.Time.ToString("MM/dd/yy H:mm:ss fff");
+						float val = acc.AcX;
+						_data.Add(new KeyValuePair<string, float>(key, val));
+					}
+                }
+            }
+			return _data;
+			//if (count > 0) {
+			//_data.Add(new KeyValuePair<string, int>("Dog", 30));
+			//_data.Add(new KeyValuePair<string, int>("Cat", 25));
+			//_data.Add(new KeyValuePair<string, int>("Rat", 5));
+			//_data.Add(new KeyValuePair<string, int>("Hampster", 8));
+			//_data.Add(new KeyValuePair<string, int>("Rabbit", 12));
+		}
+			
+		
 
 		public void FinishReceiving()
 		{
@@ -158,7 +201,9 @@ namespace AccelServer
 						info.Port = cur_device_port++;
 						info.SyncTime = cur_time;
 
+
 						
+
 						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port, info.SyncTime, info.SyncTicks);
 						info.dt_recv.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
@@ -168,7 +213,7 @@ namespace AccelServer
 						deviceList.Add(info.Id, info);
 						deviceList[info.Id].data_receiver.Start();
 
-						
+						count++;
 						
 						RaisePropertyChanged(String.Concat("DeviceColor",info.Id.ToString()));
 

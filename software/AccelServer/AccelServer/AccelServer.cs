@@ -1,5 +1,7 @@
 ﻿using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 
 namespace AccelServer
@@ -15,13 +17,22 @@ namespace AccelServer
 		private Thread synchronizer;
 
 		public bool NoConnection = true;
+        public ObservableCollection<KeyValuePair<string, float>> data
+        {
+            get
+            {
+                return devSync.data;
+            }
+        }
 
 
-		public AccelServer(int broadcasterPort)
+        public AccelServer(int broadcasterPort)
 		{
 			this.broadcasterPort = broadcasterPort;
 			controller = new IpBroadcaster(broadcasterPort);
 			devSync = new DeviceSynchronizer();
+			
+			
 		}
 
 		public void SetPropetyRaise()
@@ -49,6 +60,7 @@ namespace AccelServer
 
 		private void _CheckConnection()
 		{
+			
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
 			while (NetHelper.GetEndPointIPv4(10000) == null)

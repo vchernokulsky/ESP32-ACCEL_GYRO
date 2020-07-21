@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text; 
 using System.Collections.Generic;
 using Prism.Mvvm;
+using System.Collections.ObjectModel;
 
 namespace AccelServer
 {
@@ -22,6 +23,7 @@ namespace AccelServer
 	public class DataReceiver: BindableBase
 	{
 		public bool gettingData = false;
+		
 
 		public static bool running = false;
 		private List<ReceivedObject> byteList;
@@ -34,6 +36,7 @@ namespace AccelServer
 
 		private int port;
 		private int totalRecv;
+		public AccGyroList agList;
 
 		public DataReceiver (int id, int type, int port, DateTime sync_time, int sync_ticks)
 		{
@@ -43,6 +46,7 @@ namespace AccelServer
 			this.port = port;
 			this.sync_time = sync_time;
 			this.sync_ticks = sync_ticks;
+			
 		}
 			
 
@@ -112,7 +116,7 @@ namespace AccelServer
 			byte[] bytes = new byte[18];
 			int cur_len = 0;
 			int package_cnt = 0;
-			AccGyroList agList = new AccGyroList (id, sync_time, sync_ticks);
+			agList = new AccGyroList (id, sync_time, sync_ticks);
 			foreach (ReceivedObject recv in byteList) 
 			{
 				int bytes_proceed = 0;
@@ -126,12 +130,14 @@ namespace AccelServer
 					{
 						Console.WriteLine( "found {0} packages", ++package_cnt);
 						agList.put (bytes);
+						
 						cur_len = 0;
 					}
 
 				}
 
 			}
+			RaisePropertyChanged("data");
 			Console.WriteLine (agList.agList.Count);
 		}
 
