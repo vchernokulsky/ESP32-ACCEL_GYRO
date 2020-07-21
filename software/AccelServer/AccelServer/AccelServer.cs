@@ -25,8 +25,23 @@ namespace AccelServer
             }
         }
 
+		public ObservableCollection<KeyValuePair<string, float>> data2
+		{
+			get
+			{
+				return devSync.data2;
+			}
+		}
 
-        public AccelServer(int broadcasterPort)
+		public ObservableCollection<KeyValuePair<string, float>> data3
+		{
+			get
+			{
+				return devSync.data3;
+			}
+		}
+
+		public AccelServer(int broadcasterPort)
 		{
 			this.broadcasterPort = broadcasterPort;
 			controller = new IpBroadcaster(broadcasterPort);

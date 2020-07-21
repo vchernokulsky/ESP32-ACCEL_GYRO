@@ -138,6 +138,8 @@ namespace AccelServer
 
 			}
 			RaisePropertyChanged("data");
+			RaisePropertyChanged("data2");
+			RaisePropertyChanged("data3");
 			Console.WriteLine (agList.agList.Count);
 		}
 

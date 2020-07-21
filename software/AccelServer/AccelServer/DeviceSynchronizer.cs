@@ -63,10 +63,17 @@ namespace AccelServer
 
 		private ObservableCollection<KeyValuePair<string, float>> _data;
 		public ObservableCollection<KeyValuePair<string, float>> data => Message();
-		public delegate void MethodContainer();
+
+		private ObservableCollection<KeyValuePair<string, float>> _data2;
+		public ObservableCollection<KeyValuePair<string, float>> data2 => Message2();
+
+		private ObservableCollection<KeyValuePair<string, float>> _data3;
+		public ObservableCollection<KeyValuePair<string, float>> data3 => Message3();
+
+
 
 		//Событие OnCount c типом делегата MethodContainer.
-		
+
 
 		public DeviceSynchronizer() {
 			dataRcvList = new List<Thread> ();
@@ -82,24 +89,69 @@ namespace AccelServer
             {
 				if(deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList!= null && deviceList[1].dt_recv.agList.agList!= null)
                 {
+					int points = 200;
 					foreach(Accelerometer acc in deviceList[1].dt_recv.agList.agList)
                     {
-						String key = acc.Time.ToString("MM/dd/yy H:mm:ss fff");
+						String key = acc.Time.ToString("H:mm:ss fff");
 						float val = acc.AcX;
 						_data.Add(new KeyValuePair<string, float>(key, val));
+						if (--points == 0)
+							break;
 					}
                 }
             }
 			return _data;
-			//if (count > 0) {
-			//_data.Add(new KeyValuePair<string, int>("Dog", 30));
-			//_data.Add(new KeyValuePair<string, int>("Cat", 25));
-			//_data.Add(new KeyValuePair<string, int>("Rat", 5));
-			//_data.Add(new KeyValuePair<string, int>("Hampster", 8));
-			//_data.Add(new KeyValuePair<string, int>("Rabbit", 12));
-		}
 			
-		
+		}
+
+		public ObservableCollection<KeyValuePair<string, float>> Message2()
+		{
+
+
+			_data2 = new ObservableCollection<KeyValuePair<string, float>>();
+			if (deviceList != null && deviceList.ContainsKey(1))
+			{
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				{
+					int points = 200;
+					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
+					{
+						String key = acc.Time.ToString("H:mm:ss fff");
+						float val = acc.AcY;
+						_data2.Add(new KeyValuePair<string, float>(key, val));
+						if (--points == 0)
+							break;
+					}
+				}
+			}
+			return _data2;
+			
+		}
+
+		public ObservableCollection<KeyValuePair<string, float>> Message3()
+		{
+
+
+			_data3 = new ObservableCollection<KeyValuePair<string, float>>();
+			if (deviceList != null && deviceList.ContainsKey(1))
+			{
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				{
+					int points = 200;
+					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
+					{
+						String key = acc.Time.ToString("H:mm:ss fff");
+						float val = acc.AcZ;
+						_data3.Add(new KeyValuePair<string, float>(key, val));
+						if (--points == 0)
+							break;
+					}
+				}
+			}
+			return _data3;
+
+		}
+
 
 		public void FinishReceiving()
 		{

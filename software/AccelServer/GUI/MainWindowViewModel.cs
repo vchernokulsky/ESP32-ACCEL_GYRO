@@ -60,7 +60,14 @@ namespace GUI
             get { return accelServer.data; }
         }
 
-
+        public ObservableCollection<KeyValuePair<string, float>> data2
+        {
+            get { return accelServer.data2; }
+        }
+        public ObservableCollection<KeyValuePair<string, float>> data3
+        {
+            get { return accelServer.data3; }
+        }
 
 
         public DelegateCommand OnContentRendered { get; }
