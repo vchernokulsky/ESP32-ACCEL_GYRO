@@ -61,6 +61,12 @@ namespace AccelServer
 
 		private int count = 0;
 
+		private string[] _labels;
+		public string[] Labels => GetLabels();
+
+		
+		
+
 		private ObservableCollection<KeyValuePair<string, float>> _data;
 		public ObservableCollection<KeyValuePair<string, float>> data => Message();
 
@@ -70,6 +76,12 @@ namespace AccelServer
 		private ObservableCollection<KeyValuePair<string, float>> _data3;
 		public ObservableCollection<KeyValuePair<string, float>> data3 => Message3();
 
+		public List<float> AccX => GetAccX();
+		public List<float> AccY => GetAccY();
+		public List<float> AccZ => GetAccZ();
+
+		
+
 
 
 		//Событие OnCount c типом делегата MethodContainer.
@@ -78,6 +90,93 @@ namespace AccelServer
 		public DeviceSynchronizer() {
 			dataRcvList = new List<Thread> ();
 			
+		}
+
+		public string[] GetLabels()
+		{
+			_labels = new string[0];
+			if (deviceList != null && deviceList.ContainsKey(1))
+			{
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				{
+				
+					int size = deviceList[1].dt_recv.agList.agList.Count;
+					_labels = new string[size];
+					int i = 0;
+					
+					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
+					{
+						string key = acc.Time.ToString("H:mm:ss fff");
+						_labels[i++] = key;
+						
+					}
+				}
+			}
+			return _labels;
+
+		}
+
+		private List<float> GetAccX()
+		{
+			List<float> list = new List<float>();
+			if (deviceList != null && deviceList.ContainsKey(1))
+			{
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				{
+					
+					int size = deviceList[1].dt_recv.agList.agList.Count;
+					int i = 0;
+
+					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
+					{
+						list.Add(acc.AcX);
+						
+					}
+				}
+			}
+			return list;
+		}
+
+		private List<float> GetAccZ()
+		{
+			List<float> list = new List<float>();
+			if (deviceList != null && deviceList.ContainsKey(1))
+			{
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				{
+
+					int size = deviceList[1].dt_recv.agList.agList.Count;
+					int i = 0;
+
+					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
+					{
+						list.Add(acc.AcZ);
+
+					}
+				}
+			}
+			return list;
+		}
+
+		private List<float> GetAccY()
+		{
+			List<float> list = new List<float>();
+			if (deviceList != null && deviceList.ContainsKey(1))
+			{
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				{
+
+					int size = deviceList[1].dt_recv.agList.agList.Count;
+					int i = 0;
+
+					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
+					{
+						list.Add(acc.AcY);
+
+					}
+				}
+			}
+			return list;
 		}
 
 		public ObservableCollection<KeyValuePair<string, float>> Message()

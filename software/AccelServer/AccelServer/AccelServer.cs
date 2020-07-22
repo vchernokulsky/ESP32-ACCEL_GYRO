@@ -17,7 +17,39 @@ namespace AccelServer
 		private Thread synchronizer;
 
 		public bool NoConnection = true;
-        public ObservableCollection<KeyValuePair<string, float>> data
+		public string[] Labels
+		{
+			get
+			{
+				return devSync.Labels;
+			}
+		}
+
+		public List<float> AccX
+		{
+			get
+			{
+				return devSync.AccX;
+			}
+		}
+
+		public List<float> AccY
+		{
+			get
+			{
+				return devSync.AccY;
+			}
+		}
+
+		public List<float> AccZ
+		{
+			get
+			{
+				return devSync.AccZ;
+			}
+		}
+
+		public ObservableCollection<KeyValuePair<string, float>> data
         {
             get
             {

@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Controls.DataVisualization.Charting;
-using System.Windows.Input;
 using System.Windows.Media;
 using AccelServer;
+using LiveCharts;
+using LiveCharts.Wpf;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -48,13 +43,66 @@ namespace GUI
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
 
-           
+            YFormatter = value => value.ToString();
 
 
 
         }
+        private SeriesCollection GetSeriesCollection()
+        {
+            return new SeriesCollection
+            {
+                AccXSeria, AccYSeria, AccZSeria
+            };
+        }
 
         //private ObservableCollection<KeyValuePair<string, int>> _data;
+        public string[] Labels
+        {
+            get { return accelServer.Labels; }
+        }
+        public Func<float, string> YFormatter { get; set; }
+
+        public LineSeries AccXSeria => GetAccX();
+
+        private LineSeries GetAccX()
+        {
+            return new LineSeries
+            {
+                Title = "AccX",
+                Values = new ChartValues<float>(accelServer.AccX)
+                
+            };
+        }
+
+        public LineSeries AccYSeria => GetAccY();
+
+        private LineSeries GetAccY()
+        {
+            return new LineSeries
+            {
+                Title = "AccY",
+                Values = new ChartValues<float>(accelServer.AccY)
+
+            };
+        }
+
+        public LineSeries AccZSeria => GetAccZ();
+
+        private LineSeries GetAccZ()
+        {
+            return new LineSeries
+            {
+                Title = "AccZ",
+                Values = new ChartValues<float>(accelServer.AccZ)
+
+            };
+        }
+
+        public SeriesCollection SeriesCollection => GetSeriesCollection();
+
+        
+
         public ObservableCollection<KeyValuePair<string, float>> data
         {
             get { return accelServer.data; }

@@ -8,7 +8,7 @@ namespace AccelServer
 	internal static class NetHelper
     {
 		
-        public static IPEndPoint GetEndPointIPv4(int port, string ipAddr=null)
+        public static IPEndPoint GetEndPointIPv4(int port, string ipAddr="192.168.55.116")
 		{
 			IPEndPoint localEndPoint = null;
 			IPAddress address = null;
