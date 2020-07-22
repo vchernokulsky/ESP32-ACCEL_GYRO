@@ -36,7 +36,7 @@ namespace AccelServer
 
 		private int port;
 		private int totalRecv;
-		public AccGyroList agList;
+		public IMUDataList agList;
 
 		public DataReceiver (int id, int type, int port, DateTime sync_time, int sync_ticks)
 		{
@@ -49,7 +49,6 @@ namespace AccelServer
 			
 		}
 			
-
 		public void StartListening()
 		{
 			IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
@@ -116,7 +115,7 @@ namespace AccelServer
 			byte[] bytes = new byte[18];
 			int cur_len = 0;
 			int package_cnt = 0;
-			agList = new AccGyroList (id, sync_time, sync_ticks);
+			agList = new IMUDataList (id, sync_time, sync_ticks);
 			foreach (ReceivedObject recv in byteList) 
 			{
 				int bytes_proceed = 0;
@@ -129,7 +128,7 @@ namespace AccelServer
 					if(cur_len == package_size)
 					{
 						Console.WriteLine( "found {0} packages", ++package_cnt);
-						agList.put (bytes);
+						agList.PutBytes (bytes);
 						
 						cur_len = 0;
 					}
@@ -139,9 +138,6 @@ namespace AccelServer
 			}
 			RaisePropertyChanged("Labels");
 			RaisePropertyChanged("SeriesCollection");
-			//RaisePropertyChanged("data");
-			//RaisePropertyChanged("data2");
-			//RaisePropertyChanged("data3");
 			Console.WriteLine (agList.agList.Count);
 		}
 

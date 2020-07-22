@@ -61,196 +61,62 @@ namespace AccelServer
 
 		private int count = 0;
 
-		private string[] _labels;
-		public string[] Labels => GetLabels();
-
-		
-		
-
-		private ObservableCollection<KeyValuePair<string, float>> _data;
-		public ObservableCollection<KeyValuePair<string, float>> data => Message();
-
-		private ObservableCollection<KeyValuePair<string, float>> _data2;
-		public ObservableCollection<KeyValuePair<string, float>> data2 => Message2();
-
-		private ObservableCollection<KeyValuePair<string, float>> _data3;
-		public ObservableCollection<KeyValuePair<string, float>> data3 => Message3();
-
-		public List<float> AccX => GetAccX();
-		public List<float> AccY => GetAccY();
-		public List<float> AccZ => GetAccZ();
-
-		
-
-
-
-		//Событие OnCount c типом делегата MethodContainer.
-
+		public IList<string> Labels => GetLabels();
+		public IList<float> AccX => GetXAxisAccelerations();
+		public IList<float> AccY => GetYAxisAccelerations();
+		public IList<float> AccZ => GetZAxisAccelerations();
 
 		public DeviceSynchronizer() {
 			dataRcvList = new List<Thread> ();
 			
 		}
 
-		public string[] GetLabels()
+		public IList<string> GetLabels()
 		{
-			_labels = new string[0];
 			if (deviceList != null && deviceList.ContainsKey(1))
 			{
-				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null)
 				{
-				
-					int size = deviceList[1].dt_recv.agList.agList.Count;
-					_labels = new string[size];
-					int i = 0;
-					
-					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
-					{
-						string key = acc.Time.ToString("H:mm:ss fff");
-						_labels[i++] = key;
-						
-					}
+					return deviceList[1].dt_recv.agList.TimeStamps;
 				}
 			}
-			return _labels;
-
+			return new List<string>();
 		}
 
-		private List<float> GetAccX()
+		public IList<float> GetXAxisAccelerations()
 		{
-			List<float> list = new List<float>();
 			if (deviceList != null && deviceList.ContainsKey(1))
 			{
-				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null)
 				{
-					
-					int size = deviceList[1].dt_recv.agList.agList.Count;
-					int i = 0;
-
-					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
-					{
-						list.Add(acc.AcX);
-						
-					}
+					return deviceList[1].dt_recv.agList.AxisXAccelerations;
 				}
 			}
-			return list;
+			return new List<float>();
 		}
-
-		private List<float> GetAccZ()
+		public IList<float> GetYAxisAccelerations()
 		{
-			List<float> list = new List<float>();
 			if (deviceList != null && deviceList.ContainsKey(1))
 			{
-				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null)
 				{
-
-					int size = deviceList[1].dt_recv.agList.agList.Count;
-					int i = 0;
-
-					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
-					{
-						list.Add(acc.AcZ);
-
-					}
+					return deviceList[1].dt_recv.agList.AxisYAccelerations;
 				}
 			}
-			return list;
+			return new List<float>();
 		}
 
-		private List<float> GetAccY()
+		public IList<float> GetZAxisAccelerations()
 		{
-			List<float> list = new List<float>();
 			if (deviceList != null && deviceList.ContainsKey(1))
 			{
-				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
+				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null)
 				{
-
-					int size = deviceList[1].dt_recv.agList.agList.Count;
-					int i = 0;
-
-					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
-					{
-						list.Add(acc.AcY);
-
-					}
+					return deviceList[1].dt_recv.agList.AxisZAccelerations;
 				}
 			}
-			return list;
+			return new List<float>();
 		}
-
-		public ObservableCollection<KeyValuePair<string, float>> Message()
-		{
-			
-
-			_data = new ObservableCollection<KeyValuePair<string, float>>();
-			if(deviceList != null && deviceList.ContainsKey(1))
-            {
-				if(deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList!= null && deviceList[1].dt_recv.agList.agList!= null)
-                {
-					int points = 200;
-					foreach(Accelerometer acc in deviceList[1].dt_recv.agList.agList)
-                    {
-						String key = acc.Time.ToString("H:mm:ss fff");
-						float val = acc.AcX;
-						_data.Add(new KeyValuePair<string, float>(key, val));
-						if (--points == 0)
-							break;
-					}
-                }
-            }
-			return _data;
-			
-		}
-
-		public ObservableCollection<KeyValuePair<string, float>> Message2()
-		{
-
-
-			_data2 = new ObservableCollection<KeyValuePair<string, float>>();
-			if (deviceList != null && deviceList.ContainsKey(1))
-			{
-				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
-				{
-					int points = 200;
-					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
-					{
-						String key = acc.Time.ToString("H:mm:ss fff");
-						float val = acc.AcY;
-						_data2.Add(new KeyValuePair<string, float>(key, val));
-						if (--points == 0)
-							break;
-					}
-				}
-			}
-			return _data2;
-			
-		}
-
-		public ObservableCollection<KeyValuePair<string, float>> Message3()
-		{
-
-
-			_data3 = new ObservableCollection<KeyValuePair<string, float>>();
-			if (deviceList != null && deviceList.ContainsKey(1))
-			{
-				if (deviceList[1].dt_recv != null && deviceList[1].dt_recv.agList != null && deviceList[1].dt_recv.agList.agList != null)
-				{
-					int points = 200;
-					foreach (Accelerometer acc in deviceList[1].dt_recv.agList.agList)
-					{
-						String key = acc.Time.ToString("H:mm:ss fff");
-						float val = acc.AcZ;
-						_data3.Add(new KeyValuePair<string, float>(key, val));
-						if (--points == 0)
-							break;
-					}
-				}
-			}
-			return _data3;
-
-		}
-
 
 		public void FinishReceiving()
 		{
@@ -336,7 +202,6 @@ namespace AccelServer
 
 				try
 				{
-					//JObject json = JObject.Parse(content);
 					DeviceInfo info = JsonConvert.DeserializeObject<DeviceInfo>(content);
 
 					mut.WaitOne();
@@ -352,9 +217,6 @@ namespace AccelServer
 						info.Port = cur_device_port++;
 						info.SyncTime = cur_time;
 
-
-						
-
 						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port, info.SyncTime, info.SyncTicks);
 						info.dt_recv.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
@@ -364,8 +226,6 @@ namespace AccelServer
 						deviceList.Add(info.Id, info);
 						deviceList[info.Id].data_receiver.Start();
 
-						count++;
-						
 						RaisePropertyChanged(String.Concat("DeviceColor",info.Id.ToString()));
 
 						PortInfo portInfo = new PortInfo(info.Port);

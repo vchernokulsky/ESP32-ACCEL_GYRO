@@ -83,7 +83,7 @@
     <Compile Include="IpBroadcaster.cs" />
     <Compile Include="DeviceSynchronizer.cs" />
     <Compile Include="DataReceiver.cs" />
-    <Compile Include="Accelerometer.cs" />
+    <Compile Include="IMUData.cs" />
     <Compile Include="AccelServer.cs" />
     <Compile Include="MpuCalibraion.cs" />
   </ItemGroup>

@@ -57,14 +57,14 @@ namespace GUI
         }
 
         //private ObservableCollection<KeyValuePair<string, int>> _data;
-        public string[] Labels
+
+        public Func<float, string> YFormatter { get; set; }
+
+
+        public List<string> Labels
         {
             get { return accelServer.Labels; }
         }
-        public Func<float, string> YFormatter { get; set; }
-
-        public LineSeries AccXSeria => GetAccX();
-
         private LineSeries GetAccX()
         {
             return new LineSeries
@@ -74,9 +74,6 @@ namespace GUI
                 
             };
         }
-
-        public LineSeries AccYSeria => GetAccY();
-
         private LineSeries GetAccY()
         {
             return new LineSeries
@@ -86,9 +83,6 @@ namespace GUI
 
             };
         }
-
-        public LineSeries AccZSeria => GetAccZ();
-
         private LineSeries GetAccZ()
         {
             return new LineSeries
@@ -99,25 +93,11 @@ namespace GUI
             };
         }
 
+        public LineSeries AccXSeria => GetAccX();
+        public LineSeries AccYSeria => GetAccY();
+        public LineSeries AccZSeria => GetAccZ();
         public SeriesCollection SeriesCollection => GetSeriesCollection();
-
-        
-
-        public ObservableCollection<KeyValuePair<string, float>> data
-        {
-            get { return accelServer.data; }
-        }
-
-        public ObservableCollection<KeyValuePair<string, float>> data2
-        {
-            get { return accelServer.data2; }
-        }
-        public ObservableCollection<KeyValuePair<string, float>> data3
-        {
-            get { return accelServer.data3; }
-        }
-
-
+  
         public DelegateCommand OnContentRendered { get; }
         public DelegateCommand OnStartClicked { get; }
         public DelegateCommand OnStopClicked { get; }

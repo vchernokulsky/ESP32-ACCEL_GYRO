@@ -3,8 +3,17 @@ using System.Collections.Generic;
 
 namespace AccelServer
 {
-	public class AccGyroList
+	public class IMUDataListDecorator
 	{
+
+		
+
+	}
+
+	public class IMUDataList
+	{
+		private readonly string TIME_FORMAT = "H:mm:ss fff";
+
 		private int id;
 
 		private float acc2si;
@@ -13,28 +22,53 @@ namespace AccelServer
 		private DateTime SyncTime;
 		private int SyncTicks;
 
-		public List<Accelerometer> agList;
+		public List<IMUData> agList;
 
-		public AccGyroList(int id, DateTime SyncTime, int SyncTicks, int GMAX=2, int DEGMAX = 250)
+		private readonly IList<float> _axisXAccelerations = new List<float>();
+		private readonly IList<float> _axisYAccelerations = new List<float>();
+		private readonly IList<float> _axisZAccelerations = new List<float>();
+		private readonly IList<float> _axisXAngles = new List<float>();
+		private readonly IList<float> _axisYAngles = new List<float>();
+		private readonly IList<float> _axisZAngles = new List<float>();
+		private readonly IList<string> _timeStamps = new List<string>();
+
+		public IList<float> AxisXAccelerations { get => _axisXAccelerations; }
+		public IList<float> AxisYAccelerations { get => _axisYAccelerations; }
+		public IList<float> AxisZAccelerations { get => _axisZAccelerations; }
+		public IList<float> AxisXAngles { get => _axisXAngles; }
+		public IList<float> AxisYAngles { get => _axisYAngles; }
+		public IList<float> AxisZAngles { get => _axisZAngles; }
+		public IList<string> TimeStamps { get => _timeStamps; }
+
+		public IMUDataList(int id, DateTime SyncTime, int SyncTicks, int GMAX=2, int DEGMAX = 250)
 		{
 			this.id = id;
 			this.SyncTime = SyncTime;
 			this.SyncTicks = SyncTicks;
 			acc2si = (2.0f * (float)GMAX * 9.8f) / 65536.0f;
 			gyro2si = (2.0f * (float)DEGMAX) / 65536.0f;
-			agList = new List<Accelerometer> ();
+			agList = new List<IMUData> ();
 		}
 
-		public void put(byte[] bytes)
+		public void PutBytes(byte[] bytes)
 		{
-			Accelerometer acc = new Accelerometer (id, SyncTime, SyncTicks, bytes, acc2si, gyro2si);
-			acc.WriteToConsole ();
-			agList.Add (acc);
-		}
+			IMUData data = new IMUData (id, SyncTime, SyncTicks, bytes, acc2si, gyro2si);
+			data.WriteToConsole ();
+			agList.Add (data);
 
+			_axisXAccelerations.Add(data.AcX);
+			_axisYAccelerations.Add(data.AcY);
+			_axisZAccelerations.Add(data.AcZ);
+
+			_axisXAngles.Add(data.GyX);
+			_axisYAngles.Add(data.GyY);
+			_axisZAngles.Add(data.GyZ);
+
+			_timeStamps.Add(data.Time.ToString(TIME_FORMAT));
+		}
 	}
 	
-	public class Accelerometer
+	public class IMUData
 	{
 
 		public DateTime Time;
@@ -46,11 +80,11 @@ namespace AccelServer
 		public float GyY;
 		public float GyZ;
 
-		public Accelerometer ()
+		public IMUData ()
 		{
 			
 		}
-		public Accelerometer (int id, DateTime SyncTime, int SyncTicks, byte[] bytes, float acc2si, float gyro2si)
+		public IMUData (int id, DateTime SyncTime, int SyncTicks, byte[] bytes, float acc2si, float gyro2si)
 		{
 			SetFromBytes (id, SyncTime,SyncTicks, bytes, acc2si, gyro2si);
 		}
@@ -87,9 +121,6 @@ namespace AccelServer
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
 			}
 		}
-
-	
-
 
 		public void WriteToConsole()
 		{

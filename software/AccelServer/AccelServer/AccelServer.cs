@@ -17,7 +17,7 @@ namespace AccelServer
 		private Thread synchronizer;
 
 		public bool NoConnection = true;
-		public string[] Labels
+		public IList<string> Labels
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace AccelServer
 			}
 		}
 
-		public List<float> AccX
+		public IList<float> AccX
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace AccelServer
 			}
 		}
 
-		public List<float> AccY
+		public IList<float> AccY
 		{
 			get
 			{
@@ -41,35 +41,11 @@ namespace AccelServer
 			}
 		}
 
-		public List<float> AccZ
+		public IList<float> AccZ
 		{
 			get
 			{
 				return devSync.AccZ;
-			}
-		}
-
-		public ObservableCollection<KeyValuePair<string, float>> data
-        {
-            get
-            {
-                return devSync.data;
-            }
-        }
-
-		public ObservableCollection<KeyValuePair<string, float>> data2
-		{
-			get
-			{
-				return devSync.data2;
-			}
-		}
-
-		public ObservableCollection<KeyValuePair<string, float>> data3
-		{
-			get
-			{
-				return devSync.data3;
 			}
 		}
 
@@ -78,8 +54,6 @@ namespace AccelServer
 			this.broadcasterPort = broadcasterPort;
 			controller = new IpBroadcaster(broadcasterPort);
 			devSync = new DeviceSynchronizer();
-			
-			
 		}
 
 		public void SetPropetyRaise()
@@ -130,15 +104,11 @@ namespace AccelServer
 
 		public void StartThreads()
 		{
-			
-			
 			ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
 			ipBroadcaster.Start();
-
 			
 			synchronizer = new Thread(new ThreadStart(devSync.StartListening));
 			synchronizer.Start();
-
 		}
 
 		public void StartReceiving()
