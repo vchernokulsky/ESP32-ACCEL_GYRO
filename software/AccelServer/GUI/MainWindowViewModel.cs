@@ -15,7 +15,9 @@ namespace GUI
     {
         X1=1,
         X2=2,
-        X3=3
+        X3=3,
+        X4=4,
+        X5=5
     }
 
 
@@ -30,9 +32,11 @@ namespace GUI
         private DeviseStatus Device5;
         private DeviseStatus Device6;
 
-        private int _step = 50;
         private int _from = 25;
         private int _to = 225;
+        private int _step = 150;
+
+
 
         public MainWindowViewModel()
         {
@@ -57,7 +61,7 @@ namespace GUI
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
 
-            YFormatter = value => value.ToString();
+            YFormatter = value => value.ToString("0.00");
 
 
 
@@ -154,7 +158,7 @@ namespace GUI
 
         private void UpdateRanges()
         {
-            var length = 200;
+            var length = _to - _from;
             var resample = (int)this.Resampling;
             var maxIdx = _from + length * resample;
 
@@ -189,6 +193,9 @@ namespace GUI
                 accZCV.AddRange(e);
             
             }
+
+            IsNextEnabled = DataReceiver.running | (accelServer.Labels.Count - _from - _step * resample - length * resample > 0);
+            IsPrevEnabled = _from - _step * resample > 0;
         }
 
         public Func<float, string> YFormatter { get; set; }
@@ -213,6 +220,28 @@ namespace GUI
         public bool NoConnection => accelServer.NoConnection;
         public bool StopEnabled => DataReceiver.running;
         public bool StartEnabled => (!(NoConnection || DataReceiver.running));
+
+        private bool _nextEnabled = false;
+        public bool IsNextEnabled
+        {
+            get { return _nextEnabled; }
+            set 
+            { 
+                _nextEnabled = value;
+                RaisePropertyChanged("IsNextEnabled");
+            }
+        }
+
+        private bool _prevEnabled = false;
+        public bool IsPrevEnabled
+        {
+            get { return _prevEnabled; }
+            set 
+            { 
+                _prevEnabled = value;
+                RaisePropertyChanged("IsPrevEnabled");
+            }
+        }
 
         public Brush DeviceColor1 => Device1.StatusColor;
         public Brush DeviceColor2 => Device2.StatusColor;
@@ -259,6 +288,18 @@ namespace GUI
         {
             get { return Resampling == Resampling.X3; }
             set { Resampling = value ? Resampling.X3 : Resampling; }
+        }
+
+        public bool IsResamplingX4
+        {
+            get { return Resampling == Resampling.X4; }
+            set { Resampling = value ? Resampling.X4 : Resampling; }
+        }
+
+        public bool IsResamplingX5
+        {
+            get { return Resampling == Resampling.X5; }
+            set { Resampling = value ? Resampling.X5 : Resampling; }
         }
     }
 }

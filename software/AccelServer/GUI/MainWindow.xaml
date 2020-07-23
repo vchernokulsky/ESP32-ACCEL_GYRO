@@ -69,27 +69,29 @@
             </StackPanel>
         </GroupBox>
             
-            <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
-            <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
+            <Button x:Name="btnStart" Content="Старт" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
+            <Button x:Name="btnStop" Content="Стоп" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
 
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal"  HorizontalAlignment="Left" VerticalAlignment="Bottom">
-            <Button Height="25" Width="75" Margin="20, 0, 10, 0" Command="{Binding OnPrevClick}">Prev</Button>
-            <Button Height="25" Width="75"  Command="{Binding OnNextClick}">Next</Button>
+            <Button Height="25" Width="75" Margin="20, 0, 10, 0" IsEnabled="{Binding IsPrevEnabled}" Command="{Binding OnPrevClick}">Назад</Button>
+            <Button Height="25" Width="75"  IsEnabled="{Binding IsNextEnabled}" Command="{Binding OnNextClick}">Вперед</Button>
             <GroupBox Header="Дискретизация" Margin="15">
-                <StackPanel>
+                <StackPanel  Orientation="Horizontal">
                     <RadioButton Content="1" IsChecked="{Binding IsResamplingX1}" Margin="3"/>
                     <RadioButton Content="2" IsChecked="{Binding IsResamplingX2}" Margin="3"/>
                     <RadioButton Content="3" IsChecked="{Binding IsResamplingX3}" Margin="3"/>
+                    <RadioButton Content="4" IsChecked="{Binding IsResamplingX4}" Margin="3"/>
+                    <RadioButton Content="5" IsChecked="{Binding IsResamplingX5}" Margin="3"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
 
         <StackPanel Grid.Row="3" Orientation="Vertical"  HorizontalAlignment="Stretch" VerticalAlignment="Top">
-            <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Height="500" HorizontalAlignment="Stretch" >
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="m/s^2" ></lvc:Axis>
+            <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Height="500" HorizontalAlignment="Stretch">
+                <lvc:CartesianChart.AxisY >
+                    <lvc:Axis Title="m/s^2" LabelFormatter="{Binding YFormatter}" ></lvc:Axis>
                 </lvc:CartesianChart.AxisY>
                 <lvc:CartesianChart.AxisX>
                     <lvc:Axis  Title="Time"  Labels="{Binding Labels}"></lvc:Axis>

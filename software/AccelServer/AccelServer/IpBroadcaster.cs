@@ -29,10 +29,11 @@ namespace AccelServer
 					udpClient.Send(data, data.Length, "255.255.255.255", port);
 					Thread.Sleep(3000);
 				}
-			} catch(Exception e){
+			} 
+			catch(Exception e)
+			{
 				Console.WriteLine(e.Message);
 			}
-
 		}
 	}
 }

@@ -66,6 +66,17 @@ namespace AccelServer
 
 			_timeStamps.Add(data.Time.ToString(TIME_FORMAT));
 		}
+
+		public void Clear()
+		{
+			_axisXAccelerations.Clear();
+			_axisYAccelerations.Clear();
+			_axisZAccelerations.Clear();
+			_axisXAngles.Clear();
+			_axisYAngles.Clear();
+			_axisZAngles.Clear();
+			_timeStamps.Clear();
+		}
 	}
 	
 	public class IMUData
@@ -104,13 +115,13 @@ namespace AccelServer
 			}
 
 
-			AcX = acc2si * (ParseImuBytes(bytes[4], bytes[5]) - MpuCalibraion.offset[id].AccX);
-			AcY = acc2si * (ParseImuBytes(bytes[6], bytes[7]) - MpuCalibraion.offset[id].AccY);
-			AcZ = acc2si * (ParseImuBytes(bytes[8], bytes[9]) - MpuCalibraion.offset[id].AccZ);
+			AcX = (float)Math.Round(acc2si * (ParseImuBytes(bytes[4], bytes[5]) - MpuCalibraion.offset[id].AccX), 4);
+			AcY = (float)Math.Round(acc2si * (ParseImuBytes(bytes[6], bytes[7]) - MpuCalibraion.offset[id].AccY),4);
+			AcZ = (float)Math.Round(acc2si * (ParseImuBytes(bytes[8], bytes[9]) - MpuCalibraion.offset[id].AccZ), 4);
 			Tmp = ParseImuBytes(bytes[10], bytes[11])/340.0f + 36.53f;
-			GyX = gyro2si * (ParseImuBytes(bytes[12], bytes[13]) - MpuCalibraion.offset[id].GyX);
-			GyY = gyro2si * (ParseImuBytes(bytes[14], bytes[15]) - MpuCalibraion.offset[id].GyY);
-			GyZ = gyro2si * (ParseImuBytes(bytes[16], bytes[17]) - MpuCalibraion.offset[id].GyZ);
+			GyX = (float)Math.Round(gyro2si * (ParseImuBytes(bytes[12], bytes[13]) - MpuCalibraion.offset[id].GyX), 4);
+			GyY = (float)Math.Round(gyro2si * (ParseImuBytes(bytes[14], bytes[15]) - MpuCalibraion.offset[id].GyY), 4);
+			GyZ = (float)Math.Round(gyro2si * (ParseImuBytes(bytes[16], bytes[17]) - MpuCalibraion.offset[id].GyZ), 4);
 
 			if (BitConverter.IsLittleEndian) {
 				int ticks = BitConverter.ToInt32 (bytes, 0);
@@ -120,6 +131,8 @@ namespace AccelServer
 				int ticks = BitConverter.ToInt32 (bytes, 14);
 				Time = SyncTime.AddMilliseconds (ticks - SyncTicks);
 			}
+
+
 		}
 
 		public void WriteToConsole()

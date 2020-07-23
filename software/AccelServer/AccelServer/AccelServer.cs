@@ -89,9 +89,8 @@ namespace AccelServer
 			return false;
 		}
 
-		private void _CheckConnection()
+		private void CheckConnection()
 		{
-			
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
 			while (NetHelper.GetEndPointIPv4(10000) == null)
@@ -107,7 +106,7 @@ namespace AccelServer
 
 		public void RunServer()
 		{
-			chkConn = ipBroadcaster = new Thread(new ThreadStart(_CheckConnection));
+			chkConn = ipBroadcaster = new Thread(new ThreadStart(CheckConnection));
 			chkConn.Start();
 		}
 
@@ -121,12 +120,18 @@ namespace AccelServer
 			synchronizer.Start();
 		}
 
-
+		private System.Windows.Threading.DispatcherTimer _timer;
 		private void OnTimerTick(object sender, EventArgs e)
 		{
 			var t1 = DateTime.Now;
-			ChartDataSingleton.Instance.ProcessData();
+			var isProcessed = ChartDataSingleton.Instance.ProcessData();
 			Console.WriteLine("Process data: {0}ms", (DateTime.Now-t1).TotalMilliseconds);
+
+			if (!DataReceiver.running && !isProcessed)
+			{
+				_timer.Stop();
+				RaisePropertyChanged("StartEnabled");
+			}
 
 			if (isFirstPackage)
 			{
@@ -136,13 +141,13 @@ namespace AccelServer
 			}
 			
 		}
-
-		private System.Windows.Threading.DispatcherTimer _timer;
 		public void StartReceiving()
 		{
+			ChartDataSingleton.Instance.Clear();
+
 			_timer = new System.Windows.Threading.DispatcherTimer();
 			_timer.Tick += OnTimerTick;
-			_timer.Interval = new TimeSpan(0, 0, 1);
+			_timer.Interval = new TimeSpan(0, 0, 0, 0, 250);
 			_timer.Start();
 
 			DataReceiver.running = true;
@@ -152,10 +157,7 @@ namespace AccelServer
 
 		public void StopReceiving()
 		{
-			_timer.Stop();
-
 			DataReceiver.running = false;
-			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
 		}
 
