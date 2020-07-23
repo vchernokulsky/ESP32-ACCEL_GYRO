@@ -59,8 +59,6 @@ namespace AccelServer
 		public Dictionary<int, DeviceInfo> deviceList = new Dictionary<int, DeviceInfo>();
 		public int cur_device_port = 10000;
 
-		private int count = 0;
-
 		public IList<string> Labels => GetLabels();
 		public IList<float> AccX => GetXAxisAccelerations();
 		public IList<float> AccY => GetYAxisAccelerations();
@@ -216,8 +214,10 @@ namespace AccelServer
 					{
 						info.Port = cur_device_port++;
 						info.SyncTime = cur_time;
-
 						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port, info.SyncTime, info.SyncTicks);
+
+						ChartDataSingleton.Instance.SetSyncTime(info.Id, info.SyncTime, info.SyncTicks);
+
 						info.dt_recv.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
 						dataRcvList.Add(data_receiver);

@@ -9,11 +9,13 @@ using System.Collections.ObjectModel;
 namespace AccelServer
 {
 	public class ReceivedObject {
+		public int id;
 		public int length; 
 		public byte[] bytes;
 
-		public ReceivedObject(int length, byte[] bytes)
+		public ReceivedObject(int id, int length, byte[] bytes)
 		{
+			this.id = id;
 			this.length = length;
 			this.bytes = bytes;
 		}
@@ -71,14 +73,16 @@ namespace AccelServer
 						byte[] bytes = new byte[5400];
 						bytesRec = handler.Receive(bytes);
 						totalRecv += bytesRec;
-						byteList.Add(new ReceivedObject(bytesRec, bytes));
+						//byteList.Add(new ReceivedObject(id, bytesRec, bytes));
+						ChartDataSingleton.Instance.PutData(new ReceivedObject(id, bytesRec, bytes));
+
                         if (!gettingData)
                         {
 							gettingData = true;
 							RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
 						}
-						Console.WriteLine( "Received {0} bytes", bytesRec);
-						Console.WriteLine( "TOTAL RECEIVED {0} bytes", totalRecv);
+						//Console.WriteLine( "Received {0} bytes", bytesRec);
+						//Console.WriteLine( "TOTAL RECEIVED {0} bytes", totalRecv);
 					}
 						
 					handler.Shutdown(SocketShutdown.Both);
@@ -90,11 +94,11 @@ namespace AccelServer
 					}
 					if (byteList.Count > 0)
 					{
-						Console.WriteLine( "byteList len {0} ", byteList.Count);
-						ProcessData();
+						//Console.WriteLine( "byteList len {0} ", byteList.Count);
+						//ProcessData();
 						byteList = new List<ReceivedObject>();
 					} else {
-						Console.WriteLine( "=== STOPPED ===");
+						//Console.WriteLine( "=== STOPPED ===");
 					}
 				}
 			}

@@ -11,6 +11,7 @@
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
         Title="MainWindow" 
+        WindowState="Maximized"
       
     >
     <Window.DataContext>
@@ -35,53 +36,67 @@
 
 
     <Grid>
-        <Label x:Name="lblWifiCon" Background="Red" Content="Нет соединения с WiFi-сетью" HorizontalAlignment="Left" Margin="284,18,0,0" VerticalAlignment="Top"  Visibility="{Binding Path=NoConnection, Converter={StaticResource BoolToVisConverter}}"/>
-        <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="573,62,0,0" VerticalAlignment="Top" Width="75" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
-        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="573,92,0,0" VerticalAlignment="Top" Width="75" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
-       
-    
-        <Label x:Name="lblDev1" Background="{Binding Path=DeviceColor1}" Content="Устройство №1" HorizontalAlignment="Left" Margin="100,70,0,0" VerticalAlignment="Top" Height="26" Width="95"/>
-        <Label x:Name="lblDev2" Background="{Binding Path=DeviceColor2}" Content="Устройство №2" HorizontalAlignment="Left" Margin="230,70,0,0" VerticalAlignment="Top" Height="26" Width="95"/>
-        <Label x:Name="lblDev3" Background="{Binding Path=DeviceColor3}" Content="Устройство №3" HorizontalAlignment="Left" Margin="360,70,0,0" VerticalAlignment="Top" Height="26" Width="95"/>
-        <Label x:Name="lblDev4" Background="{Binding Path=DeviceColor4}" Content="Устройство №4" HorizontalAlignment="Left" Margin="100,110,0,0" VerticalAlignment="Top" Height="26" Width="95"/>
-        <Label x:Name="lblDev5" Background="{Binding Path=DeviceColor5}" Content="Устройство №5" HorizontalAlignment="Left" Margin="230,110,0,0" VerticalAlignment="Top" Height="26" Width="95"/>
-        <Label x:Name="lblDev6" Background="{Binding Path=DeviceColor6}" Content="Устройство №6" HorizontalAlignment="Left" Margin="360,110,0,0" VerticalAlignment="Top" Height="26" Width="95"/>
-
-<!--
-        <DVC:Chart  Name="lineChart" Title="Ускорение" VerticalAlignment="Top" Margin="0, 150, 0, 0" Height="500" Width="1300">
-            <DVC:Chart.Axes>
-                <DVC:CategoryAxis Orientation="X">
-                    <DVC:CategoryAxis.AxisLabelStyle>
-                        <Style x:Name="labelStyleX1" TargetType="Control">
-                            <Setter Property="FontSize" Value="8"/>
-                            <Setter Property="LayoutTransform" >
-                                <Setter.Value>
-                                    <RotateTransform  Angle="-45" />
-                                </Setter.Value>
-                            </Setter>
-                            
-                            <Setter Property="Foreground" Value="Black"/>
-                        </Style>
-                    </DVC:CategoryAxis.AxisLabelStyle>
-                </DVC:CategoryAxis>
-            </DVC:Chart.Axes>
-            <DVC:LineSeries Title="AccX" DataContext="{Binding}" DependentValueBinding="{Binding Path=Value}" IndependentValueBinding="{Binding Path=Key}" ItemsSource="{Binding Path=data}" IsSelectionEnabled="True"/>
-            
-            <DVC:LineSeries  Title="AccY"  DataContext="{Binding}" DependentValueBinding="{Binding Path=Value}" IndependentValueBinding="{Binding Path=Key}" ItemsSource="{Binding Path=data2}" IsSelectionEnabled="True"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40 "></RowDefinition>
+            <RowDefinition Height="80"></RowDefinition>
+            <RowDefinition Height="120"></RowDefinition>
+            <RowDefinition ></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
            
-            <DVC:LineSeries  Title="AccZ"  DataContext="{Binding}" DependentValueBinding="{Binding Path=Value}" IndependentValueBinding="{Binding Path=Key}" ItemsSource="{Binding Path=data3}" IsSelectionEnabled="True"/>
+           
+        </Grid.ColumnDefinitions>
+
+        <Label x:Name="lblWifiCon" Grid.Row="0" Background="Red" Content="Нет соединения с WiFi-сетью" HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="{Binding Path=NoConnection, Converter={StaticResource BoolToVisConverter}}"/>
+
+
+        <StackPanel Orientation="Horizontal"  Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <GroupBox Header="Груз"  Height="70">
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label x:Name="lblDev1" Grid.Row="1" Background="{Binding Path=DeviceColor1}" Content="Устройство №1" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,0,0" Height="26" Width="95"/>
+                <Label x:Name="lblDev2" Grid.Row="1" Background="{Binding Path=DeviceColor2}" Content="Устройство №2" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,0,0" Height="26" Width="95"/>
+                <Label x:Name="lblDev3" Grid.Row="1" Background="{Binding Path=DeviceColor3}" Content="Устройство №3" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,0,0" Height="26" Width="95"/>
+                <Label x:Name="lblDev4" Grid.Row="1" Background="{Binding Path=DeviceColor4}" Content="Устройство №4" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
+             
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="Человек"  Height="70">
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label x:Name="lblDev5" Grid.Row="1" Background="{Binding Path=DeviceColor5}" Content="Устройство №5" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,0,0" Height="26" Width="95"/>
+                <Label x:Name="lblDev6" Grid.Row="1" Background="{Binding Path=DeviceColor6}" Content="Устройство №6" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
+            </StackPanel>
+        </GroupBox>
             
-        </DVC:Chart>
+            <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
+            <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
 
--->
+        </StackPanel>
 
-        <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Height="300"  Margin="0, 100, 0, 0">
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-            </lvc:CartesianChart.AxisY>
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
-            </lvc:CartesianChart.AxisX>
-        </lvc:CartesianChart>
+        <StackPanel Grid.Row="2" Orientation="Horizontal"  HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <Button Height="25" Width="75" Margin="20, 0, 10, 0" Command="{Binding OnPrevClick}">Prev</Button>
+            <Button Height="25" Width="75"  Command="{Binding OnNextClick}">Next</Button>
+            <GroupBox Header="Дискретизация" Margin="15">
+                <StackPanel>
+                    <RadioButton Content="1" IsChecked="{Binding IsResamplingX1}" Margin="3"/>
+                    <RadioButton Content="2" IsChecked="{Binding IsResamplingX2}" Margin="3"/>
+                    <RadioButton Content="3" IsChecked="{Binding IsResamplingX3}" Margin="3"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Vertical"  HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Height="500" HorizontalAlignment="Stretch" >
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="m/s^2" ></lvc:Axis>
+                </lvc:CartesianChart.AxisY>
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis  Title="Time"  Labels="{Binding Labels}"></lvc:Axis>
+                </lvc:CartesianChart.AxisX>
+            </lvc:CartesianChart>
+        </StackPanel>
+
+        
     </Grid>
 </Window>

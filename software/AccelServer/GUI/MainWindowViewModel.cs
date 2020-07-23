@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Media;
 using AccelServer;
 using LiveCharts;
@@ -10,8 +11,15 @@ using Prism.Mvvm;
 
 namespace GUI
 {
-   
-    class MainWindowViewModel: BindableBase
+    enum Resampling
+    {
+        X1=1,
+        X2=2,
+        X3=3
+    }
+
+
+    class MainWindowViewModel : BindableBase
     {
         private AccelServer.AccelServer accelServer = new AccelServer.AccelServer(15000);
 
@@ -21,6 +29,10 @@ namespace GUI
         private DeviseStatus Device4;
         private DeviseStatus Device5;
         private DeviseStatus Device6;
+
+        private int _step = 50;
+        private int _from = 25;
+        private int _to = 225;
 
         public MainWindowViewModel()
         {
@@ -34,6 +46,8 @@ namespace GUI
             OnStopClicked = new DelegateCommand(() => accelServer.StopReceiving());
             OnClosing = new DelegateCommand<object>(obj => accelServer.StopServer());
 
+            OnPrevClick = new DelegateCommand(() => { this.From -= _step; this.To -= _step; RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); });
+            OnNextClick = new DelegateCommand(() => { this.From += _step; this.To += _step; RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); });
             
 
             Device1 = new DeviseStatus(1, accelServer) { Title = "Устройство №1" };
@@ -48,50 +62,143 @@ namespace GUI
 
 
         }
-        private SeriesCollection GetSeriesCollection()
+
+        private ChartValues<float> accXCV { get; set; }
+        private ChartValues<float> accYCV { get; set; }
+        private ChartValues<float> accZCV { get; set; }
+
+        private IList<string> labels { get; set; }
+        private LineSeries accXSeria { get; set; }
+        private LineSeries accYSeria { get; set; }
+        private LineSeries accZSeria { get; set; }
+
+        private SeriesCollection _collection { get; set; }
+
+        private IList<string> GetLabels()
         {
-            return new SeriesCollection
+            if (labels == null)
             {
-                AccXSeria, AccYSeria, AccZSeria
-            };
+                if (labels == null)
+                {
+                    labels = new List<string>();
+                }
+               
+            }
+            return labels;
         }
 
-        //private ObservableCollection<KeyValuePair<string, int>> _data;
+        private LineSeries GetAccX()
+        {
+            if (accXSeria == null) { 
+                if(accXCV == null)
+                {
+                    accXCV = new ChartValues<float>();
+                }
+                accXSeria = new LineSeries
+                {
+                    Title = "AccX",
+                    Values = accXCV
+                };
+            }
+
+            return accXSeria;
+        }
+
+        private LineSeries GetAccY()
+        {
+            if (accYSeria == null)
+            {
+                if (accYCV == null)
+                {
+                    accYCV = new ChartValues<float>();
+                }
+                accYSeria = new LineSeries
+                {
+                    Title = "AccY",
+                    Values = accYCV
+                };
+            }
+
+            return accYSeria;
+        }
+
+        private LineSeries GetAccZ()
+        {
+            if (accZSeria == null)
+            {
+                if (accZCV == null)
+                {
+                    accZCV = new ChartValues<float>();
+                }
+                accZSeria = new LineSeries
+                {
+                    Title = "AccZ",
+                    Values = accZCV
+                };
+            }
+
+            return accZSeria;
+        }
+
+        private SeriesCollection GetSeriesCollection()
+        {
+            if(_collection == null)
+            {
+                _collection = new SeriesCollection() { 
+                    AccXSeria, AccYSeria, AccZSeria
+                };
+            }
+            UpdateRanges();
+            return _collection;
+        }
+
+        private void UpdateRanges()
+        {
+            var length = 200;
+            var resample = (int)this.Resampling;
+            var maxIdx = _from + length * resample;
+
+
+            if (maxIdx <= accelServer.Labels.Count)
+            {
+                int i = 0;
+                labels = accelServer.Labels.Skip(_from).Take(length * resample).Where(x => i++ % resample == 0).Select(x => x).ToList();
+            }
+
+            if (maxIdx <= accelServer.AccX.Count)
+            {
+                int i = 0;
+                var e = accelServer.AccX.Skip(_from).Take(length*resample).Where(x => i++ % resample == 0).Select(x => x);
+                accXCV.Clear();
+                accXCV.AddRange(e);
+            }
+
+            if (maxIdx <= accelServer.AccY.Count)
+            {
+                int i = 0;
+                var e = accelServer.AccY.Skip(_from).Take(length * resample).Where(x => i++ % resample == 0).Select(x => x);
+                accYCV.Clear();
+                accYCV.AddRange(e);
+            }
+
+            if (maxIdx <= accelServer.AccZ.Count)
+            {
+                int i = 0;
+                var e = accelServer.AccZ.Skip(_from).Take(length * resample).Where(x => i++ % resample == 0).Select(x => x);
+                accZCV.Clear();
+                accZCV.AddRange(e);
+            
+            }
+        }
 
         public Func<float, string> YFormatter { get; set; }
 
 
-        public List<string> Labels
-        {
-            get { return accelServer.Labels; }
-        }
-        private LineSeries GetAccX()
-        {
-            return new LineSeries
-            {
-                Title = "AccX",
-                Values = new ChartValues<float>(accelServer.AccX)
-                
-            };
-        }
-        private LineSeries GetAccY()
-        {
-            return new LineSeries
-            {
-                Title = "AccY",
-                Values = new ChartValues<float>(accelServer.AccY)
+        public IList<string> Labels => GetLabels();
+        
 
-            };
-        }
-        private LineSeries GetAccZ()
-        {
-            return new LineSeries
-            {
-                Title = "AccZ",
-                Values = new ChartValues<float>(accelServer.AccZ)
-
-            };
-        }
+        public DelegateCommand OnPrevClick { get; }
+        public DelegateCommand OnNextClick { get; }
 
         public LineSeries AccXSeria => GetAccX();
         public LineSeries AccYSeria => GetAccY();
@@ -114,5 +221,44 @@ namespace GUI
         public Brush DeviceColor5 => Device5.StatusColor;
         public Brush DeviceColor6 => Device6.StatusColor;
 
+        public int From { get { return _from; } private set { _from = value; RaisePropertyChanged("From"); } }
+        public int To { get { return _to; } private set { _to = value; RaisePropertyChanged("To"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); } }
+
+        private Resampling resampling = Resampling.X1;
+        public Resampling Resampling
+        {
+            get { return resampling; }
+            set
+            {
+                if (resampling == value)
+                    return;
+
+                resampling = value;
+                RaisePropertyChanged("Resampling");
+                RaisePropertyChanged("IsResamplingX1");
+                RaisePropertyChanged("IsResamplingX2");
+                RaisePropertyChanged("IsResamplingX3");
+                RaisePropertyChanged("SeriesCollection");
+                RaisePropertyChanged("Labels");
+
+            }
+        }
+        public bool IsResamplingX1
+        {
+            get { return Resampling == Resampling.X1; }
+            set { Resampling = value ? Resampling.X1 : Resampling; }
+        }
+
+        public bool IsResamplingX2
+        {
+            get { return Resampling == Resampling.X2; }
+            set { Resampling = value ? Resampling.X2 : Resampling; }
+        }
+
+        public bool IsResamplingX3
+        {
+            get { return Resampling == Resampling.X3; }
+            set { Resampling = value ? Resampling.X3 : Resampling; }
+        }
     }
 }

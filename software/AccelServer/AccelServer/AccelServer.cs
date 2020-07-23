@@ -12,6 +12,8 @@ namespace AccelServer
 		private IpBroadcaster controller;
 		private DeviceSynchronizer devSync;
 
+		private bool isFirstPackage = true;
+
 		private Thread chkConn;
 		private Thread ipBroadcaster;
 		private Thread synchronizer;
@@ -21,7 +23,9 @@ namespace AccelServer
 		{
 			get
 			{
-				return devSync.Labels;
+				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(1))
+					return new List<string>();
+				return ChartDataSingleton.Instance._dataLists[1].TimeStamps;
 			}
 		}
 
@@ -29,7 +33,9 @@ namespace AccelServer
 		{
 			get
 			{
-				return devSync.AccX;
+				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(1))
+					return new List<float>();
+				return ChartDataSingleton.Instance._dataLists[1].AxisXAccelerations;
 			}
 		}
 
@@ -37,7 +43,9 @@ namespace AccelServer
 		{
 			get
 			{
-				return devSync.AccY;
+				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(1))
+					return new List<float>();
+				return ChartDataSingleton.Instance._dataLists[1].AxisYAccelerations;
 			}
 		}
 
@@ -45,7 +53,9 @@ namespace AccelServer
 		{
 			get
 			{
-				return devSync.AccZ;
+				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(1))
+					return new List<float>();
+				return ChartDataSingleton.Instance._dataLists[1].AxisZAccelerations;
 			}
 		}
 
@@ -111,8 +121,30 @@ namespace AccelServer
 			synchronizer.Start();
 		}
 
+
+		private void OnTimerTick(object sender, EventArgs e)
+		{
+			var t1 = DateTime.Now;
+			ChartDataSingleton.Instance.ProcessData();
+			Console.WriteLine("Process data: {0}ms", (DateTime.Now-t1).TotalMilliseconds);
+
+			if (isFirstPackage)
+			{
+				RaisePropertyChanged("SeriesCollection");
+				RaisePropertyChanged("Labels");
+				isFirstPackage = false;
+			}
+			
+		}
+
+		private System.Windows.Threading.DispatcherTimer _timer;
 		public void StartReceiving()
 		{
+			_timer = new System.Windows.Threading.DispatcherTimer();
+			_timer.Tick += OnTimerTick;
+			_timer.Interval = new TimeSpan(0, 0, 1);
+			_timer.Start();
+
 			DataReceiver.running = true;
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
@@ -120,6 +152,8 @@ namespace AccelServer
 
 		public void StopReceiving()
 		{
+			_timer.Stop();
+
 			DataReceiver.running = false;
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");

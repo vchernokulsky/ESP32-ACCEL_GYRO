@@ -53,7 +53,7 @@ namespace AccelServer
 		public void PutBytes(byte[] bytes)
 		{
 			IMUData data = new IMUData (id, SyncTime, SyncTicks, bytes, acc2si, gyro2si);
-			data.WriteToConsole ();
+			//data.WriteToConsole ();
 			agList.Add (data);
 
 			_axisXAccelerations.Add(data.AcX);

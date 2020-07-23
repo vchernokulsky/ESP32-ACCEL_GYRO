@@ -22,11 +22,17 @@ namespace AccelServer
 			udpClient.Client.Bind(endPoint);
 
 			var data = Encoding.UTF8.GetBytes(endPoint.Address.ToString());
-			while(true)
+			try
 			{
-				udpClient.Send(data, data.Length, "255.255.255.255", port);
-				Thread.Sleep(3000);
+				while (true)
+				{
+					udpClient.Send(data, data.Length, "255.255.255.255", port);
+					Thread.Sleep(3000);
+				}
+			} catch(Exception e){
+				Console.WriteLine(e.Message);
 			}
+
 		}
 	}
 }
