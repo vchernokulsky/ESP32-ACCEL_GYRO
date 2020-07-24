@@ -24,6 +24,7 @@ namespace GUI
     class MainWindowViewModel : BindableBase
     {
         private AccelServer.AccelServer accelServer = new AccelServer.AccelServer(15000);
+        private ChartVM chartVM;
 
         private DeviseStatus Device1;
         private DeviseStatus Device2;
@@ -42,7 +43,7 @@ namespace GUI
         {
             accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             accelServer.SetPropetyRaise();
-
+            chartVM = new ChartVM(accelServer);
 
             OnContentRendered = new DelegateCommand(() => accelServer.RunServer());
 
@@ -67,152 +68,26 @@ namespace GUI
 
         }
 
-        private ChartValues<float> accXCV { get; set; }
-        private ChartValues<float> accYCV { get; set; }
-        private ChartValues<float> accZCV { get; set; }
-
-        private IList<string> labels { get; set; }
-        private LineSeries accXSeria { get; set; }
-        private LineSeries accYSeria { get; set; }
-        private LineSeries accZSeria { get; set; }
-
-        private SeriesCollection _collection { get; set; }
-
-        private IList<string> GetLabels()
-        {
-            if (labels == null)
-            {
-                if (labels == null)
-                {
-                    labels = new List<string>();
-                }
-               
-            }
-            return labels;
-        }
-
-        private LineSeries GetAccX()
-        {
-            if (accXSeria == null) { 
-                if(accXCV == null)
-                {
-                    accXCV = new ChartValues<float>();
-                }
-                accXSeria = new LineSeries
-                {
-                    Title = "Ось X",
-                    Values = accXCV
-                };
-            }
-
-            return accXSeria;
-        }
-
-        private LineSeries GetAccY()
-        {
-            if (accYSeria == null)
-            {
-                if (accYCV == null)
-                {
-                    accYCV = new ChartValues<float>();
-                }
-                accYSeria = new LineSeries
-                {
-                    Title = "Ось Y",
-                    Values = accYCV
-                };
-            }
-
-            return accYSeria;
-        }
-
-        private LineSeries GetAccZ()
-        {
-            if (accZSeria == null)
-            {
-                if (accZCV == null)
-                {
-                    accZCV = new ChartValues<float>();
-                }
-                accZSeria = new LineSeries
-                {
-                    Title = "Ось Z",
-                    Values = accZCV
-                };
-            }
-
-            return accZSeria;
-        }
-
-        private SeriesCollection GetSeriesCollection()
-        {
-            if(_collection == null)
-            {
-                _collection = new SeriesCollection() { 
-                    AccXSeria, AccYSeria, AccZSeria
-                };
-            }
-            UpdateRanges();
-            return _collection;
-        }
-
-        private void UpdateRanges()
-        {
-            var length = _to - _from;
-            var resample = (int)this.Resampling;
-            var maxIdx = _from + length * resample;
-
-
-            if (maxIdx <= accelServer.Labels.Count)
-            {
-                int i = 0;
-                labels = accelServer.Labels.Skip(_from).Take(length * resample).Where(x => i++ % resample == 0).Select(x => x).ToList();
-                Console.WriteLine("COLLECTION UPDATED!!!");
-            }
-
-            if (maxIdx <= accelServer.AccX.Count)
-            {
-                int i = 0;
-                var e = accelServer.AccX.Skip(_from).Take(length*resample).Where(x => i++ % resample == 0).Select(x => x);
-                accXCV.Clear();
-                accXCV.AddRange(e);
-            }
-
-            if (maxIdx <= accelServer.AccY.Count)
-            {
-                int i = 0;
-                var e = accelServer.AccY.Skip(_from).Take(length * resample).Where(x => i++ % resample == 0).Select(x => x);
-                accYCV.Clear();
-                accYCV.AddRange(e);
-            }
-
-            if (maxIdx <= accelServer.AccZ.Count)
-            {
-                int i = 0;
-                var e = accelServer.AccZ.Skip(_from).Take(length * resample).Where(x => i++ % resample == 0).Select(x => x);
-                accZCV.Clear();
-                accZCV.AddRange(e);
-            
-            }
-
-            IsNextEnabled = DataReceiver.running | (accelServer.Labels.Count - _from - _step * resample - length * resample > 0);
-            IsPrevEnabled = _from - _step * resample > 0;
-        }
-
-        public Func<float, string> YFormatter { get; set; }
-
-
-        public IList<string> Labels => GetLabels();
-        
-
+      
         public DelegateCommand OnPrevClick { get; }
         public DelegateCommand OnNextClick { get; }
 
-        public LineSeries AccXSeria => GetAccX();
-        public LineSeries AccYSeria => GetAccY();
-        public LineSeries AccZSeria => GetAccZ();
+
+        public Func<float, string> YFormatter { get; set; }
+        public IList<string> Labels { get { return chartVM.Labels; } }
         public SeriesCollection SeriesCollection
-        { get { return GetSeriesCollection(); } private set { RaisePropertyChanged("SeriesCollection"); } }
+        { 
+            get
+            {
+                var length = _to - _from;
+                var resample = (int)this.Resampling;
+                var maxIdx = _from + length * resample;
+                IsNextEnabled = DataReceiver.running | (accelServer.Labels.Count - _from - _step * resample - length * resample > 0);
+                IsPrevEnabled = _from - _step * resample > 0;
+                return chartVM.GetSeriesCollection(_from, _to, resample, maxIdx); 
+            } 
+            private set { RaisePropertyChanged("SeriesCollection"); } 
+        }
 
         public DelegateCommand OnContentRendered { get; }
         public DelegateCommand OnStartClicked { get; }
