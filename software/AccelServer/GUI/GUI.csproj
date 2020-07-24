@@ -87,6 +87,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ChartViewControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -95,8 +99,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ChartControlVM.cs" />
     <Compile Include="ChartLineVM.cs" />
+    <Compile Include="ChartViewControl.xaml.cs">
+      <DependentUpon>ChartViewControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ChartVM.cs" />
+    <Compile Include="Common.cs" />
     <Compile Include="DeviseStatus.cs" />
     <Compile Include="LabelVM.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -39,13 +39,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40 "></RowDefinition>
             <RowDefinition Height="80"></RowDefinition>
-            <RowDefinition Height="120"></RowDefinition>
-            <RowDefinition ></RowDefinition>
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
-           
-           
         </Grid.ColumnDefinitions>
 
         <Label x:Name="lblWifiCon" Grid.Row="0" Background="Red" Content="Нет соединения с WiFi-сетью" HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="{Binding Path=NoConnection, Converter={StaticResource BoolToVisConverter}}"/>
@@ -58,7 +55,6 @@
                 <Label x:Name="lblDev2" Grid.Row="1" Background="{Binding Path=DeviceColor2}" Content="Устройство №2" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,0,0" Height="26" Width="95"/>
                 <Label x:Name="lblDev3" Grid.Row="1" Background="{Binding Path=DeviceColor3}" Content="Устройство №3" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,0,0" Height="26" Width="95"/>
                 <Label x:Name="lblDev4" Grid.Row="1" Background="{Binding Path=DeviceColor4}" Content="Устройство №4" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
-             
             </StackPanel>
         </GroupBox>
 
@@ -71,34 +67,11 @@
             
             <Button x:Name="btnStart" Content="Старт" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
             <Button x:Name="btnStop" Content="Стоп" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <local:ChartViewControl DataContext="{Binding Chart1}"/>
+            <!--local:ChartViewControl /-->
 
         </StackPanel>
-
-        <StackPanel Grid.Row="2" Orientation="Horizontal"  HorizontalAlignment="Left" VerticalAlignment="Bottom">
-            <Button Height="25" Width="75" Margin="20, 0, 10, 0" IsEnabled="{Binding IsPrevEnabled}" Command="{Binding OnPrevClick}">Назад</Button>
-            <Button Height="25" Width="75"  IsEnabled="{Binding IsNextEnabled}" Command="{Binding OnNextClick}">Вперед</Button>
-            <GroupBox Header="Дискретизация" Margin="15">
-                <StackPanel  Orientation="Horizontal">
-                    <RadioButton Content="1" IsChecked="{Binding IsResamplingX1}" Margin="3"/>
-                    <RadioButton Content="2" IsChecked="{Binding IsResamplingX2}" Margin="3"/>
-                    <RadioButton Content="3" IsChecked="{Binding IsResamplingX3}" Margin="3"/>
-                    <RadioButton Content="4" IsChecked="{Binding IsResamplingX4}" Margin="3"/>
-                    <RadioButton Content="5" IsChecked="{Binding IsResamplingX5}" Margin="3"/>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
-
-        <StackPanel Grid.Row="3" Orientation="Vertical"  HorizontalAlignment="Stretch" VerticalAlignment="Top">
-            <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Height="500" HorizontalAlignment="Stretch">
-                <lvc:CartesianChart.AxisY >
-                    <lvc:Axis Title="m/s^2" LabelFormatter="{Binding YFormatter}" ></lvc:Axis>
-                </lvc:CartesianChart.AxisY>
-                <lvc:CartesianChart.AxisX>
-                    <lvc:Axis  Title="Time"  Labels="{Binding Labels}"></lvc:Axis>
-                </lvc:CartesianChart.AxisX>
-            </lvc:CartesianChart>
-        </StackPanel>
-
-        
     </Grid>
 </Window>
