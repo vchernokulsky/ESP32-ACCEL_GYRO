@@ -1,11 +1,8 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GUI
 {
@@ -14,8 +11,7 @@ namespace GUI
         private string title;
         private ChartValues<float> chartValues { get; set; }
         private LineSeries seria { get; set; }
-        public LineSeries LineSeria => GetSeria();
-
+        
         public ChartLineVM(string title)
         {
             this.title = title;
