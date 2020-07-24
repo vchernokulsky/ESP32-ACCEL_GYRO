@@ -10,7 +10,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="Измерительный стенд (УСКОРЕНИЯ)" 
         WindowState="Maximized"
       
     >

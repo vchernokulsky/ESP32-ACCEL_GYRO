@@ -100,7 +100,7 @@ namespace GUI
                 }
                 accXSeria = new LineSeries
                 {
-                    Title = "AccX",
+                    Title = "Ось X",
                     Values = accXCV
                 };
             }
@@ -118,7 +118,7 @@ namespace GUI
                 }
                 accYSeria = new LineSeries
                 {
-                    Title = "AccY",
+                    Title = "Ось Y",
                     Values = accYCV
                 };
             }
@@ -136,7 +136,7 @@ namespace GUI
                 }
                 accZSeria = new LineSeries
                 {
-                    Title = "AccZ",
+                    Title = "Ось Z",
                     Values = accZCV
                 };
             }
@@ -167,6 +167,7 @@ namespace GUI
             {
                 int i = 0;
                 labels = accelServer.Labels.Skip(_from).Take(length * resample).Where(x => i++ % resample == 0).Select(x => x).ToList();
+                Console.WriteLine("COLLECTION UPDATED!!!");
             }
 
             if (maxIdx <= accelServer.AccX.Count)
@@ -210,8 +211,9 @@ namespace GUI
         public LineSeries AccXSeria => GetAccX();
         public LineSeries AccYSeria => GetAccY();
         public LineSeries AccZSeria => GetAccZ();
-        public SeriesCollection SeriesCollection => GetSeriesCollection();
-  
+        public SeriesCollection SeriesCollection
+        { get { return GetSeriesCollection(); } private set { RaisePropertyChanged("SeriesCollection"); } }
+
         public DelegateCommand OnContentRendered { get; }
         public DelegateCommand OnStartClicked { get; }
         public DelegateCommand OnStopClicked { get; }

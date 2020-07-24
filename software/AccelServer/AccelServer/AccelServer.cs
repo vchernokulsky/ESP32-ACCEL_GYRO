@@ -133,17 +133,20 @@ namespace AccelServer
 				RaisePropertyChanged("StartEnabled");
 			}
 
-			if (isFirstPackage)
+			if (isFirstPackage && ChartDataSingleton.Instance.Count(1) > 1000)
 			{
 				RaisePropertyChanged("SeriesCollection");
 				RaisePropertyChanged("Labels");
 				isFirstPackage = false;
+				Console.WriteLine("FIRST PACKAGE RECIEVED!!!");
 			}
 			
 		}
 		public void StartReceiving()
 		{
+			Thread.Sleep(500);
 			ChartDataSingleton.Instance.Clear();
+			isFirstPackage = true;
 
 			_timer = new System.Windows.Threading.DispatcherTimer();
 			_timer.Tick += OnTimerTick;
@@ -151,6 +154,8 @@ namespace AccelServer
 			_timer.Start();
 
 			DataReceiver.running = true;
+			RaisePropertyChanged("SeriesCollection");
+			RaisePropertyChanged("Labels");
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
 		}

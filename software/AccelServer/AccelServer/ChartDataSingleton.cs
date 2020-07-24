@@ -110,6 +110,14 @@ namespace AccelServer
             return isProcessed;
         }
 
+        public int Count(int id)
+        {
+            var cnt = 0;
+            if (_dataLists.ContainsKey(id))
+                cnt = _dataLists[id].TimeStamps.Count;
+            return cnt;
+        }
+
         public void Clear()
         {
             foreach (var o in _packageInfoDict.Values) { o.Clear(); }
