@@ -14,7 +14,7 @@ def init_acc():
     return Accel(i2c)
 
 
-def init_network(network_name='Home92', network_password='24012017'):
+def init_network(network_name='IntemsLab', network_password='Embedded32'):
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
     if not sta_if.isconnected():
@@ -32,6 +32,7 @@ def send_amount(amount=300, host='192.168.55.116', port=5000):
     led = machine.Pin(2, machine.Pin.OUT)
     led_val = 0
     err_cnt = 0
+    count_to_restart = 0
     led(led_val)
     while True:
         try:
@@ -63,10 +64,13 @@ def send_amount(amount=300, host='192.168.55.116', port=5000):
                 print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
                 print(" ")
 
-
         except Exception as e:
             print(e)
             err_cnt += 1
+            if e.args[0] == 113:
+                count_to_restart += 10
+            else:
+                count_to_restart += 1
             if err_cnt >= 20:
                 led_val ^= 1
                 led(led_val)
@@ -74,6 +78,8 @@ def send_amount(amount=300, host='192.168.55.116', port=5000):
             utime.sleep_ms(2)
             if sock is not None:
                 sock.close()
+            if count_to_restart >= 50:
+                break
 
 
 def udp_client(port=9876):
@@ -124,14 +130,15 @@ def sync_info(server_ip, jbytes, server_port=9875):
 def main():
     device_id = 1
     device_type = 1
-    self_ip = init_network()
-    server_ip = get_server_ip()
+    while True:
+        self_ip = init_network()
+        server_ip = get_server_ip()
 
-    jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms()}
-    jbytes = ujson.dumps(jdict).encode("utf-8")
-    print(jbytes)
-    server_port = sync_info(server_ip, jbytes)
-    send_amount(host=server_ip, port=server_port)
+        jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms()}
+        jbytes = ujson.dumps(jdict).encode("utf-8")
+        print(jbytes)
+        server_port = sync_info(server_ip, jbytes)
+        send_amount(host=server_ip, port=server_port)
 
 
 def calibrate():

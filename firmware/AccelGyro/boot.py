@@ -4,4 +4,5 @@
 #import webrepl
 #webrepl.start()
 
-# main()
+import main
+main.main()
