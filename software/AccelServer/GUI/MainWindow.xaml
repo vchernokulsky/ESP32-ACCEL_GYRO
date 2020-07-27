@@ -69,9 +69,18 @@
             <Button x:Name="btnStop" Content="Стоп" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
         </StackPanel>
         <StackPanel Grid.Row="2">
-           
-            <local:ChartViewControl DataContext="{Binding Chart1}"/>
-            <!--local:ChartViewControl /-->
+            <ScrollViewer Name="scroll" CanContentScroll="True" Height="600">
+                <StackPanel>
+                    <local:ChartViewControl DataContext="{Binding Chart1}"/>
+                    <local:ChartViewControl DataContext="{Binding Chart2}"/>
+                    <local:ChartViewControl DataContext="{Binding Chart3}"/>
+                    <local:ChartViewControl DataContext="{Binding Chart4}"/>
+                    <local:ChartViewControl DataContext="{Binding Chart5}"/>
+                    <local:ChartViewControl DataContext="{Binding Chart6}"/>
+                </StackPanel>
+            </ScrollViewer>
+            
+            
 
         </StackPanel>
     </Grid>

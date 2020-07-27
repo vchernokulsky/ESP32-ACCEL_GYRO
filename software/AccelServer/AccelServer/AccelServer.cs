@@ -19,45 +19,7 @@ namespace AccelServer
 		private Thread synchronizer;
 
 		public bool NoConnection = true;
-		public IList<string> Labels
-		{
-			get
-			{
-				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(1))
-					return new List<string>();
-				return ChartDataSingleton.Instance._dataLists[1].TimeStamps;
-			}
-		}
-
-		public IList<float> AccX
-		{
-			get
-			{
-				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(1))
-					return new List<float>();
-				return ChartDataSingleton.Instance._dataLists[1].AxisXAccelerations;
-			}
-		}
-
-		public IList<float> AccY
-		{
-			get
-			{
-				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(1))
-					return new List<float>();
-				return ChartDataSingleton.Instance._dataLists[1].AxisYAccelerations;
-			}
-		}
-
-		public IList<float> AccZ
-		{
-			get
-			{
-				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(1))
-					return new List<float>();
-				return ChartDataSingleton.Instance._dataLists[1].AxisZAccelerations;
-			}
-		}
+		
 
 		public AccelServer(int broadcasterPort)
 		{
@@ -137,6 +99,7 @@ namespace AccelServer
 			{
 				RaisePropertyChanged("SeriesCollection");
 				RaisePropertyChanged("Labels");
+				RaisePropertyChanged("Chart1");
 				isFirstPackage = false;
 				Console.WriteLine("FIRST PACKAGE RECIEVED!!!");
 			}
@@ -156,6 +119,7 @@ namespace AccelServer
 			DataReceiver.running = true;
 			RaisePropertyChanged("SeriesCollection");
 			RaisePropertyChanged("Labels");
+			RaisePropertyChanged("Chart1");
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
 		}

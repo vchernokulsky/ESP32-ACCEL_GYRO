@@ -23,6 +23,11 @@ namespace GUI
         private DeviseStatus Device6;
 
         private ChartControlVM chart1;
+        private ChartControlVM chart2;
+        private ChartControlVM chart3;
+        private ChartControlVM chart4;
+        private ChartControlVM chart5;
+        private ChartControlVM chart6;
         
 
         public MainWindowViewModel()
@@ -44,7 +49,12 @@ namespace GUI
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
 
-            chart1 = new ChartControlVM(accelServer);
+            chart1 = new ChartControlVM(1);
+            chart2 = new ChartControlVM(2);
+            chart3 = new ChartControlVM(3);
+            chart4 = new ChartControlVM(4);
+            chart5 = new ChartControlVM(5);
+            chart6 = new ChartControlVM(6);
 
         }
 
@@ -66,5 +76,10 @@ namespace GUI
         public Brush DeviceColor6 => Device6.StatusColor;
 
         public ChartControlVM Chart1 { get => chart1; set { chart1 = value; RaisePropertyChanged("Chart1"); } }
+        public ChartControlVM Chart2 { get => chart2; set { chart1 = value; RaisePropertyChanged("Chart2"); } }
+        public ChartControlVM Chart3 { get => chart3; set { chart1 = value; RaisePropertyChanged("Chart3"); } }
+        public ChartControlVM Chart4 { get => chart4; set { chart1 = value; RaisePropertyChanged("Chart4"); } }
+        public ChartControlVM Chart5 { get => chart5; set { chart1 = value; RaisePropertyChanged("Chart5"); } }
+        public ChartControlVM Chart6 { get => chart6; set { chart1 = value; RaisePropertyChanged("Chart6"); } }
     }
 }

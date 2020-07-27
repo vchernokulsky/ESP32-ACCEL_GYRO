@@ -12,7 +12,7 @@ namespace GUI
 {
     class ChartVM: BindableBase
     {
-        private AccelServer.AccelServer accelServer;
+        private AccelServer.DataGetter chartData;
 
         private ChartLineVM accXSeria = new ChartLineVM("Ось X");
         private ChartLineVM accYSeria = new ChartLineVM("Ось Y");
@@ -27,9 +27,9 @@ namespace GUI
         public IList<string> Labels => labels.GetLabels();
 
 
-        public ChartVM(AccelServer.AccelServer accelServer)
+        public ChartVM(AccelServer.DataGetter chartData)
         {
-            this.accelServer = accelServer;
+            this.chartData = chartData;
         }
 
         public SeriesCollection GetSeriesCollection(int from, int to, int resample, int maxIdx)
@@ -46,10 +46,10 @@ namespace GUI
 
         private void UpdateRanges(int from, int to, int resample, int maxIdx)
         {
-            accXSeria.Update(accelServer.AccX, from, to, resample, maxIdx);
-            accYSeria.Update(accelServer.AccY, from, to, resample, maxIdx);
-            accZSeria.Update(accelServer.AccZ, from, to, resample, maxIdx);
-            labels.Update(accelServer.Labels, from, to, resample, maxIdx);
+            accXSeria.Update(chartData.AccX, from, to, resample, maxIdx);
+            accYSeria.Update(chartData.AccY, from, to, resample, maxIdx);
+            accZSeria.Update(chartData.AccZ, from, to, resample, maxIdx);
+            labels.Update(chartData.Labels, from, to, resample, maxIdx);
 
         }
     }

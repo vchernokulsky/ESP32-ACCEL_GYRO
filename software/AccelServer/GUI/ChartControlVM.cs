@@ -12,22 +12,26 @@ namespace GUI
 {
     class ChartControlVM: BindableBase
     {
-        private AccelServer.AccelServer accelServer;
+        private int deviceId;
+        private DataGetter chartData;
         private IList<string> properties = new List<string>();
 
         private ChartVM chartVM;
         private SpinnerVM resamplingSpinner;
         private SlideButtonsVM slideButtons;
-       
+
+        private string selfName;
 
        
 
-        public ChartControlVM(AccelServer.AccelServer accelServer) 
+        public ChartControlVM(int deviceId) 
         {
-            this.accelServer = accelServer;
-            accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            accelServer.SetPropetyRaise();
-            chartVM = new ChartVM(accelServer);
+            this.deviceId = deviceId;
+            chartData = new DataGetter(deviceId);
+            //accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            // accelServer.SetPropetyRaise();
+            selfName = "Chart" + deviceId.ToString();
+            chartVM = new ChartVM(chartData);
 
             properties.Add("SeriesCollection");
             properties.Add("Labels");
@@ -37,27 +41,24 @@ namespace GUI
             slideButtons = new SlideButtonsVM(0, 300, properties);
             slideButtons.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 
-
-
         }
 
         public IList<string> Labels { get { return chartVM.Labels; } }
         public SeriesCollection SeriesCollection
         {
             get
-            {
-                
+            {              
                 var resample = ResamplingSpinner.Count;
                 var maxIdx = SlideButtons.From + SlideButtons.Length * resample;
-                SlideButtons.IsNextEnabled = DataReceiver.running | (accelServer.Labels.Count - maxIdx - SlideButtons.Step > 0);
+                SlideButtons.IsNextEnabled = DataReceiver.running | (chartData.Labels.Count - maxIdx - SlideButtons.Step > 0);
                 SlideButtons.IsPrevEnabled = SlideButtons.From - SlideButtons.Step > 0;
                 return chartVM.GetSeriesCollection(SlideButtons.From, SlideButtons.To, resample, maxIdx);
             }
-            private set { RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Chart1"); }
+            private set { RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged(selfName); }
         }
 
-        public SpinnerVM ResamplingSpinner { get => resamplingSpinner; set { resamplingSpinner = value; RaisePropertyChanged("ResamplingSpinner"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged("Chart1"); } }
-        public SlideButtonsVM SlideButtons { get => slideButtons; set { slideButtons = value; RaisePropertyChanged("SlideButtons"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged("Chart1"); } }
+        public SpinnerVM ResamplingSpinner { get => resamplingSpinner; set { resamplingSpinner = value; RaisePropertyChanged("ResamplingSpinner"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged(selfName); } }
+        public SlideButtonsVM SlideButtons { get => slideButtons; set { slideButtons = value; RaisePropertyChanged("SlideButtons"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged(selfName); } }
 
 
     }
