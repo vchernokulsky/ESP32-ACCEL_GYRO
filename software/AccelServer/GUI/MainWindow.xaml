@@ -69,6 +69,7 @@
             <Button x:Name="btnStop" Content="Стоп" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
         </StackPanel>
         <StackPanel Grid.Row="2">
+            <local:SpinnerView DataContext="{Binding Spinner}"/>
             <local:ChartViewControl DataContext="{Binding Chart1}"/>
             <!--local:ChartViewControl /-->
 
