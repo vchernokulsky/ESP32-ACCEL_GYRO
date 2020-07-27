@@ -17,10 +17,12 @@ namespace GUI
         private int minValue;
         private int maxValue;
 
-        public SpinnerVM(int minValue = 1, int maxValue = 5)
+        private IList<string> outerProperties;
+        public SpinnerVM(int minValue = 1, int maxValue = 5, IList<string> outerProperties=null)
         {
             this.minValue = minValue;
             this.maxValue = maxValue;
+            this.outerProperties = outerProperties;
             OnMinusClicked = new DelegateCommand(() => Minus());
             OnPlusClicked = new DelegateCommand(() => Plus());
             Count = minValue;
@@ -43,6 +45,8 @@ namespace GUI
                 IsMinusEnabled = false;
             if (Count <= maxValue)
                 IsPlusEnabled = true;
+            RaiseOuterProperties();
+          
         }
 
         private void Plus()
@@ -52,6 +56,17 @@ namespace GUI
                 IsPlusEnabled = false;
             if (Count >= minValue)
                 IsMinusEnabled = true;
+            RaiseOuterProperties();
+            
+        }
+
+        private void RaiseOuterProperties()
+        {
+            if(outerProperties != null)
+                foreach(string str in outerProperties)
+                {
+                    RaisePropertyChanged(str);
+                }
         }
 
     }

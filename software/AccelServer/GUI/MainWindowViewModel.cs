@@ -23,7 +23,7 @@ namespace GUI
         private DeviseStatus Device6;
 
         private ChartControlVM chart1;
-        private SpinnerVM spinner;
+        
 
         public MainWindowViewModel()
         {
@@ -43,8 +43,6 @@ namespace GUI
             Device4 = new DeviseStatus(4, accelServer) { Title = "Устройство №4" };
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
-
-            spinner = new SpinnerVM(1, 5);
 
             chart1 = new ChartControlVM(accelServer);
 
@@ -66,8 +64,6 @@ namespace GUI
         public Brush DeviceColor4 => Device4.StatusColor;
         public Brush DeviceColor5 => Device5.StatusColor;
         public Brush DeviceColor6 => Device6.StatusColor;
-
-        public SpinnerVM Spinner { get => spinner; set { spinner = value; RaisePropertyChanged("Spinner"); } }
 
         public ChartControlVM Chart1 { get => chart1; set { chart1 = value; RaisePropertyChanged("Chart1"); } }
     }

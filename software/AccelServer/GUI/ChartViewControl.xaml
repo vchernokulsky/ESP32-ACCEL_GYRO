@@ -22,13 +22,7 @@
             <Button Height="25" Width="75" Margin="20, 0, 10, 0" IsEnabled="{Binding IsPrevEnabled}" Command="{Binding OnPrevClick}">Назад</Button>
             <Button Height="25" Width="75"  IsEnabled="{Binding IsNextEnabled}" Command="{Binding OnNextClick}">Вперед</Button>
             <GroupBox Header="Дискретизация" Margin="15">
-                <StackPanel  Orientation="Horizontal">
-                    <RadioButton Content="1" IsChecked="{Binding IsResamplingX1}" Margin="3"/>
-                    <RadioButton Content="2" IsChecked="{Binding IsResamplingX2}" Margin="3"/>
-                    <RadioButton Content="3" IsChecked="{Binding IsResamplingX3}" Margin="3"/>
-                    <RadioButton Content="4" IsChecked="{Binding IsResamplingX4}" Margin="3"/>
-                    <RadioButton Content="5" IsChecked="{Binding IsResamplingX5}" Margin="3"/>
-                </StackPanel>
+                <local:SpinnerView DataContext="{Binding ResamplingSpinner}" Margin="10, 5, 10, 5"/>
             </GroupBox>
         </StackPanel>
 

@@ -13,6 +13,7 @@ namespace GUI
     class ChartControlVM: BindableBase
     {
         private AccelServer.AccelServer accelServer;
+        private IList<string> properties = new List<string>();
 
         private ChartVM chartVM;
 
@@ -22,7 +23,9 @@ namespace GUI
 
         private bool _nextEnabled = false;
         private bool _prevEnabled = false;
-        private Resampling resampling = Resampling.X1;
+
+        private SpinnerVM resamplingSpinner;
+       
 
         public DelegateCommand OnPrevClick { get; }
         public DelegateCommand OnNextClick { get; }
@@ -34,8 +37,14 @@ namespace GUI
             accelServer.SetPropetyRaise();
             chartVM = new ChartVM(accelServer);
 
+            properties.Add("SeriesCollection");
+            properties.Add("Labels");
+            resamplingSpinner = new SpinnerVM(1, 5, properties);
+            resamplingSpinner.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+
             OnPrevClick = new DelegateCommand(() => { this.From -= _step; this.To -= _step; RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); });
             OnNextClick = new DelegateCommand(() => { this.From += _step; this.To += _step; RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); });
+
         }
 
         public IList<string> Labels { get { return chartVM.Labels; } }
@@ -44,10 +53,10 @@ namespace GUI
             get
             {
                 var length = _to - _from;
-                var resample = (int)this.Resampling;
+                var resample = ResamplingSpinner.Count;
                 var maxIdx = _from + length * resample;
-                IsNextEnabled = DataReceiver.running | (accelServer.Labels.Count - _from - _step * resample - length * resample > 0);
-                IsPrevEnabled = _from - _step * resample > 0;
+                IsNextEnabled = DataReceiver.running | (accelServer.Labels.Count - _from - _step - length * resample > 0);
+                IsPrevEnabled = _from - _step > 0;
                 return chartVM.GetSeriesCollection(_from, _to, resample, maxIdx);
             }
             private set { RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Chart1"); }
@@ -74,46 +83,8 @@ namespace GUI
 
         public int From { get { return _from; } private set { _from = value; RaisePropertyChanged("From"); } }
         public int To { get { return _to; } private set { _to = value; RaisePropertyChanged("To"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); } }
+        public SpinnerVM ResamplingSpinner { get => resamplingSpinner; set { resamplingSpinner = value; RaisePropertyChanged("ResamplingSpinner"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged("Chart1"); } }
 
 
-        public Resampling Resampling
-        {
-            get { return resampling; }
-            set
-            {
-                if (resampling == value)
-                    return;
-
-                resampling = value;
-                RaisePropertyChanged("Resampling");
-                RaisePropertyChanged("SeriesCollection");
-                RaisePropertyChanged("Labels");
-            }
-        }
-        public bool IsResamplingX1
-        {
-            get { return Resampling == Resampling.X1; }
-            set { Resampling = value ? Resampling.X1 : Resampling; }
-        }
-        public bool IsResamplingX2
-        {
-            get { return Resampling == Resampling.X2; }
-            set { Resampling = value ? Resampling.X2 : Resampling; }
-        }
-        public bool IsResamplingX3
-        {
-            get { return Resampling == Resampling.X3; }
-            set { Resampling = value ? Resampling.X3 : Resampling; }
-        }
-        public bool IsResamplingX4
-        {
-            get { return Resampling == Resampling.X4; }
-            set { Resampling = value ? Resampling.X4 : Resampling; }
-        }
-        public bool IsResamplingX5
-        {
-            get { return Resampling == Resampling.X5; }
-            set { Resampling = value ? Resampling.X5 : Resampling; }
-        }
     }
 }
