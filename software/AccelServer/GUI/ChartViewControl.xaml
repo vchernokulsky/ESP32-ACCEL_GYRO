@@ -19,8 +19,9 @@
 
 
         <StackPanel Grid.Row="0" Orientation="Horizontal"  HorizontalAlignment="Left" VerticalAlignment="Bottom">
-            <Button Height="25" Width="75" Margin="20, 0, 10, 0" IsEnabled="{Binding IsPrevEnabled}" Command="{Binding OnPrevClick}">Назад</Button>
-            <Button Height="25" Width="75"  IsEnabled="{Binding IsNextEnabled}" Command="{Binding OnNextClick}">Вперед</Button>
+            <!-- <Button Height="25" Width="75" Margin="20, 0, 10, 0" IsEnabled="{Binding IsPrevEnabled}" Command="{Binding OnPrevClick}">Назад</Button>
+            <Button Height="25" Width="75"  IsEnabled="{Binding IsNextEnabled}" Command="{Binding OnNextClick}">Вперед</Button>-->
+            <local:SlideButtonsView DataContext="{Binding SlideButtons}" Margin="10, 5, 10, 5"></local:SlideButtonsView>
             <GroupBox Header="Дискретизация" Margin="15">
                 <local:SpinnerView DataContext="{Binding ResamplingSpinner}" Margin="10, 5, 10, 5"/>
             </GroupBox>

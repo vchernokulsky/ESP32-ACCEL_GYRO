@@ -16,19 +16,11 @@ namespace GUI
         private IList<string> properties = new List<string>();
 
         private ChartVM chartVM;
-
-        private int _from = 25;
-        private int _to = 225;
-        private int _step = 150;
-
-        private bool _nextEnabled = false;
-        private bool _prevEnabled = false;
-
         private SpinnerVM resamplingSpinner;
+        private SlideButtonsVM slideButtons;
        
 
-        public DelegateCommand OnPrevClick { get; }
-        public DelegateCommand OnNextClick { get; }
+       
 
         public ChartControlVM(AccelServer.AccelServer accelServer) 
         {
@@ -42,8 +34,10 @@ namespace GUI
             resamplingSpinner = new SpinnerVM(1, 5, properties);
             resamplingSpinner.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 
-            OnPrevClick = new DelegateCommand(() => { this.From -= _step; this.To -= _step; RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); });
-            OnNextClick = new DelegateCommand(() => { this.From += _step; this.To += _step; RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); });
+            slideButtons = new SlideButtonsVM(0, 300, properties);
+            slideButtons.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+
+
 
         }
 
@@ -52,38 +46,18 @@ namespace GUI
         {
             get
             {
-                var length = _to - _from;
+                
                 var resample = ResamplingSpinner.Count;
-                var maxIdx = _from + length * resample;
-                IsNextEnabled = DataReceiver.running | (accelServer.Labels.Count - _from - _step - length * resample > 0);
-                IsPrevEnabled = _from - _step > 0;
-                return chartVM.GetSeriesCollection(_from, _to, resample, maxIdx);
+                var maxIdx = SlideButtons.From + SlideButtons.Length * resample;
+                SlideButtons.IsNextEnabled = DataReceiver.running | (accelServer.Labels.Count - maxIdx - SlideButtons.Step > 0);
+                SlideButtons.IsPrevEnabled = SlideButtons.From - SlideButtons.Step > 0;
+                return chartVM.GetSeriesCollection(SlideButtons.From, SlideButtons.To, resample, maxIdx);
             }
             private set { RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Chart1"); }
         }
 
-        public bool IsNextEnabled
-        {
-            get { return _nextEnabled; }
-            set
-            {
-                _nextEnabled = value;
-                RaisePropertyChanged("IsNextEnabled");
-            }
-        }
-        public bool IsPrevEnabled
-        {
-            get { return _prevEnabled; }
-            set
-            {
-                _prevEnabled = value;
-                RaisePropertyChanged("IsPrevEnabled");
-            }
-        }
-
-        public int From { get { return _from; } private set { _from = value; RaisePropertyChanged("From"); } }
-        public int To { get { return _to; } private set { _to = value; RaisePropertyChanged("To"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); } }
         public SpinnerVM ResamplingSpinner { get => resamplingSpinner; set { resamplingSpinner = value; RaisePropertyChanged("ResamplingSpinner"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged("Chart1"); } }
+        public SlideButtonsVM SlideButtons { get => slideButtons; set { slideButtons = value; RaisePropertyChanged("SlideButtons"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged("Chart1"); } }
 
 
     }
