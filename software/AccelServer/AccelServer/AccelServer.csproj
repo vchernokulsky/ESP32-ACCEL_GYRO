@@ -55,6 +55,7 @@
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.113.1\lib\net451\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -75,6 +76,7 @@
   <ItemGroup>
     <Compile Include="ChartDataSingleton.cs" />
     <Compile Include="DataGetter.cs" />
+    <Compile Include="DBManager.cs" />
     <Compile Include="NetHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IpBroadcaster.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="IMUData.cs" />
     <Compile Include="AccelServer.cs" />
     <Compile Include="MpuCalibraion.cs" />
+    <Compile Include="SQLUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
-
+using System.Data.SQLite;
 
 namespace AccelServer
 {
     class PackageInfo
     {
+ 
         public byte[] bytes = new byte[18];
         public int cur_len = 0;
         public int package_cnt = 0;
@@ -74,7 +75,6 @@ namespace AccelServer
         public bool ProcessData()
         {
             var isProcessed = true;
-
             ReceivedObject obj;
             if(_queues.TryDequeue(out obj))
             { 
@@ -82,6 +82,7 @@ namespace AccelServer
                     _dataLists[obj.id] = new IMUDataList(obj.id, _packageInfoDict[obj.id].SyncTime, _packageInfoDict[obj.id].SyncTicks);
 
                 int bytes_proceed = 0;
+                SQLUtils sqlUtils = DBManager.Instance.GetUtils();
                 while (bytes_proceed < obj.length)
                 {
                     try
@@ -91,9 +92,10 @@ namespace AccelServer
                         _packageInfoDict[obj.id].cur_len += copy_len;
                         bytes_proceed += copy_len;
                         if (_packageInfoDict[obj.id].cur_len == package_size)
-                        {
-                            //Console.WriteLine("found {0} packages", ++_packageInfos[obj.id].package_cnt);
+                        {                         
                             _dataLists[obj.id].PutBytes(_packageInfoDict[obj.id].bytes);
+                            sqlUtils.AddValues(obj.id, AccelServer.SessionId, _dataLists[obj.id].agList.Last());
+                            _packageInfoDict[obj.id].package_cnt++;
                             _packageInfoDict[obj.id].cur_len = 0;
                         }
                     }
@@ -102,6 +104,7 @@ namespace AccelServer
                         Console.WriteLine(ex.Message);
                     }
                 }
+                sqlUtils.InsertValues();
             }
             else
             {

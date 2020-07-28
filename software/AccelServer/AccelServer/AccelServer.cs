@@ -8,6 +8,7 @@ namespace AccelServer
 {
 	public class AccelServer : BindableBase
 	{
+		public static int SessionId = 0;
 		private int broadcasterPort;
 		private IpBroadcaster controller;
 		private DeviceSynchronizer devSync;
@@ -107,7 +108,7 @@ namespace AccelServer
 		}
 		public void StartReceiving()
 		{
-			Thread.Sleep(500);
+			SessionId++;
 			ChartDataSingleton.Instance.Clear();
 			isFirstPackage = true;
 
