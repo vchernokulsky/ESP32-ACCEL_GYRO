@@ -87,15 +87,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="SlideButtonsView.xaml.cs">
+    <Compile Include="Views\SlideButtonsView.xaml.cs">
       <DependentUpon>SlideButtonsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SlideButtonsVM.cs" />
-    <Compile Include="SpinnerView.xaml.cs">
+    <Compile Include="ViewModels\SlideButtonsVM.cs" />
+    <Compile Include="Views\SpinnerView.xaml.cs">
       <DependentUpon>SpinnerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpinnerVM.cs" />
-    <Page Include="ChartViewControl.xaml">
+    <Compile Include="ViewModels\SpinnerVM.cs" />
+    <Page Include="Views\ChartViewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -107,24 +107,23 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChartControlVM.cs" />
-    <Compile Include="ChartLineVM.cs" />
-    <Compile Include="ChartViewControl.xaml.cs">
+    <Compile Include="ViewModels\ChartControlVM.cs" />
+    <Compile Include="ViewModels\ChartLineVM.cs" />
+    <Compile Include="Views\ChartViewControl.xaml.cs">
       <DependentUpon>ChartViewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ChartVM.cs" />
-    <Compile Include="Common.cs" />
-    <Compile Include="DeviseStatus.cs" />
-    <Compile Include="LabelVM.cs" />
+    <Compile Include="ViewModels\ChartVM.cs" />
+    <Compile Include="ViewModels\DeviseStatus.cs" />
+    <Compile Include="ViewModels\LabelVM.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SlideButtonsView.xaml">
+    <Page Include="Views\SlideButtonsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SpinnerView.xaml">
+    <Page Include="Views\SpinnerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

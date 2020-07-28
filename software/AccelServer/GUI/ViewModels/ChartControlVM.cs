@@ -43,6 +43,7 @@ namespace GUI
 
         }
 
+        public string DeviceName => "Устройство №" + deviceId.ToString();
         public IList<string> Labels { get { return chartVM.Labels; } }
         public SeriesCollection SeriesCollection
         {

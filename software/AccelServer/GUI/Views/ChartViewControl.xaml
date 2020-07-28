@@ -18,11 +18,12 @@
         </Grid.ColumnDefinitions>
 
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal"  HorizontalAlignment="Left" VerticalAlignment="Bottom">
+        <StackPanel Grid.Row="0" Orientation="Horizontal"  HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
             <local:SlideButtonsView DataContext="{Binding SlideButtons}" Margin="10, 5, 10, 5"></local:SlideButtonsView>
             <GroupBox Header="Дискретизация" Margin="15">
                 <local:SpinnerView DataContext="{Binding ResamplingSpinner}" Margin="10, 5, 10, 5"/>
             </GroupBox>
+            <Label Content="{Binding DeviceName}" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="100, 0, 0, 0"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Vertical"  HorizontalAlignment="Stretch" VerticalAlignment="Top">
