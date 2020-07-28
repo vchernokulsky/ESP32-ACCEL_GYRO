@@ -68,7 +68,7 @@ def send_amount(amount=300, host='192.168.55.116', port=5000):
             print(e)
             err_cnt += 1
             if e.args[0] == 113:
-                count_to_restart += 10
+                count_to_restart += 20
             else:
                 count_to_restart += 1
             if err_cnt >= 20:
@@ -131,14 +131,17 @@ def main():
     device_id = 1
     device_type = 1
     while True:
-        self_ip = init_network()
-        server_ip = get_server_ip()
+        try:
+            self_ip = init_network()
+            server_ip = get_server_ip()
 
-        jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms()}
-        jbytes = ujson.dumps(jdict).encode("utf-8")
-        print(jbytes)
-        server_port = sync_info(server_ip, jbytes)
-        send_amount(host=server_ip, port=server_port)
+            jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms()}
+            jbytes = ujson.dumps(jdict).encode("utf-8")
+            print(jbytes)
+            server_port = sync_info(server_ip, jbytes)
+            send_amount(host=server_ip, port=server_port)
+        except Exception as e:
+            print(e)
 
 
 def calibrate():
