@@ -16,6 +16,7 @@ namespace ImuServer
 										"\"DeviceId\"	INTEGER NOT NULL,"+
 										"\"SessionId\"	INTEGER NOT NULL,"+
 										"\"Time\"	TEXT NOT NULL,"+
+                                        "\"UserName\"	TEXT,"+
 										"\"AccelerationX\"	REAL NOT NULL,"+
 										"\"AccelerationY\"	REAL NOT NULL,"+
 										"\"AccelerationZ\"	REAL NOT NULL,"+

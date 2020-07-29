@@ -13,12 +13,12 @@ namespace ImuServer
         private SQLiteConnection _connection;
 
         private string INSERT_TEMPLATE = "INSERT INTO ReseivedData(" +
-            "`DeviceId`,`SessionId`,`Time`,"+
+            "`DeviceId`,`SessionId`,`Time`,`UserName`,"+
             "`AccelerationX`,`AccelerationY`,`AccelerationZ`," +
             "`GyroscopX`,`GyroscopY`,`GyroscopZ`) VALUES {0} ;";
 
         private string VALUES_TEMPLATE =
-            "({0}, {1}, '{2}', {3}, {4}, {5}, {6}, {7}, {8})";
+            "({0}, {1}, '{2}', '{3}', {4}, {5}, {6}, {7}, {8}, {9})";
 
         private string ADD_PARAMS_TEMPLATE = "{0}, {1}";
 
@@ -34,9 +34,9 @@ namespace ImuServer
             _connection = conn;
         }
 
-        public void AddValues(int deviceId, int sessionId, IMUData imuData)
+        public void AddValues(int deviceId, int sessionId, string userName, IMUData imuData)
         {
-            string curParams = string.Format(VALUES_TEMPLATE, deviceId, sessionId, imuData.Time.ToString(TIME_FORMAT), 
+            string curParams = string.Format(VALUES_TEMPLATE, deviceId, sessionId, imuData.Time.ToString(TIME_FORMAT), userName,
                 imuData.AcX.ToString(specifier, culture), imuData.AcY.ToString(specifier, culture), imuData.AcZ.ToString(specifier, culture), 
                 imuData.GyX.ToString(specifier, culture), imuData.GyY.ToString(specifier, culture), imuData.GyZ.ToString(specifier, culture));
             if (paramsStr == null || paramsStr.Length == 0)

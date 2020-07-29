@@ -6,6 +6,7 @@ namespace ImuServer
 {
 	public class AccelServer : BindableBase
 	{
+		public static string UserName = "";
 		public static int SessionId = 0;
 
 		private IpBroadcaster controller;

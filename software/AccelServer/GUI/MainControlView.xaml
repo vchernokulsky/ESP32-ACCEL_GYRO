@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GUI"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
@@ -13,12 +12,13 @@
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="40 "></RowDefinition>
-            <RowDefinition Height="80"></RowDefinition>
-            <RowDefinition />
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <Label x:Name="lblWifiCon" Grid.Row="0" Background="Red" Content="Нет соединения с WiFi-сетью" HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="{Binding Path=NoConnection, Converter={StaticResource BoolToVisConverter}}"/>
@@ -44,7 +44,11 @@
             <Button x:Name="btnStart" Content="Старт" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
             <Button x:Name="btnStop" Content="Стоп" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
         </StackPanel>
-        <StackPanel Grid.Row="2">
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0, 0, 10, 0">Введите ФИО</Label>
+            <TextBox Text="{Binding UserName}" Width="300" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" ></TextBox>
+        </StackPanel>
+        <StackPanel Grid.Row="3">
             <ScrollViewer Name="scroll" CanContentScroll="True" Height="600">
                 <StackPanel>
                     <local:ChartViewControl DataContext="{Binding Chart1}"/>

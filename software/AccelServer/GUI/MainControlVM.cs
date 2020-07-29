@@ -23,6 +23,8 @@ namespace GUI
         private ChartControlVM chart5;
         private ChartControlVM chart6;
 
+        private string userName;
+
 
         public MainControlVM(AppType appType)
         {
@@ -75,5 +77,8 @@ namespace GUI
         public ChartControlVM Chart4 { get => chart4; set { chart1 = value; RaisePropertyChanged("Chart4"); } }
         public ChartControlVM Chart5 { get => chart5; set { chart1 = value; RaisePropertyChanged("Chart5"); } }
         public ChartControlVM Chart6 { get => chart6; set { chart1 = value; RaisePropertyChanged("Chart6"); } }
+
+        public string UserName { get => userName; set { userName = value; AccelServer.UserName = value; } }
+
     }
 }
