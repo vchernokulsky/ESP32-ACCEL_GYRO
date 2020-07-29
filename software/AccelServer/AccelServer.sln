@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccelerationMeasurement", "AccelerationMeasurement\AccelerationMeasurement.csproj", "{32545D57-C032-4EF7-9CF8-D1DBF193EB00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnglesMeasurement", "AnglesMeasurement\AnglesMeasurement.csproj", "{999B35A6-4937-460D-BE11-8FE7F7A00F68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,14 @@ Global
 		{32545D57-C032-4EF7-9CF8-D1DBF193EB00}.Release|Any CPU.Build.0 = Release|Any CPU
 		{32545D57-C032-4EF7-9CF8-D1DBF193EB00}.Release|x86.ActiveCfg = Release|Any CPU
 		{32545D57-C032-4EF7-9CF8-D1DBF193EB00}.Release|x86.Build.0 = Release|Any CPU
+		{999B35A6-4937-460D-BE11-8FE7F7A00F68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{999B35A6-4937-460D-BE11-8FE7F7A00F68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{999B35A6-4937-460D-BE11-8FE7F7A00F68}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{999B35A6-4937-460D-BE11-8FE7F7A00F68}.Debug|x86.Build.0 = Debug|Any CPU
+		{999B35A6-4937-460D-BE11-8FE7F7A00F68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{999B35A6-4937-460D-BE11-8FE7F7A00F68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{999B35A6-4937-460D-BE11-8FE7F7A00F68}.Release|x86.ActiveCfg = Release|Any CPU
+		{999B35A6-4937-460D-BE11-8FE7F7A00F68}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

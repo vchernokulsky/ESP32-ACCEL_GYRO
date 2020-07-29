@@ -1,18 +1,19 @@
-﻿using Prism.Commands;
+﻿using GUI;
+using Prism.Commands;
 using Prism.Mvvm;
-using GUI;
-namespace AccelerationMeasurement
+
+namespace AnglesMeasurement
 {
     class MainWindowVM : BindableBase
     {
-        private AppType APP_TYPE = AppType.AccelerationMeasurement;
+        private AppType APP_TYPE = AppType.AnglesMeasurement;
         private MainControlVM mainControlVM;
         public DelegateCommand OnContentRendered { get; }
         public DelegateCommand<object> OnClosing { get; }
         public MainControlVM MainControlVM { get => mainControlVM; set { mainControlVM = value; RaisePropertyChanged("MainControlVM"); } }
 
         public MainWindowVM()
-        {            
+        {
             MainControlVM = new MainControlVM(APP_TYPE);
             MainControlVM.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             OnContentRendered = MainControlVM.OnContentRendered;
