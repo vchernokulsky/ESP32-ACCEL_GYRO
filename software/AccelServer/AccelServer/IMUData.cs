@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AccelServer
+namespace ImuServer
 {
 	public class IMUDataListDecorator
 	{

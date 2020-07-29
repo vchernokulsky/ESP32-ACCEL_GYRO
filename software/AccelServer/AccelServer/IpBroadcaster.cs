@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Net.NetworkInformation;
 
-namespace AccelServer
+namespace ImuServer
 {
 	public class IpBroadcaster
 	{

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace AccelServer
+namespace ImuServer
 {
 	public class DataGetter
     {
@@ -52,6 +48,36 @@ namespace AccelServer
 				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(id))
 					return new List<float>();
 				return ChartDataSingleton.Instance._dataLists[id].AxisZAccelerations;
+			}
+		}
+
+		public IList<float> GyX
+		{
+			get
+			{
+				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(id))
+					return new List<float>();
+				return ChartDataSingleton.Instance._dataLists[id].AxisXAngles;
+			}
+		}
+
+		public IList<float> GyY
+		{
+			get
+			{
+				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(id))
+					return new List<float>();
+				return ChartDataSingleton.Instance._dataLists[id].AxisYAngles;
+			}
+		}
+
+		public IList<float> GyZ
+		{
+			get
+			{
+				if (!ChartDataSingleton.Instance._dataLists.ContainsKey(id))
+					return new List<float>();
+				return ChartDataSingleton.Instance._dataLists[id].AxisZAngles;
 			}
 		}
 	}

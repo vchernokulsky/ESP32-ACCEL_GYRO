@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Data.SQLite;
 
-namespace AccelServer
+namespace ImuServer
 {
     class PackageInfo
     {

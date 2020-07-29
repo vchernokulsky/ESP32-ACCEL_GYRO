@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 
-namespace AccelServer
+namespace ImuServer
 {
 	public class ReceivedObject {
 		public int id;

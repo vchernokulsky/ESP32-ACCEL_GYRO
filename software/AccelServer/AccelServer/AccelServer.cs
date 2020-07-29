@@ -2,7 +2,7 @@
 using System;
 using System.Threading;
 
-namespace AccelServer
+namespace ImuServer
 {
 	public class AccelServer : BindableBase
 	{

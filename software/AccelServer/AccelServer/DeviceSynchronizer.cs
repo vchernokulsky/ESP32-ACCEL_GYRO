@@ -11,7 +11,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Prism;
 using Prism.Events;
 
-namespace AccelServer
+namespace ImuServer
 {
 
 	
