@@ -1,18 +1,13 @@
-﻿using AccelServer;
+﻿using ImuServer;
 using Prism.Commands;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace GUI
 {
     public class MainControlVM: BindableBase
     {
-        private AccelServer.AccelServer accelServer = new AccelServer.AccelServer(15000);
+        private AccelServer accelServer = new AccelServer(15000);
 
         private DeviseStatus Device1;
         private DeviseStatus Device2;
@@ -29,7 +24,7 @@ namespace GUI
         private ChartControlVM chart6;
 
 
-        public MainControlVM()
+        public MainControlVM(AppType appType)
         {
             accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             accelServer.SetPropetyRaise();
@@ -48,12 +43,12 @@ namespace GUI
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
 
-            chart1 = new ChartControlVM(1);
-            chart2 = new ChartControlVM(2);
-            chart3 = new ChartControlVM(3);
-            chart4 = new ChartControlVM(4);
-            chart5 = new ChartControlVM(5);
-            chart6 = new ChartControlVM(6);
+            chart1 = new ChartControlVM(1, appType);
+            chart2 = new ChartControlVM(2, appType);
+            chart3 = new ChartControlVM(3, appType);
+            chart4 = new ChartControlVM(4, appType);
+            chart5 = new ChartControlVM(5, appType);
+            chart6 = new ChartControlVM(6, appType);
 
         }
 

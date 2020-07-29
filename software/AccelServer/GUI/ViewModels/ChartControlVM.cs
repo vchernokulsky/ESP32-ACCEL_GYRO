@@ -1,4 +1,4 @@
-﻿using AccelServer;
+﻿using ImuServer;
 using LiveCharts;
 using Prism.Mvvm;
 using System.Collections.Generic;
@@ -19,14 +19,13 @@ namespace GUI
 
        
 
-        public ChartControlVM(int deviceId) 
+        public ChartControlVM(int deviceId, AppType appType) 
         {
             this.deviceId = deviceId;
             chartData = new DataGetter(deviceId);
-            //accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            // accelServer.SetPropetyRaise();
+        
             selfName = "Chart" + deviceId.ToString();
-            chartVM = new ChartVM(chartData);
+            chartVM = new ChartVM(appType, chartData);
 
             properties.Add("SeriesCollection");
             properties.Add("Labels");

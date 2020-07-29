@@ -15,13 +15,13 @@ namespace GUI
     class DeviseStatus : BindableBase
     {
         private int id;
-        private AccelServer.AccelServer accelServer;
+        private ImuServer.AccelServer accelServer;
         private string title;
 
 
         private Brush[] colors = { Brushes.Red, Brushes.Yellow, Brushes.Green };
 
-        public DeviseStatus(int id, AccelServer.AccelServer accelServer)
+        public DeviseStatus(int id, ImuServer.AccelServer accelServer)
         {
             this.id = id;
             this.accelServer = accelServer;

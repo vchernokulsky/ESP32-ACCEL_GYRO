@@ -3,32 +3,30 @@ using LiveCharts.Wpf;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace GUI
 {
     class ChartVM: BindableBase
     {
-        private AccelServer.DataGetter chartData;
+        private AppType appType;
 
-        private ChartLineVM accXSeria = new ChartLineVM("Ось X");
-        private ChartLineVM accYSeria = new ChartLineVM("Ось Y");
-        private ChartLineVM accZSeria = new ChartLineVM("Ось Z");
+        private ImuServer.DataGetter chartData;
+
+        private ChartLineVM seriaX = new ChartLineVM("Ось X");
+        private ChartLineVM seriaY = new ChartLineVM("Ось Y");
+        private ChartLineVM seriaZ = new ChartLineVM("Ось Z");
         private LabelVM labels = new LabelVM();
 
         private SeriesCollection _collection { get; set; }
-
-        public LineSeries AccXSeria => accXSeria.GetSeria();
-        public LineSeries AccYSeria => accYSeria.GetSeria();
-        public LineSeries AccZSeria => accZSeria.GetSeria();
+        public LineSeries SeriaX => seriaX.GetSeria();
+        public LineSeries SeriaY => seriaY.GetSeria();
+        public LineSeries SeriaZ => seriaZ.GetSeria();
         public IList<string> Labels => labels.GetLabels();
 
 
-        public ChartVM(AccelServer.DataGetter chartData)
+        public ChartVM(AppType appType, ImuServer.DataGetter chartData)
         {
+            this.appType = appType;
             this.chartData = chartData;
         }
 
@@ -37,7 +35,7 @@ namespace GUI
             if (_collection == null)
             {
                 _collection = new SeriesCollection() {
-                    AccXSeria, AccYSeria, AccZSeria
+                    SeriaX, SeriaY, SeriaZ
                 };
             }
             UpdateRanges(from, to, resample, maxIdx);
@@ -46,9 +44,35 @@ namespace GUI
 
         private void UpdateRanges(int from, int to, int resample, int maxIdx)
         {
-            accXSeria.Update(chartData.AccX, from, to, resample, maxIdx);
-            accYSeria.Update(chartData.AccY, from, to, resample, maxIdx);
-            accZSeria.Update(chartData.AccZ, from, to, resample, maxIdx);
+            switch (appType)
+            {
+                case AppType.AccelerationMeasurement:
+                    UpdateAccelerationRanges(from, to, resample, maxIdx);
+                    break;
+                case AppType.AnglesMeasurement:
+                    UpdateAngleRanges(from, to, resample, maxIdx);
+                    break;
+                default:
+                    Console.WriteLine("Wrong Application type {0}", appType.ToString());
+                    break;
+            }
+
+        }
+
+        private void UpdateAccelerationRanges(int from, int to, int resample, int maxIdx)
+        {
+            seriaX.Update(chartData.AccX, from, to, resample, maxIdx);
+            seriaY.Update(chartData.AccY, from, to, resample, maxIdx);
+            seriaZ.Update(chartData.AccZ, from, to, resample, maxIdx);
+            labels.Update(chartData.Labels, from, to, resample, maxIdx);
+
+        }
+
+        private void UpdateAngleRanges(int from, int to, int resample, int maxIdx)
+        {
+            seriaX.Update(chartData.GyX, from, to, resample, maxIdx);
+            seriaY.Update(chartData.GyY, from, to, resample, maxIdx);
+            seriaZ.Update(chartData.GyZ, from, to, resample, maxIdx);
             labels.Update(chartData.Labels, from, to, resample, maxIdx);
 
         }
