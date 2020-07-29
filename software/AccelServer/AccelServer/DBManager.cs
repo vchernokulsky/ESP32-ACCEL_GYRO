@@ -10,7 +10,7 @@ namespace ImuServer
 {
     class DBManager
     {
-        private readonly string dbName = "Measurement.sqlite";
+        private readonly string dbName = "../../../Measurement.sqlite";
 		private readonly string createTable = "CREATE TABLE IF NOT EXISTS \"ReseivedData\" (" +
 										"\"Id\"	INTEGER NOT NULL UNIQUE,"+
 										"\"DeviceId\"	INTEGER NOT NULL,"+
