@@ -21,6 +21,7 @@ namespace ImuServer
 		
 		public AccelServer(int broadcasterPort)
 		{
+			SessionId = DBManager.Instance.GetUtils().GetSessionId();
 			controller = new IpBroadcaster(broadcasterPort);
 			devSync = new DeviceSynchronizer();
 		}

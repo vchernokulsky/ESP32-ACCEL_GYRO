@@ -73,5 +73,38 @@ namespace ImuServer
             paramsStr = "";
             return result;
         }
+
+        public int GetSessionId()
+        {
+            int ret = 0;
+            if(_connection != null)
+            {
+                string sqlQuery = "SELECT SessionId FROM ReseivedData ORDER BY Id Desc LIMIT 1;";
+                try
+                {
+                    using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, _connection))
+                    {
+                        var reader = cmd.ExecuteReader();
+                        if (reader != null)
+                        {
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    ret = reader.GetInt32(0);
+                                }
+                            }
+                            reader.Close();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(sqlQuery);
+                }
+            }
+            return ret;
+        }
     }
 }
