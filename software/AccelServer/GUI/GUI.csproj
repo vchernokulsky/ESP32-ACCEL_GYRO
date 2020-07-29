@@ -178,9 +178,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AccelServer\AccelServer.csproj">
+    <ProjectReference Include="..\AccelServer\ImuServer.csproj">
       <Project>{611FE8AF-F31E-4351-AC26-B319E6C359D2}</Project>
-      <Name>AccelServer</Name>
+      <Name>ImuServer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
