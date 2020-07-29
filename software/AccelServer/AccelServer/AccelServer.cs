@@ -1,7 +1,5 @@
 ﻿using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading;
 
 namespace AccelServer
@@ -9,7 +7,7 @@ namespace AccelServer
 	public class AccelServer : BindableBase
 	{
 		public static int SessionId = 0;
-		private int broadcasterPort;
+
 		private IpBroadcaster controller;
 		private DeviceSynchronizer devSync;
 
@@ -21,10 +19,8 @@ namespace AccelServer
 
 		public bool NoConnection = true;
 		
-
 		public AccelServer(int broadcasterPort)
 		{
-			this.broadcasterPort = broadcasterPort;
 			controller = new IpBroadcaster(broadcasterPort);
 			devSync = new DeviceSynchronizer();
 		}

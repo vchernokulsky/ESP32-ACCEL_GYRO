@@ -1,16 +1,11 @@
 ﻿using AccelServer;
 using LiveCharts;
-using Prism.Commands;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GUI
 {
-    class ChartControlVM: BindableBase
+    public class ChartControlVM: BindableBase
     {
         private int deviceId;
         private DataGetter chartData;

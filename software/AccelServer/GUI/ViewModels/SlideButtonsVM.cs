@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GUI
 {
-    class SlideButtonsVM: BindableBase
+    public class SlideButtonsVM: BindableBase
     {
         private int from;
         private int to;

@@ -227,6 +227,7 @@ namespace AccelServer
 						deviceList[info.Id].data_receiver.Start();
 
 						RaisePropertyChanged(String.Concat("DeviceColor",info.Id.ToString()));
+						
 
 						PortInfo portInfo = new PortInfo(info.Port);
 						String output = JsonConvert.SerializeObject(portInfo);

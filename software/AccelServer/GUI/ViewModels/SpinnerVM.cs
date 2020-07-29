@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GUI
 {
-    class SpinnerVM: BindableBase
+    public class SpinnerVM: BindableBase
     {
         private int count;
         private bool isMinusEnabled;

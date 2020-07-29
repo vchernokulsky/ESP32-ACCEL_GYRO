@@ -1,10 +1,7 @@
-﻿using AccelServer;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,21 +16,13 @@ using System.Windows.Shapes;
 namespace GUI
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для MainControlView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainControlView : UserControl
     {
-        //private AccelServer.AccelServer Accel;
-
-        public MainWindow()
+        public MainControlView()
         {
             InitializeComponent();
-           
-
-
         }
-
-       
-
     }
 }
