@@ -128,6 +128,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AccelServer\ImuServer.csproj">
+      <Project>{611fe8af-f31e-4351-ac26-b319e6c359d2}</Project>
+      <Name>ImuServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GUI\GUI.csproj">
       <Project>{2526D5A4-BAE8-4993-91E3-4A7E3F7F5BEE}</Project>
       <Name>GUI</Name>

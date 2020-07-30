@@ -1,55 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using GUI;
+using System;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImuServer
 {
     class DBManager
     {
-        private readonly string dbName = "../../../Measurement.sqlite";
-		private readonly string createTable = "CREATE TABLE IF NOT EXISTS \"ReseivedData\" (" +
-										"\"Id\"	INTEGER NOT NULL UNIQUE,"+
-										"\"DeviceId\"	INTEGER NOT NULL,"+
-										"\"SessionId\"	INTEGER NOT NULL,"+
-										"\"Time\"	TEXT NOT NULL,"+
-                                        "\"UserName\"	TEXT,"+
-										"\"AccelerationX\"	REAL NOT NULL,"+
-										"\"AccelerationY\"	REAL NOT NULL,"+
-										"\"AccelerationZ\"	REAL NOT NULL,"+
-										"\"GyroscopX\"	REAL NOT NULL,"+
-										"\"GyroscopY\"	REAL NOT NULL,"+
-										"\"GyroscopZ\"	REAL NOT NULL,"+
-										"PRIMARY KEY(\"Id\" AUTOINCREMENT)"+
-									");";
+        private static AppType APP_TYPE;
 
-		private static DBManager _instance;
+        private readonly string AccDbName = "AccelerationMeasurement.sqlite";
+        private readonly string AngDbbName = "AnglesMeasurement.sqlite";
 
-		private SQLiteConnection _connection;
 
-		private DBManager()
-		{
-		}
+        private readonly string createTable = "CREATE TABLE IF NOT EXISTS \"ReseivedData\" (" +
+                                        "\"Id\"	INTEGER NOT NULL UNIQUE," +
+                                        "\"DeviceId\"	INTEGER NOT NULL," +
+                                        "\"SessionId\"	INTEGER NOT NULL," +
+                                        "\"Time\"	TEXT NOT NULL," +
+                                        "\"UserName\"	TEXT," +
+                                        "\"AccelerationX\"	REAL NOT NULL," +
+                                        "\"AccelerationY\"	REAL NOT NULL," +
+                                        "\"AccelerationZ\"	REAL NOT NULL," +
+                                        "\"GyroscopX\"	REAL NOT NULL," +
+                                        "\"GyroscopY\"	REAL NOT NULL," +
+                                        "\"GyroscopZ\"	REAL NOT NULL," +
+                                        "PRIMARY KEY(\"Id\" AUTOINCREMENT)" +
+                                    ");";
 
-		public static DBManager Instance
-		{
-			get
-			{
-				if (_instance == null)
-				{
-					_instance = new DBManager();
-					if (!_instance.Init())
-						_instance = null;
-				}
-				return _instance;
-			}
-		}
+        private static DBManager _instance;
+
+        private SQLiteConnection _connection;
+
+        private DBManager()
+        {
+        }
+
+        public static void SetAppType(AppType appType)
+        {
+            APP_TYPE = appType;
+        }
+
+        public static DBManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new DBManager();
+                    if (!_instance.Init())
+                        _instance = null;
+                }
+                return _instance;
+            }
+        }
+
+        private string GetDbName()
+        {
+            string ret = "";
+            switch (APP_TYPE)
+            {
+                case AppType.AccelerationMeasurement:
+                    ret = AccDbName;
+                    break;
+                case AppType.AnglesMeasurement:
+                    ret = AngDbbName;
+                    break;
+                default:
+                    Console.WriteLine("Wrong Application type {0}", APP_TYPE.ToString());
+                    break;
+            }
+            return ret;
+        }
 
         private bool Init()
         {
+            string dbName = GetDbName();
             string connString = "Data Source="+dbName+";Version=3;";
             if (!File.Exists(dbName))
                 SQLiteConnection.CreateFile(dbName);

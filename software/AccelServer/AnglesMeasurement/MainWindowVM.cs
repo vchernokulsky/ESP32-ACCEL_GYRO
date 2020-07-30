@@ -1,4 +1,5 @@
 ﻿using GUI;
+using ImuServer;
 using Prism.Commands;
 using Prism.Mvvm;
 

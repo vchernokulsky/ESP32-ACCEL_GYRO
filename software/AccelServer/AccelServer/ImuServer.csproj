@@ -74,6 +74,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppType.cs" />
     <Compile Include="ChartDataSingleton.cs" />
     <Compile Include="DataGetter.cs" />
     <Compile Include="DBManager.cs" />
