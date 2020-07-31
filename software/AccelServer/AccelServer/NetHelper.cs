@@ -8,7 +8,7 @@ namespace ImuServer
 	internal static class NetHelper
     {
 		
-        public static IPEndPoint GetEndPointIPv4(int port, string ipAddr="192.168.55.116")
+        public static IPEndPoint GetEndPointIPv4(int port, string ipAddr=null)
 		{
 			IPEndPoint localEndPoint = null;
 			IPAddress address = null;
@@ -35,7 +35,7 @@ namespace ImuServer
 						Console.WriteLine(ni.Name);
 						foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
 						{
-							if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+							if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
 							{
 								address = ip.Address;
 								Console.WriteLine(ip.Address.ToString());
