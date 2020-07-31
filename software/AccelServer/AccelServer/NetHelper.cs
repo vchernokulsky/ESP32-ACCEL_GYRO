@@ -53,7 +53,5 @@ namespace ImuServer
 			}
 			return localEndPoint;
 		}
-
-
-}
+	}
 }

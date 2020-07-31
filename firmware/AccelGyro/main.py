@@ -1,3 +1,7 @@
+## @package AccelGyro
+#  Documentation for this module.
+#
+#  More details.
 import utime
 import machine
 from Accelerometer import Accelerometer as Accel
@@ -14,7 +18,13 @@ def init_acc():
     return Accel(i2c)
 
 
-def init_network(network_name='IntemsLab', network_password='Embedded32'):
+## Documentation for a function.
+#  @param network_name wireless network SSID
+#  @param network_password wireless network password
+#
+#  This parameters should be configured with WIFI-router.
+#  Don't change hardcoded params WIFI-router configuration recommended.
+def init_network(network_name='IMU-DATA-WIFI', network_password='12345678'):
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
     if not sta_if.isconnected():
@@ -87,10 +97,8 @@ def udp_client(port=9876):
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    # sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.bind(("", port))
     while True:
-        # Thanks @seym45 for a fix
         data, addr = sock.recvfrom(1024)
         print("received message: %s" % data)
 
@@ -98,7 +106,6 @@ def udp_client(port=9876):
 def get_server_ip(port=15000):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    # sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.bind(("", port))
 
     data, addr = sock.recvfrom(1024)
