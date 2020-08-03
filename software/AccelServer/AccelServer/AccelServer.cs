@@ -1,5 +1,6 @@
 ﻿using Prism.Mvvm;
 using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace ImuServer
@@ -56,7 +57,15 @@ namespace ImuServer
 			RaisePropertyChanged("StopEnabled");
 			while (NetHelper.GetEndPointIPv4(10000) == null)
 			{
-				Thread.Sleep(3000);
+				try
+				{
+					Thread.Sleep(3000);
+				}
+				catch(Exception ex)
+				{
+					Debug.WriteLine(ex.Message);
+					break;
+				}
 			}
 			NoConnection = false;
 			RaisePropertyChanged("NoConnection");
