@@ -26,12 +26,22 @@ namespace ImuServer
 		public StringBuilder sb = new StringBuilder();  
 	}
 
+	public class Coordinates
+	{
+		public float x { get; set; }
+		public float y { get; set; }
+		public float z { get; set; }
+	}
+	
 	public class DeviceInfo
 	{
 		public int Id { get; set; }
 		public int Type { get; set; }
 		public string Ip { get; set; }
 		public int SyncTicks { get; set; }
+
+		public Coordinates AccelOffset { get; set; }
+		public Coordinates GyroOffset { get; set; }
 
 		public DateTime SyncTime { get; set; }
 		public int Port { get; set; }
@@ -212,6 +222,7 @@ namespace ImuServer
 					}
 					else
 					{
+						MpuCalibraion.Instance.SetOffset(info.Id, info.AccelOffset, info.GyroOffset);
 						info.Port = cur_device_port++;
 						info.SyncTime = cur_time;
 						info.dt_recv = new DataReceiver (info.Id, info.Type, info.Port, info.SyncTime, info.SyncTicks);
