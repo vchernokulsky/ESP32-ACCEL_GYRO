@@ -1,7 +1,6 @@
 import utime
 import math
 
-
 class Calibration(object):
 
     def __init__(self, acc):
@@ -108,3 +107,4 @@ class Calibration(object):
         print("gyro_offs = ", self.gyro_offs)
         print("accel_offs = ", self.accel_offs)
         print("###############################################")
+        return self.gyro_offs, self.accel_offs

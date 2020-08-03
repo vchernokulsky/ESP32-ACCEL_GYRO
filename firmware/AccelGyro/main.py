@@ -24,7 +24,7 @@ def init_acc():
 #
 #  This parameters should be configured with WIFI-router.
 #  Don't change hardcoded params WIFI-router configuration recommended.
-def init_network(network_name='IMU-DATA-WIFI', network_password='12345678'):
+def init_network(network_name='IntemsLab', network_password='Embedded32'):
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
     if not sta_if.isconnected():
@@ -36,8 +36,7 @@ def init_network(network_name='IMU-DATA-WIFI', network_password='12345678'):
     return sta_if.ifconfig()[0]
 
 
-def send_amount(amount=300, host='192.168.55.116', port=5000):
-    acc = init_acc()
+def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
     sock = None
     led = machine.Pin(2, machine.Pin.OUT)
     led_val = 0
@@ -135,23 +134,25 @@ def sync_info(server_ip, jbytes, server_port=9875):
 
 
 def main():
+    acc = init_acc()
+    gyro_offset, acc_offset = calibrate(acc)
     device_id = 1
     device_type = 1
     while True:
         try:
-            self_ip = init_network()
+            # self_ip = init_network()
+            self_ip = init_network(network_name='IMU-DATA-WIFI', network_password='12345678')
             server_ip = get_server_ip()
 
-            jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms()}
+            jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(), 'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
             jbytes = ujson.dumps(jdict).encode("utf-8")
             print(jbytes)
             server_port = sync_info(server_ip, jbytes)
-            send_amount(host=server_ip, port=server_port)
+            send_amount(acc, host=server_ip, port=server_port)
         except Exception as e:
             print(e)
 
 
-def calibrate():
-    acc = init_acc()
+def calibrate(acc):
     Calib = Calibration(acc)
-    Calib.calibration()
+    return Calib.calibration()
