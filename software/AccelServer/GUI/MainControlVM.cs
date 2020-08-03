@@ -1,6 +1,7 @@
 ﻿using ImuServer;
 using Prism.Commands;
 using Prism.Mvvm;
+using System.Windows;
 using System.Windows.Media;
 
 namespace GUI
@@ -24,6 +25,9 @@ namespace GUI
         private ChartControlVM chart6;
 
         private string userName;
+
+        private bool extraDeviceVis; 
+
 
 
         public MainControlVM(AppType appType)
@@ -51,6 +55,10 @@ namespace GUI
             chart4 = new ChartControlVM(4, appType);
             chart5 = new ChartControlVM(5, appType);
             chart6 = new ChartControlVM(6, appType);
+
+
+
+            ExtraDeviceVis = (appType == AppType.AccelerationMeasurement) ? true : false;
 
         }
 
@@ -80,5 +88,6 @@ namespace GUI
 
         public string UserName { get => userName; set { userName = value; AccelServer.UserName = value; } }
 
+        public bool ExtraDeviceVis { get => extraDeviceVis; set { extraDeviceVis = value; RaisePropertyChanged("ExtraDeviceVis"); } }
     }
 }
