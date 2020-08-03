@@ -26,7 +26,8 @@ namespace GUI
 
         private string userName;
 
-        private bool extraDeviceVis; 
+        private bool extraDeviceVis;
+        private string lblGroup;
 
 
 
@@ -59,6 +60,7 @@ namespace GUI
 
 
             ExtraDeviceVis = (appType == AppType.AccelerationMeasurement) ? true : false;
+            LblGroup = (appType == AppType.AccelerationMeasurement) ? "Груз" : "Бревна";
 
         }
 
@@ -89,5 +91,7 @@ namespace GUI
         public string UserName { get => userName; set { userName = value; AccelServer.UserName = value; } }
 
         public bool ExtraDeviceVis { get => extraDeviceVis; set { extraDeviceVis = value; RaisePropertyChanged("ExtraDeviceVis"); } }
+
+        public string LblGroup { get => lblGroup; set { lblGroup = value; RaisePropertyChanged("LblGroup"); } }
     }
 }

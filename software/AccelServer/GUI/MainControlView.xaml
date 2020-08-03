@@ -25,7 +25,7 @@
 
 
         <StackPanel Orientation="Horizontal"  Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <GroupBox Header="Груз"  Height="70">
+            <GroupBox Header="{Binding LblGroup}"  Height="70">
                 <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
                     <Label x:Name="lblDev1" Grid.Row="1" Background="{Binding Path=DeviceColor1}" Content="Устройство №1" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
                     <Label x:Name="lblDev2" Grid.Row="1" Background="{Binding Path=DeviceColor2}" Content="Устройство №2" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
