@@ -33,6 +33,7 @@ namespace GUI
 
         public MainControlVM(AppType appType)
         {
+            accelServer.SetAppType(appType);
             accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             accelServer.SetPropetyRaise();
 

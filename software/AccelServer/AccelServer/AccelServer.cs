@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using GUI;
+using Prism.Mvvm;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -19,6 +20,8 @@ namespace ImuServer
 		private Thread ipBroadcaster;
 		private Thread synchronizer;
 
+		private AppType appType;
+
 		public bool NoConnection = true;
 		
 		public AccelServer(int broadcasterPort)
@@ -26,6 +29,12 @@ namespace ImuServer
 			SessionId = DBManager.Instance.GetUtils().GetSessionId();
 			controller = new IpBroadcaster(broadcasterPort);
 			devSync = new DeviceSynchronizer();
+		}
+
+		public void SetAppType(AppType appType) 
+		{
+			this.appType = appType;
+			devSync.SetAppType(appType);
 		}
 
 		public void SetPropetyRaise()
