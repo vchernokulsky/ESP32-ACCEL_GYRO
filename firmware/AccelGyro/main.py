@@ -5,6 +5,7 @@
 import utime
 import machine
 from Accelerometer import Accelerometer as Accel
+from Config import *
 import usocket as socket
 import network
 import ujson
@@ -38,7 +39,7 @@ def init_network(network_name='IntemsLab', network_password='Embedded32'):
 
 def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
     sock = None
-    led = machine.Pin(2, machine.Pin.OUT)
+    led = machine.Pin(27, machine.Pin.OUT)
     led_val = 0
     err_cnt = 0
     count_to_restart = 0
@@ -82,7 +83,7 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
                 count_to_restart += 1
             if err_cnt >= 20:
                 led_val ^= 1
-                led(led_val)
+                # led(led_val)
                 err_cnt = 0
             utime.sleep_ms(2)
             if sock is not None:
@@ -134,17 +135,17 @@ def sync_info(server_ip, jbytes, server_port=9875):
 
 
 def main():
+    led = machine.Pin(27, machine.Pin.OUT)
+    led(1)
     acc = init_acc()
-    gyro_offset, acc_offset = calibrate(acc)
-    device_id = 1
-    device_type = 1
+    gyro_offset, acc_offset = calibrate(acc, led)
     while True:
         try:
-            # self_ip = init_network()
-            self_ip = init_network(network_name='IMU-DATA-WIFI', network_password='12345678')
+            self_ip = init_network(network_name=NetworkSSID, network_password=NetworkPassword)
+            led(1)
             server_ip = get_server_ip()
 
-            jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(), 'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
+            jdict = {'Id': DeviceId, 'Type': DeviceType, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(), 'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
             jbytes = ujson.dumps(jdict).encode("utf-8")
             print(jbytes)
             server_port = sync_info(server_ip, jbytes)
@@ -153,6 +154,6 @@ def main():
             print(e)
 
 
-def calibrate(acc):
-    Calib = Calibration(acc)
+def calibrate(acc, led):
+    Calib = Calibration(acc, led)
     return Calib.calibration()
