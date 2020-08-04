@@ -144,7 +144,6 @@ def main():
             self_ip = init_network(network_name=NetworkSSID, network_password=NetworkPassword)
             led(1)
             server_ip = get_server_ip()
-
             jdict = {'Id': DeviceId, 'Type': DeviceType, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(), 'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
             jbytes = ujson.dumps(jdict).encode("utf-8")
             print(jbytes)
