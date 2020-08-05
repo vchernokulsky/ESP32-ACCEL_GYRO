@@ -15,6 +15,8 @@ namespace AnglesMeasurement
 
         public MainWindowVM()
         {
+            DBManager.Instance.Init("AnglesMeasurement.sqlite");
+
             MainControlVM = new MainControlVM(APP_TYPE);
             MainControlVM.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             OnContentRendered = MainControlVM.OnContentRendered;

@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace GUI
 {
-    public class MainControlVM: BindableBase
+    public class MainControlVM : BindableBase
     {
         private AccelServer accelServer = new AccelServer(15000);
 

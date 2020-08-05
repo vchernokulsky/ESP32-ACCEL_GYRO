@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace ImuServer
 {
-    class SQLUtils
+    public class SQLUtils
     {
         private SQLiteConnection _connection;
 
-        private string INSERT_TEMPLATE = "INSERT INTO ReseivedData(" +
+        private string INSERT_TEMPLATE = "INSERT INTO ReceivedData(" +
             "`DeviceId`,`SessionId`,`Time`,`UserName`,"+
             "`AccelerationX`,`AccelerationY`,`AccelerationZ`," +
             "`GyroscopX`,`GyroscopY`,`GyroscopZ`) VALUES {0} ;";
@@ -79,7 +79,7 @@ namespace ImuServer
             int ret = 0;
             if(_connection != null)
             {
-                string sqlQuery = "SELECT SessionId FROM ReseivedData ORDER BY Id Desc LIMIT 1;";
+                string sqlQuery = "SELECT SessionId FROM ReceivedData ORDER BY Id Desc LIMIT 1;";
                 try
                 {
                     using (SQLiteCommand cmd = new SQLiteCommand(sqlQuery, _connection))

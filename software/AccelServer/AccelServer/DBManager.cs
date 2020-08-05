@@ -5,15 +5,15 @@ using System.IO;
 
 namespace ImuServer
 {
-    class DBManager
+    public class DBManager
     {
-        private static AppType APP_TYPE;
+        private AppType APP_TYPE;
 
         private readonly string AccDbName = "AccelerationMeasurement.sqlite";
         private readonly string AngDbbName = "AnglesMeasurement.sqlite";
 
 
-        private readonly string createTable = "CREATE TABLE IF NOT EXISTS \"ReseivedData\" (" +
+        private readonly string createTable = "CREATE TABLE IF NOT EXISTS \"ReceivedData\" (" +
                                         "\"Id\"	INTEGER NOT NULL UNIQUE," +
                                         "\"DeviceId\"	INTEGER NOT NULL," +
                                         "\"SessionId\"	INTEGER NOT NULL," +
@@ -36,7 +36,7 @@ namespace ImuServer
         {
         }
 
-        public static void SetAppType(AppType appType)
+        public void SetAppType(AppType appType)
         {
             APP_TYPE = appType;
         }
@@ -46,11 +46,7 @@ namespace ImuServer
             get
             {
                 if (_instance == null)
-                {
                     _instance = new DBManager();
-                    if (!_instance.Init())
-                        _instance = null;
-                }
                 return _instance;
             }
         }
@@ -73,12 +69,11 @@ namespace ImuServer
             return ret;
         }
 
-        private bool Init()
+        public bool Init(string name)
         {
-            string dbName = GetDbName();
-            string connString = "Data Source="+dbName+";Version=3;";
-            if (!File.Exists(dbName))
-                SQLiteConnection.CreateFile(dbName);
+            string connString = "Data Source=" + name + ";Version=3;";
+            if (!File.Exists(name))
+                SQLiteConnection.CreateFile(name);
 
             try
             {

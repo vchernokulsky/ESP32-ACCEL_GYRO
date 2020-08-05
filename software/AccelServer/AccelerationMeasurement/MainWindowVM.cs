@@ -1,6 +1,8 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using GUI;
+using ImuServer;
+
 namespace AccelerationMeasurement
 {
     class MainWindowVM : BindableBase
@@ -12,7 +14,9 @@ namespace AccelerationMeasurement
         public MainControlVM MainControlVM { get => mainControlVM; set { mainControlVM = value; RaisePropertyChanged("MainControlVM"); } }
 
         public MainWindowVM()
-        {            
+        {
+            DBManager.Instance.Init("AccelerationMeasurement.sqlite");
+
             MainControlVM = new MainControlVM(APP_TYPE);
             MainControlVM.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             OnContentRendered = MainControlVM.OnContentRendered;
