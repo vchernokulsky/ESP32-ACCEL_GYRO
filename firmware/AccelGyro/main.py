@@ -4,6 +4,8 @@
 #  More details.
 import utime
 import machine
+
+from ChargeMonitor import ChargeMonitor
 from Accelerometer import Accelerometer as Accel
 from Config import *
 import usocket as socket
@@ -13,6 +15,7 @@ import uselect
 
 from Calibration import Calibration
 
+chrg = ChargeMonitor()
 
 def init_acc():
     i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
@@ -26,18 +29,21 @@ def init_acc():
 #  This parameters should be configured with WIFI-router.
 #  Don't change hardcoded params WIFI-router configuration recommended.
 def init_network(network_name='IntemsLab', network_password='Embedded32'):
+    global chrg
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
     if not sta_if.isconnected():
         print('connecting to network...')
         sta_if.connect(network_name, network_password)
         while not sta_if.isconnected():
+            chrg.check_charge()
             pass
     print('network config:', sta_if.ifconfig())
     return sta_if.ifconfig()[0]
 
 
 def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
+    global chrg
     sock = None
     led = machine.Pin(27, machine.Pin.OUT)
     led_val = 0
@@ -76,6 +82,7 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
 
         except Exception as e:
             print(e)
+            chrg.check_charge()
             err_cnt += 1
             if e.args[0] == 113:
                 count_to_restart += 20
@@ -90,17 +97,6 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
                 sock.close()
             if count_to_restart >= 50:
                 break
-
-
-def udp_client(port=9876):
-    init_network()
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind(("", port))
-    while True:
-        data, addr = sock.recvfrom(1024)
-        print("received message: %s" % data)
 
 
 def get_server_ip(port=15000):
@@ -135,8 +131,10 @@ def sync_info(server_ip, jbytes, server_port=9875):
 
 
 def main():
+    global chrg
     led = machine.Pin(27, machine.Pin.OUT)
     led(1)
+    chrg.check_charge()
     acc = init_acc()
     gyro_offset, acc_offset = calibrate(acc, led)
     while True:
@@ -150,9 +148,13 @@ def main():
             server_port = sync_info(server_ip, jbytes)
             send_amount(acc, host=server_ip, port=server_port)
         except Exception as e:
+            chrg.check_charge()
             print(e)
 
 
 def calibrate(acc, led):
     Calib = Calibration(acc, led)
     return Calib.calibration()
+
+
+
