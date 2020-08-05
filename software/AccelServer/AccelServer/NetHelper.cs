@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -12,6 +13,13 @@ namespace ImuServer
 		{
 			IPEndPoint localEndPoint = null;
 			IPAddress address = null;
+
+			//UGLY HACK for testing on dev machine
+			bool isEth;
+			var settings = ConfigurationManager.AppSettings;
+			string value = settings["Ethernet"];
+			if(bool.TryParse(value, out isEth) && isEth)
+				ipAddr = "192.168.55.116";
 
 			if (ipAddr != null)
 			{
