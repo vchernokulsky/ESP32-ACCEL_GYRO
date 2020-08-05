@@ -219,6 +219,11 @@ namespace ImuServer
 					if(deviceList.ContainsKey(info.Id))
 					{
 						Console.WriteLine("device with id={0} has synchronized", info.Id);
+						//deviceList[info.Id].SyncTicks = info.SyncTicks;
+						//deviceList[info.Id].SyncTime = info.SyncTime;
+						info.SyncTime = cur_time;
+						ChartDataSingleton.Instance.SetSyncTime(info.Id, info.SyncTime, info.SyncTicks);
+
 						PortInfo portInfo = new PortInfo(deviceList[info.Id].Port);
 						String output = JsonConvert.SerializeObject(portInfo);
 						Send(handler, output);
