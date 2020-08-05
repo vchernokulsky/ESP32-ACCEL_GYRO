@@ -23,6 +23,7 @@
             <GroupBox Header="Дискретизация" Margin="15">
                 <local:SpinnerView DataContext="{Binding ResamplingSpinner}" Margin="10, 5, 10, 5"/>
             </GroupBox>
+            <Button Height="25" Width="75"  Margin="20, 0, 5, 0" Command="{Binding ShowChart}">Отобразить</Button>
             <Label Content="{Binding DeviceName}" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="100, 0, 0, 0"/>
         </StackPanel>
 
