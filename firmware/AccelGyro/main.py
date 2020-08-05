@@ -4,7 +4,10 @@
 #  More details.
 import utime
 import machine
+
+from ChargeMonitor import ChargeMonitor
 from Accelerometer import Accelerometer as Accel
+from Config import *
 import usocket as socket
 import network
 import ujson
@@ -12,6 +15,7 @@ import uselect
 
 from Calibration import Calibration
 
+chrg = ChargeMonitor()
 
 def init_acc():
     i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
@@ -24,22 +28,24 @@ def init_acc():
 #
 #  This parameters should be configured with WIFI-router.
 #  Don't change hardcoded params WIFI-router configuration recommended.
-def init_network(network_name='IMU-DATA-WIFI', network_password='12345678'):
+def init_network(network_name='IntemsLab', network_password='Embedded32'):
+    global chrg
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
     if not sta_if.isconnected():
         print('connecting to network...')
         sta_if.connect(network_name, network_password)
         while not sta_if.isconnected():
+            chrg.check_charge()
             pass
     print('network config:', sta_if.ifconfig())
     return sta_if.ifconfig()[0]
 
 
-def send_amount(amount=300, host='192.168.55.116', port=5000):
-    acc = init_acc()
+def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
+    global chrg
     sock = None
-    led = machine.Pin(2, machine.Pin.OUT)
+    led = machine.Pin(27, machine.Pin.OUT)
     led_val = 0
     err_cnt = 0
     count_to_restart = 0
@@ -76,6 +82,7 @@ def send_amount(amount=300, host='192.168.55.116', port=5000):
 
         except Exception as e:
             print(e)
+            chrg.check_charge()
             err_cnt += 1
             if e.args[0] == 113:
                 count_to_restart += 20
@@ -83,24 +90,13 @@ def send_amount(amount=300, host='192.168.55.116', port=5000):
                 count_to_restart += 1
             if err_cnt >= 20:
                 led_val ^= 1
-                led(led_val)
+                # led(led_val)
                 err_cnt = 0
             utime.sleep_ms(2)
             if sock is not None:
                 sock.close()
             if count_to_restart >= 50:
                 break
-
-
-def udp_client(port=9876):
-    init_network()
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind(("", port))
-    while True:
-        data, addr = sock.recvfrom(1024)
-        print("received message: %s" % data)
 
 
 def get_server_ip(port=15000):
@@ -135,23 +131,30 @@ def sync_info(server_ip, jbytes, server_port=9875):
 
 
 def main():
-    device_id = 1
-    device_type = 1
+    global chrg
+    led = machine.Pin(27, machine.Pin.OUT)
+    led(1)
+    chrg.check_charge()
+    acc = init_acc()
+    gyro_offset, acc_offset = calibrate(acc, led)
     while True:
         try:
-            self_ip = init_network()
+            self_ip = init_network(network_name=NetworkSSID, network_password=NetworkPassword)
+            led(1)
             server_ip = get_server_ip()
-
-            jdict = {'Id': device_id, 'Type': device_type, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms()}
+            jdict = {'Id': DeviceId, 'Type': DeviceType, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(), 'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
             jbytes = ujson.dumps(jdict).encode("utf-8")
             print(jbytes)
             server_port = sync_info(server_ip, jbytes)
-            send_amount(host=server_ip, port=server_port)
+            send_amount(acc, host=server_ip, port=server_port)
         except Exception as e:
+            chrg.check_charge()
             print(e)
 
 
-def calibrate():
-    acc = init_acc()
-    Calib = Calibration(acc)
-    Calib.calibration()
+def calibrate(acc, led):
+    Calib = Calibration(acc, led)
+    return Calib.calibration()
+
+
+

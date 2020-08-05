@@ -1,5 +1,6 @@
 ﻿using ImuServer;
 using LiveCharts;
+using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.Generic;
 
@@ -35,6 +36,8 @@ namespace GUI
             slideButtons = new SlideButtonsVM(0, 300, properties);
             slideButtons.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 
+            ShowChart = new DelegateCommand(() => { RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); });
+
         }
 
         public string DeviceName => "Устройство №" + deviceId.ToString();
@@ -54,7 +57,7 @@ namespace GUI
 
         public SpinnerVM ResamplingSpinner { get => resamplingSpinner; set { resamplingSpinner = value; RaisePropertyChanged("ResamplingSpinner"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged(selfName); } }
         public SlideButtonsVM SlideButtons { get => slideButtons; set { slideButtons = value; RaisePropertyChanged("SlideButtons"); RaisePropertyChanged("SeriesCollection"); RaisePropertyChanged("Labels"); RaisePropertyChanged(selfName); } }
-
+        public DelegateCommand ShowChart { get; }
 
     }
 }
