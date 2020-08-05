@@ -17,6 +17,7 @@ from Calibration import Calibration
 
 chrg = ChargeMonitor()
 
+
 def init_acc():
     i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
     return Accel(i2c)
@@ -79,6 +80,7 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
                 print('loop_time = ' + str(utime.ticks_diff(t3, t1)))
                 print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
                 print(" ")
+                err_cnt = 0
 
         except Exception as e:
             print(e)
@@ -135,6 +137,7 @@ def main():
     led = machine.Pin(27, machine.Pin.OUT)
     led(1)
     chrg.check_charge()
+    utime.sleep_ms(100)
     acc = init_acc()
     gyro_offset, acc_offset = calibrate(acc, led)
     while True:
