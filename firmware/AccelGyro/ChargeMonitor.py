@@ -23,15 +23,23 @@ class ChargeMonitor(object):
         state = 0
         if self.vbus.value() == 0:
             state = self.stat1.value() * 2 + self.stat2.value()
+        # STAT1=0 STAT2=0 (Precharge)
+        # LEDs OFF
         if state == 0:
             self.ledG(0)
             self.ledR(0)
+        # STAT1=0 STAT2=1 (Fast charge)
+        # GREEN LED
         elif state == 1:
             self.ledG(1)
             self.ledR(0)
+        # STAT1=1 STAT2=0 (Charge done)
+        # YELLOW LED
         elif state == 2:
             self.ledG(1)
             self.ledR(1)
+        # STAT1=1 STAT2=1 (Charge suspend OR No vbus signal)
+        # RED LED
         elif state == 3:
             self.ledG(0)
             self.ledR(1)

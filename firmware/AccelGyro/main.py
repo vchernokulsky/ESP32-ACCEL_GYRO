@@ -156,8 +156,8 @@ def main():
 
 
 def calibrate(acc, led):
-    Calib = Calibration(acc, led)
-    return Calib.calibration()
+    c = Calibration(acc, led)
+    return c.calibration()
 
 
 
