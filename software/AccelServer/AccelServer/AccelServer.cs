@@ -100,6 +100,7 @@ namespace ImuServer
 			synchronizer.Start();
 		}
 
+		private readonly TimeSpan INTERVAL = new TimeSpan(0, 0, 0, 0, 100);
 		private System.Windows.Threading.DispatcherTimer _timer;
 		private void OnTimerTick(object sender, EventArgs e)
 		{
@@ -131,7 +132,7 @@ namespace ImuServer
 
 			_timer = new System.Windows.Threading.DispatcherTimer();
 			_timer.Tick += OnTimerTick;
-			_timer.Interval = new TimeSpan(0, 0, 0, 0, 250);
+			_timer.Interval = INTERVAL;
 			_timer.Start();
 
 			DataReceiver.running = true;

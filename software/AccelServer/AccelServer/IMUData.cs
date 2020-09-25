@@ -116,10 +116,10 @@ namespace ImuServer
 
 
 			//TODO: change values for real devices
-			float correctionAxisZ = id < 4 ? 9.8f : 0.0f;
+			float correctionAxisZ = id <= 4 ? 9.8f : 0.0f;
 
 			AcX = (float)Math.Round(acc2si * (ParseImuBytes(bytes[4], bytes[5]) - MpuCalibraion.Instance.offset[id].AccX), 4);
-			AcY = (float)Math.Round(acc2si * (ParseImuBytes(bytes[6], bytes[7]) - MpuCalibraion.Instance.offset[id].AccY),4);
+			AcY = (float)Math.Round(acc2si * (ParseImuBytes(bytes[6], bytes[7]) - MpuCalibraion.Instance.offset[id].AccY), 4);
 			AcZ = (float)Math.Round(acc2si * (ParseImuBytes(bytes[8], bytes[9]) - MpuCalibraion.Instance.offset[id].AccZ), 4) - correctionAxisZ;
 			Tmp = ParseImuBytes(bytes[10], bytes[11])/340.0f + 36.53f;
 			GyX = (float)Math.Round(gyro2si * (ParseImuBytes(bytes[12], bytes[13]) - MpuCalibraion.Instance.offset[id].GyX), 4);
