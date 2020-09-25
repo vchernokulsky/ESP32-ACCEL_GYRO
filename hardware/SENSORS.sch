@@ -34,10 +34,10 @@ P 7800 3300
 AR Path="/5EFD21BC" Ref="U?"  Part="1" 
 AR Path="/5EFBEEB7/5EFD21BC" Ref="U9"  Part="1" 
 F 0 "U9" H 8100 4100 50  0000 C CNN
-F 1 "MPU-9250" H 8100 2500 50  0000 C CNN
+F 1 "DNP (MPU-9250 )" H 8100 2500 50  0000 C CNN
 F 2 "Sensor_Motion:InvenSense_QFN-24_3x3mm_P0.4mm" H 7800 2300 50  0001 C CNN
 F 3 "https://store.invensense.com/datasheets/invensense/MPU9250REV1.0.pdf" H 7800 3150 50  0001 C CNN
-F 4 "MPU-9250" H 7800 3300 50  0001 C CNN "PartNumber"
+F 4 "DNP" H 7800 3300 50  0001 C CNN "PartNumber"
 	1    7800 3300
 	1    0    0    -1  
 $EndComp
@@ -586,10 +586,10 @@ AR Path="/5F031FCA" Ref="R?"  Part="1"
 AR Path="/5EFBEA8E/5F031FCA" Ref="R?"  Part="1" 
 AR Path="/5EFBEEB7/5F031FCA" Ref="R32"  Part="1" 
 F 0 "R32" H 6750 2050 50  0000 C CNN
-F 1 "10k" H 6750 2150 50  0000 C CNN
+F 1 "DNP" H 6750 2150 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" H 6900 2100 50  0001 C CNN
 F 3 "~" H 6900 2100 50  0001 C CNN
-F 4 "RC0603FR-0710KL" H 6900 2100 50  0001 C CNN "PartNumber"
+F 4 "DNP" H 6900 2100 50  0001 C CNN "PartNumber"
 	1    6900 2100
 	-1   0    0    1   
 $EndComp

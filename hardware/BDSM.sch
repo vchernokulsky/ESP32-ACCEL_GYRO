@@ -51,8 +51,6 @@ Wire Wire Line
 	3500 4250 3500 4350
 Wire Wire Line
 	3600 4250 3600 4350
-Text Notes 7300 6850 0    79   ~ 0
-Watch Dog!!!!
 $Comp
 L Device:LED_Small LD2
 U 1 1 5EE29177

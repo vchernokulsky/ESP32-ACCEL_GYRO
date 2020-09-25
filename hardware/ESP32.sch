@@ -183,7 +183,7 @@ Wire Wire Line
 Wire Wire Line
 	2500 1650 2500 1750
 $Comp
-L ESP32:ESP32 U?
+L BDSM-rescue:ESP32-ESP32 U?
 U 1 1 5EFD7B8A
 P 4650 1850
 AR Path="/5EFD7B8A" Ref="U?"  Part="1" 
@@ -437,7 +437,7 @@ F 3 "" H 3000 5400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4500 5450 4500 5000
+	4500 5450 4500 5150
 Wire Wire Line
 	3000 5000 3000 5100
 Wire Wire Line
@@ -468,7 +468,7 @@ F 0 "Y1" H 3250 6675 50  0000 C CNN
 F 1 "12MHz" H 3250 6584 50  0000 C CNN
 F 2 "PatternLibs:ABM3" H 3250 6450 50  0001 C CNN
 F 3 "~" H 3250 6450 50  0001 C CNN
-F 4 "ABM3-8.000MHZ-D2Y-T" H 3250 6450 50  0001 C CNN "PartNumber"
+F 4 "ABM3-12.000MHZ-D2Y-T" H 3250 6450 50  0001 C CNN "PartNumber"
 	1    3250 6450
 	1    0    0    -1  
 $EndComp
@@ -582,10 +582,10 @@ AR Path="/5F08D7BC" Ref="Q?"  Part="1"
 AR Path="/5EFBE643/5F08D7BC" Ref="Q?"  Part="1" 
 AR Path="/5EFBEA8E/5F08D7BC" Ref="Q1"  Part="1" 
 F 0 "Q1" H 6391 6096 50  0000 L CNN
-F 1 "BC847" H 6391 6005 50  0000 L CNN
+F 1 "SS8050" H 6391 6005 50  0000 L CNN
 F 2 "Package_TO_SOT_SMD:SOT-23" H 6400 5975 50  0001 L CIN
 F 3 "http://www.infineon.com/dgdl/Infineon-BC847SERIES_BC848SERIES_BC849SERIES_BC850SERIES-DS-v01_01-en.pdf?fileId=db3a304314dca389011541d4630a1657" H 6200 6050 50  0001 L CNN
-F 4 "BC847.215" H 6200 6050 50  0001 C CNN "PartNumber"
+F 4 "SS8050" H 6200 6050 50  0001 C CNN "PartNumber"
 	1    6200 6050
 	1    0    0    -1  
 $EndComp
@@ -612,10 +612,10 @@ AR Path="/5F08D7C9" Ref="Q?"  Part="1"
 AR Path="/5EFBE643/5F08D7C9" Ref="Q?"  Part="1" 
 AR Path="/5EFBEA8E/5F08D7C9" Ref="Q2"  Part="1" 
 F 0 "Q2" H 6391 6796 50  0000 L CNN
-F 1 "BC847" H 6391 6705 50  0000 L CNN
+F 1 "SS8050" H 6391 6705 50  0000 L CNN
 F 2 "Package_TO_SOT_SMD:SOT-23" H 6400 6675 50  0001 L CIN
 F 3 "http://www.infineon.com/dgdl/Infineon-BC847SERIES_BC848SERIES_BC849SERIES_BC850SERIES-DS-v01_01-en.pdf?fileId=db3a304314dca389011541d4630a1657" H 6200 6750 50  0001 L CNN
-F 4 "BC847.215" H 6200 6750 50  0001 C CNN "PartNumber"
+F 4 "SS8050" H 6200 6750 50  0001 C CNN "PartNumber"
 	1    6200 6750
 	1    0    0    1   
 $EndComp
@@ -680,7 +680,6 @@ Text Label 5500 5750 0    50   ~ 0
 TXD0
 Text Label 5500 5650 0    50   ~ 0
 RXD0
-Connection ~ 3000 5000
 Text Label 3150 5950 0    50   ~ 0
 D+
 Text Label 3150 6050 0    50   ~ 0
@@ -722,8 +721,6 @@ Text HLabel 4500 2250 0    50   Input ~ 0
 CHRG-STAT2
 Wire Wire Line
 	1500 5000 2600 5000
-Text HLabel 6600 3050 2    50   Output ~ 0
-MCU-PWR-CNTRL
 Text HLabel 1500 5500 0    50   BiDi ~ 0
 USB-D+
 Text HLabel 1500 6500 0    50   BiDi ~ 0
@@ -1033,7 +1030,7 @@ F 4 "RC0603FR-07120RL" H 8400 5800 50  0001 C CNN "PartNumber"
 	0    1    1    0   
 $EndComp
 $Comp
-L Power_Protection:USBLC6-2SC6 U5
+L BDSM-rescue:USBLC6-2SC6-Power_Protection U5
 U 1 1 5EFC47AB
 P 2000 6000
 F 0 "U5" V 1600 6250 50  0000 L CNN
@@ -1048,9 +1045,6 @@ Wire Wire Line
 	2500 6000 2600 6000
 Wire Wire Line
 	2600 6000 2600 5000
-Connection ~ 2600 5000
-Wire Wire Line
-	2600 5000 3000 5000
 $Comp
 L power:GNDA #PWR?
 U 1 1 5EFD9983
@@ -1151,8 +1145,6 @@ Wire Wire Line
 	4500 2850 4700 2850
 Wire Wire Line
 	4500 2950 4700 2950
-Wire Wire Line
-	6600 3050 6400 3050
 $Comp
 L Device:CP1_Small C?
 U 1 1 5F0F933A
@@ -1290,4 +1282,28 @@ Text Label 3700 3800 0    50   ~ 0
 SPI_MOSI
 Text Label 5150 4050 3    50   ~ 0
 SPI_MOSI
+Text Notes 5200 7100 0    50   ~ 0
+Replace Q1,Q2 to SS8050.
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5F689D2C
+P 3000 4800
+AR Path="/5EF9D67C/5F689D2C" Ref="#PWR?"  Part="1" 
+AR Path="/5EFBEA8E/5F689D2C" Ref="#PWR0102"  Part="1" 
+F 0 "#PWR0102" H 3000 4650 50  0001 C CNN
+F 1 "+3.3V" H 3015 4973 50  0000 C CNN
+F 2 "" H 3000 4800 50  0001 C CNN
+F 3 "" H 3000 4800 50  0001 C CNN
+	1    3000 4800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3000 4800 3000 5000
+Connection ~ 3000 5000
+Wire Wire Line
+	4400 5150 4500 5150
+Connection ~ 4400 5150
+Connection ~ 4500 5150
+Wire Wire Line
+	4500 5150 4500 5000
 $EndSCHEMATC
