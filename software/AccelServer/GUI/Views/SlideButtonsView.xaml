@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="GUI.SlideButtonsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GUI"
+             mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+            >
+    <Grid>
+        <StackPanel Orientation="Vertical"  HorizontalAlignment="Center" VerticalAlignment="Center">
+            <GroupBox Header="Шаг" >
+                <local:SpinnerView DataContext="{Binding StepSpinner}" Margin="10, 5, 10, 5"/>
+            </GroupBox>
+            <StackPanel Orientation="Horizontal" Margin="0, 5, 0, 5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Height="25" Width="75"  Margin="0, 0, 5, 0" IsEnabled="{Binding IsPrevEnabled}" Command="{Binding OnPrevClick}">Назад</Button>
+                <Button Height="25" Width="75"  IsEnabled="{Binding IsNextEnabled}" Command="{Binding OnNextClick}">Вперед</Button>
+                
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

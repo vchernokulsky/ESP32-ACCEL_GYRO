@@ -1,0 +1,8 @@
+.gitignore
+software/.gitignore
+
+.idea/
+data/
+111/
+
+*.sqlite

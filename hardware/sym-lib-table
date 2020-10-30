@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name ESP32)(type Legacy)(uri /home/neiron/CHIRO/BDSM/LIB/ESP32/ESP32.lib)(options "")(descr ""))
+  (lib (name BDSM-rescue)(type Legacy)(uri ${KIPRJMOD}/BDSM-rescue.lib)(options "")(descr ""))
+)
