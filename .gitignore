@@ -1,7 +1,8 @@
+.gitignore
 software/.gitignore
-*.sqliteg1908.pdf
-G1908-C.dxf
-AnglesMeasurement.sqlite
+
+.idea/
 data/
 111/
-g1908.pdf
+
+*.sqlite
