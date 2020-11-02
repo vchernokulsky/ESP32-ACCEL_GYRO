@@ -108,6 +108,15 @@ class Accelerometer(object):
                 "GyZ": self.bytes_toint(raw_ints[12], raw_ints[13])}
         return vals  # returned in range of Int16
 
+    def raw2dict_2(self, raw_ints):
+        acc2si = 4.0*9.8/65536
+        vel2si = 500.0/65536
+        vals = {"AcX": self.bytes_toint(raw_ints[0], raw_ints[1])*acc2si, "AcY": self.bytes_toint(raw_ints[2], raw_ints[3])*acc2si,
+                "AcZ": self.bytes_toint(raw_ints[4], raw_ints[5])*acc2si, "Tmp": self.bytes_toint(raw_ints[6], raw_ints[7]),
+                "GyX": self.bytes_toint(raw_ints[8], raw_ints[9])*vel2si, "GyY": self.bytes_toint(raw_ints[10], raw_ints[11])*vel2si,
+                "GyZ": self.bytes_toint(raw_ints[12], raw_ints[13])*vel2si}
+        return vals  # returned in range of Int16
+
     def val_test(self):  # ONLY FOR TESTING! Also, fast reading sometimes crashes IIC
         from time import sleep
         while 1:

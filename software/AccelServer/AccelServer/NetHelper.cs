@@ -19,7 +19,7 @@ namespace ImuServer
 			var settings = ConfigurationManager.AppSettings;
 			string value = settings["Ethernet"];
 			if(bool.TryParse(value, out isEth) && isEth)
-				ipAddr = "192.168.55.116";
+				ipAddr = "192.168.0.118";
 
 			if (ipAddr != null)
 			{
