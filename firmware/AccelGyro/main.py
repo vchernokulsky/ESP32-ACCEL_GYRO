@@ -62,6 +62,8 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
                 cnt = 0
                 while cnt < amount:
                     raw_val = acc.get_raw_values()
+                    d = acc.raw2dict_2(raw_val)
+                    print(d)
                     t2 = utime.ticks_ms()
                     pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
                     values += pkg
