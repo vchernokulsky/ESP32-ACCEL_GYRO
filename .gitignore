@@ -1,2 +1,7 @@
+hardware/_autosave*
+firmware/.idea
 software/.gitignore
+
+
 *.sqlite
+*.bin
