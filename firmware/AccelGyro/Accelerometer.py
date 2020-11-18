@@ -10,7 +10,7 @@ class Accelerometer(object):
         self.iic.start()
         self.iic.writeto(self.addr, bytearray([107, 0]))
         self.iic.stop()
-        self.init_device()
+        # self.init_device()
 
     def init_device(self):
         print('* initializing mpu')

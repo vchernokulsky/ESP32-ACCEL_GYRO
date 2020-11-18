@@ -54,8 +54,8 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
     while True:
         try:
             total_send = 0
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((host, port))
+            # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # sock.connect((host, port))
             while True:
                 values = bytes()
                 t1 = utime.ticks_ms()
@@ -69,7 +69,7 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
                     values += pkg
                     cnt += 1
                 t3 = utime.ticks_ms()
-                sock.send(values)
+                # sock.send(values)
                 led_val ^= 1
                 led(led_val)
                 t4 = utime.ticks_ms()
@@ -144,14 +144,16 @@ def main():
     gyro_offset, acc_offset = calibrate(acc, led)
     while True:
         try:
-            self_ip = init_network(network_name=NetworkSSID, network_password=NetworkPassword)
+            # self_ip = init_network(network_name=NetworkSSID, network_password=NetworkPassword)
             led(1)
-            server_ip = get_server_ip()
-            jdict = {'Id': DeviceId, 'Type': DeviceType, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(), 'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
-            jbytes = ujson.dumps(jdict).encode("utf-8")
-            print(jbytes)
-            server_port = sync_info(server_ip, jbytes)
-            send_amount(acc, host=server_ip, port=server_port)
+            # server_ip = get_server_ip()
+            # jdict = {'Id': DeviceId, 'Type': DeviceType, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(), 'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
+            # jbytes = ujson.dumps(jdict).encode("utf-8")
+            # print(jbytes)
+            # server_port = sync_info(server_ip, jbytes)
+            # send_amount(acc, host=server_ip, port=server_port)
+            send_amount(acc)
+
         except Exception as e:
             chrg.check_charge()
             print(e)
