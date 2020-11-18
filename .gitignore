@@ -1,10 +1,10 @@
 
 hardware/_autosave*
-firmware/.idea
+*.idea
 software/.gitignore
 
 *.sqlite
 *.bin
 
 data/
-111/
+*/venv/
