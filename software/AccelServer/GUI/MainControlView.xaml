@@ -30,8 +30,12 @@
                     <local:DeviceStatusHeaderView x:Name="lblHeaderGroup1" Grid.Row="1"/>
                     <local:DeviceStatusView x:Name="lblDev1" Grid.Row="1" DataContext="{Binding Device1}" />
                     <local:DeviceStatusView x:Name="lblDev2" Grid.Row="1" DataContext="{Binding Device2}" />
-                    <local:DeviceStatusView x:Name="lblDev3" Grid.Row="1" DataContext="{Binding Device3}" Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}"/>
-                    <local:DeviceStatusView x:Name="lblDev4" Grid.Row="1" DataContext="{Binding Device4}" Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}"/>
+                    <StackPanel Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}">
+                        <local:DeviceStatusView x:Name="lblDev3" Grid.Row="1" DataContext="{Binding Device3}"/>
+                    </StackPanel>
+                    <StackPanel Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}">
+                        <local:DeviceStatusView x:Name="lblDev4" Grid.Row="1" DataContext="{Binding Device4}" />
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
 
