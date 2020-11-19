@@ -79,7 +79,7 @@ namespace ImuServer
                         if (!gettingData)
                         {
 							gettingData = true;
-							RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+							RaisePropertyChanged(String.Concat("Device", id.ToString()));
 						}
 						//Console.WriteLine( "Received {0} bytes", bytesRec);
 						//Console.WriteLine( "TOTAL RECEIVED {0} bytes", totalRecv);
@@ -90,7 +90,7 @@ namespace ImuServer
 					if (gettingData)
 					{
 						gettingData = false;
-						RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+						RaisePropertyChanged(String.Concat("Device", id.ToString()));
 					}
 					if (byteList.Count > 0)
 					{
@@ -107,7 +107,7 @@ namespace ImuServer
 				if (gettingData)
 				{
 					gettingData = false;
-					RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+					RaisePropertyChanged(String.Concat("Device", id.ToString()));
 				}
 				Console.WriteLine(ex.Message);
 			}

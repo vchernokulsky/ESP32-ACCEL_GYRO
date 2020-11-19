@@ -13,7 +13,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="80"/>
+            <RowDefinition />
             <RowDefinition Height="40"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -24,53 +24,33 @@
         <Label x:Name="lblWifiCon" Grid.Row="0" Background="Red" Content="Нет соединения с WiFi-сетью" HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="{Binding Path=NoConnection, Converter={StaticResource BoolToVisConverter}}"/>
 
 
-        <StackPanel Orientation="Horizontal"  Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <GroupBox Header="{Binding LblGroup}"  Height="70">
-                <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
-                    <Label x:Name="lblDev1" Grid.Row="1" Background="{Binding Path=DeviceColor1}" Content="Устройство №1" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
-                    <Label x:Name="lblDev2" Grid.Row="1" Background="{Binding Path=DeviceColor2}" Content="Устройство №2" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
-                    <Label x:Name="lblDev3" Grid.Row="1" Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}" Background="{Binding Path=DeviceColor3}" Content="Устройство №3" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
-                    <Label x:Name="lblDev4" Grid.Row="1" Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}" Background="{Binding Path=DeviceColor4}" Content="Устройство №4" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
+        <StackPanel Orientation="Vertical"  Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <GroupBox Header="{Binding LblGroup}">
+                <StackPanel Orientation="Vertical" Margin="0, 10, 0, 0">
+                    <local:DeviceStatusHeaderView x:Name="lblHeaderGroup1" Grid.Row="1"/>
+                    <local:DeviceStatusView x:Name="lblDev1" Grid.Row="1" DataContext="{Binding Device1}" />
+                    <local:DeviceStatusView x:Name="lblDev2" Grid.Row="1" DataContext="{Binding Device2}" />
+                    <local:DeviceStatusView x:Name="lblDev3" Grid.Row="1" DataContext="{Binding Device3}" Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}"/>
+                    <local:DeviceStatusView x:Name="lblDev4" Grid.Row="1" DataContext="{Binding Device4}" Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}"/>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Человек"  Height="70" Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}">
-                <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
-                    <Label x:Name="lblDev5" Grid.Row="1" Background="{Binding Path=DeviceColor5}" Content="Устройство №5" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
-                    <Label x:Name="lblDev6" Grid.Row="1" Background="{Binding Path=DeviceColor6}" Content="Устройство №6" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="10,0,10,0" Height="26" Width="95"/>
+            <GroupBox Header="Человек"   Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}">
+                <StackPanel Orientation="Vertical" Margin="0, 10, 0, 0">
+                    <local:DeviceStatusView x:Name="lblDev5" Grid.Row="1" DataContext="{Binding Device5}" />
+                    <local:DeviceStatusView x:Name="lblDev6" Grid.Row="1" DataContext="{Binding Device6}" />
                 </StackPanel>
             </GroupBox>
 
-            <Button x:Name="btnStart" Content="Старт" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
-            <Button x:Name="btnStop" Content="Стоп" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
+            
         </StackPanel>
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
             <Label HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0, 0, 10, 0">Введите ФИО</Label>
             <TextBox Text="{Binding UserName}" Width="300" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" ></TextBox>
         </StackPanel>
-        <StackPanel Grid.Row="3">
-            <ScrollViewer Name="scroll" CanContentScroll="True" Height="600" >
-                <ItemsControl >
-                    <Grid >
-                        <local:ChartViewControl DataContext="{Binding Chart1}"/>
-                    </Grid>
-                    <Grid>
-                        <local:ChartViewControl DataContext="{Binding Chart2}"/>
-                    </Grid>
-                    <Grid Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}">
-                        <local:ChartViewControl DataContext="{Binding Chart3}"/>
-                    </Grid>
-                    <Grid Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}">
-                        <local:ChartViewControl DataContext="{Binding Chart4}"/>
-                    </Grid>
-                    <Grid Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}">
-                        <local:ChartViewControl DataContext="{Binding Chart5}"/>
-                    </Grid>
-                    <Grid Visibility="{Binding Path=ExtraDeviceVis, Converter={StaticResource BoolToVisConverter}}">
-                        <local:ChartViewControl DataContext="{Binding Chart6}"/>
-                    </Grid>
-                </ItemsControl>
-            </ScrollViewer>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <Button x:Name="btnStart" Content="Старт" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStartClicked}" IsEnabled="{Binding StartEnabled}" />
+            <Button x:Name="btnStop" Content="Стоп" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Margin="10, 15, 10, 0" Command="{Binding OnStopClicked}" RenderTransformOrigin="4.101,-7.392" IsEnabled="{Binding StopEnabled}"/>
         </StackPanel>
     </Grid>
 </UserControl>

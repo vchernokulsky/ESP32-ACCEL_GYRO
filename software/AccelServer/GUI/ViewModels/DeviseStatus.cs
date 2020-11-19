@@ -1,9 +1,5 @@
 ﻿using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Windows.Media;
 
 namespace GUI
@@ -12,35 +8,25 @@ namespace GUI
     {
         NotReady, Synchronized, DataReceiving
     }
-    class DeviseStatus : BindableBase
+    public class DeviseStatus : BindableBase
     {
         private int id;
         private ImuServer.AccelServer accelServer;
         private string title;
+        private Brush statusColor;
+        private string statusString;
 
 
         private Brush[] colors = { Brushes.Red, Brushes.Yellow, Brushes.Green };
+        private string[] status = { "не подключено", "подключено", "прием" };
 
         public DeviseStatus(int id, ImuServer.AccelServer accelServer)
         {
             this.id = id;
             this.accelServer = accelServer;
         }
-
-        public string Title
-        {
-            get { return title; }
-            set
-            {
-                title = value;
-                RaisePropertyChanged("Title");
-            }
-        }
-
-
-
-        public Brush GetColor()
-
+       
+        private Brush GetColor()
         {
             if (accelServer.isReceiving(id))
             {
@@ -54,9 +40,38 @@ namespace GUI
            
         }
 
+        private string GetStatus()
+        {
+            if (accelServer.isReceiving(id))
+            {
+                return status[(int)States.DataReceiving];
+            }
+            if (accelServer.isSynchronized(id))
+            {
+                return status[(int)States.Synchronized];
+            }
+            return status[(int)States.NotReady];
 
-        //public String Title => title;
-        public Brush StatusColor => GetColor();
+        }
 
+
+        public string Title
+        {
+            get { return title; }
+            set
+            {
+                title = value;
+                RaisePropertyChanged("Title");
+            }
+        }
+
+        public void update()
+        {
+            StatusColor = GetColor();
+            StatusString = GetStatus();
+        }
+
+        public Brush StatusColor { get => statusColor; set { statusColor = value; RaisePropertyChanged("StatusColor"); } }
+        public string StatusString { get => statusString; set { statusString = value; RaisePropertyChanged("StatusString"); } }
     }
 }

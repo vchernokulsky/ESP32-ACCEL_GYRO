@@ -129,10 +129,16 @@
       <DependentUpon>MainControlView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainControlVM.cs" />
+    <Compile Include="Views\DeviceStausHeaderView.xaml.cs">
+      <DependentUpon>DeviceStausHeaderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SlideButtonsView.xaml.cs">
       <DependentUpon>SlideButtonsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SlideButtonsVM.cs" />
+    <Compile Include="Views\DeviceStausView.xaml.cs">
+      <DependentUpon>DeviceStausView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SpinnerView.xaml.cs">
       <DependentUpon>SpinnerView.xaml</DependentUpon>
     </Compile>
@@ -153,9 +159,17 @@
     <Compile Include="ViewModels\ChartVM.cs" />
     <Compile Include="ViewModels\DeviseStatus.cs" />
     <Compile Include="ViewModels\LabelVM.cs" />
+    <Page Include="Views\DeviceStausHeaderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\SlideButtonsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeviceStausView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SpinnerView.xaml">
       <SubType>Designer</SubType>
