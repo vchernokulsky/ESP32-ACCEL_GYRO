@@ -1,8 +1,6 @@
 ﻿using ImuServer;
 using Prism.Commands;
 using Prism.Mvvm;
-using System.Windows;
-using System.Windows.Media;
 
 namespace GUI
 {

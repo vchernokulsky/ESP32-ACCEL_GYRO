@@ -114,14 +114,6 @@ namespace ImuServer
 				RaisePropertyChanged("StartEnabled");
 			}
 
-			if (isFirstPackage && ChartDataSingleton.Instance.Count(1) > 1000)
-			{
-				RaisePropertyChanged("SeriesCollection");
-				RaisePropertyChanged("Labels");
-				RaisePropertyChanged("Chart1");
-				isFirstPackage = false;
-				Console.WriteLine("FIRST PACKAGE RECIEVED!!!");
-			}
 			
 		}
 		public void StartReceiving()
@@ -136,20 +128,14 @@ namespace ImuServer
 			_timer.Start();
 
 			DataReceiver.running = true;
-			RaisePropertyChanged("SeriesCollection");
-			RaisePropertyChanged("Labels");
-			RaisePropertyChanged("Chart1");
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
-			//RaisePropertyChanged("Device1");
-
 		}
 
 		public void StopReceiving()
 		{
 			DataReceiver.running = false;
 			RaisePropertyChanged("StopEnabled");
-			//RaisePropertyChanged("Device1");
 		}
 
 		private void StopThread(Thread thread)
