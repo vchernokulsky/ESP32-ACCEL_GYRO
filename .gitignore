@@ -1,6 +1,11 @@
+
+hardware/_autosave*
+firmware/.idea
 software/.gitignore
 
-.idea/
+*.sqlite
+*.bin
+
 data/
 111/
 
