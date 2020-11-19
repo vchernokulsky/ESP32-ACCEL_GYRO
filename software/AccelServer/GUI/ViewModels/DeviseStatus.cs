@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using ImuServer;
+using Prism.Mvvm;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 
@@ -15,6 +16,7 @@ namespace GUI
         private string title;
         private Brush statusColor;
         private string statusString;
+        private string deviceIp;
 
 
         private Brush[] colors = { Brushes.Red, Brushes.Yellow, Brushes.Green };
@@ -54,6 +56,16 @@ namespace GUI
 
         }
 
+        private string GetIp()
+        {
+            DeviceInfo devInf = accelServer.GetDeviceInfo(id);
+            string ret = "---.---.---.---";
+            if (devInf != null && devInf.Ip.Length > 0)
+                ret = devInf.Ip;
+            return ret;
+
+        }
+
 
         public string Title
         {
@@ -69,9 +81,11 @@ namespace GUI
         {
             StatusColor = GetColor();
             StatusString = GetStatus();
+            DeviceIp = GetIp();
         }
 
         public Brush StatusColor { get => statusColor; set { statusColor = value; RaisePropertyChanged("StatusColor"); } }
         public string StatusString { get => statusString; set { statusString = value; RaisePropertyChanged("StatusString"); } }
+        public string DeviceIp { get => deviceIp; set { deviceIp = value; RaisePropertyChanged("DeviceIp"); } }
     }
 }

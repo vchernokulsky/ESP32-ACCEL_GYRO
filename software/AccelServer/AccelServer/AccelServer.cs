@@ -173,6 +173,14 @@ namespace ImuServer
 	
 			Console.WriteLine ("finised");
 		}
+
+		public DeviceInfo GetDeviceInfo(int id)
+        {
+			DeviceInfo ret = null; 
+			if(devSync!= null && devSync.deviceList!= null && devSync.deviceList.ContainsKey(id))
+				ret = devSync.deviceList[id];
+			return ret;
+        }
 	}
 }
 

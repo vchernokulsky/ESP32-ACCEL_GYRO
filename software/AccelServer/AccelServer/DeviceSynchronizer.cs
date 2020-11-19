@@ -245,6 +245,7 @@ namespace ImuServer
 
 							info.data_receiver = data_receiver;
 							deviceList.Add(info.Id, info);
+							RaisePropertyChanged(String.Concat("Device", info.Id.ToString()));
 							deviceList[info.Id].data_receiver.Start();
 
 							RaisePropertyChanged(String.Concat("Device", info.Id.ToString()));
