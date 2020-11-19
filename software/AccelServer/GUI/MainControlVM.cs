@@ -62,7 +62,14 @@ namespace GUI
         public DelegateCommand<object> OnClosing { get; }
 
         public bool NoConnection => accelServer.NoConnection;
-        public bool StopEnabled => DataReceiver.running;
+        public bool StopEnabled { get { 
+                RaisePropertyChanged("Device1");
+                RaisePropertyChanged("Device2");
+                RaisePropertyChanged("Device3");
+                RaisePropertyChanged("Device4");
+                RaisePropertyChanged("Device5");
+                RaisePropertyChanged("Device6");
+                return DataReceiver.running; } } 
         public bool StartEnabled => (!(NoConnection || DataReceiver.running));
 
 

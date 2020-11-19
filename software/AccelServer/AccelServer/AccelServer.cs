@@ -141,12 +141,15 @@ namespace ImuServer
 			RaisePropertyChanged("Chart1");
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
+			//RaisePropertyChanged("Device1");
+
 		}
 
 		public void StopReceiving()
 		{
 			DataReceiver.running = false;
 			RaisePropertyChanged("StopEnabled");
+			//RaisePropertyChanged("Device1");
 		}
 
 		private void StopThread(Thread thread)
