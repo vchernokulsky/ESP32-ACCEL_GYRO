@@ -12,11 +12,12 @@ namespace GUI
     public class DeviseStatus : BindableBase
     {
         private int id;
-        private ImuServer.AccelServer accelServer;
+        private AccelServer accelServer;
         private string title;
         private Brush statusColor;
         private string statusString;
         private string deviceIp;
+        private string packageCount;
 
 
         private Brush[] colors = { Brushes.Red, Brushes.Yellow, Brushes.Green };
@@ -77,15 +78,22 @@ namespace GUI
             }
         }
 
+        public string GetPackageCount()
+        {
+            return ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
+        }
+
         public void update()
         {
             StatusColor = GetColor();
             StatusString = GetStatus();
             DeviceIp = GetIp();
+            PackageCount = GetPackageCount();
         }
 
         public Brush StatusColor { get => statusColor; set { statusColor = value; RaisePropertyChanged("StatusColor"); } }
         public string StatusString { get => statusString; set { statusString = value; RaisePropertyChanged("StatusString"); } }
         public string DeviceIp { get => deviceIp; set { deviceIp = value; RaisePropertyChanged("DeviceIp"); } }
+        public string PackageCount { get => packageCount; set { packageCount = value; RaisePropertyChanged("PackageCount"); } }
     }
 }

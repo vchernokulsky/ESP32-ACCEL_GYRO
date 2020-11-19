@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Net;
 using System.Text;
 using System.Threading;
-using System.Net.NetworkInformation;
 
 namespace ImuServer
 {
-	public class IpBroadcaster
+    public class IpBroadcaster
 	{
 		private int port;
 		public IpBroadcaster (int port)

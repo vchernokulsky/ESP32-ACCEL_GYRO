@@ -14,8 +14,6 @@ namespace ImuServer
 		private IpBroadcaster controller;
 		private DeviceSynchronizer devSync;
 
-		private bool isFirstPackage = true;
-
 		private Thread chkConn;
 		private Thread ipBroadcaster;
 		private Thread synchronizer;
@@ -106,6 +104,12 @@ namespace ImuServer
 		{
 			var t1 = DateTime.Now;
 			var isProcessed = ChartDataSingleton.Instance.ProcessData();
+			RaisePropertyChanged("Device1");
+			RaisePropertyChanged("Device2");
+			RaisePropertyChanged("Device3");
+			RaisePropertyChanged("Device4");
+			RaisePropertyChanged("Device5");
+			RaisePropertyChanged("Device6");
 			Console.WriteLine("Process data: {0}ms", (DateTime.Now-t1).TotalMilliseconds);
 
 			if (!DataReceiver.running && !isProcessed)
@@ -120,8 +124,7 @@ namespace ImuServer
 		{
 			SessionId++;
 			ChartDataSingleton.Instance.Clear();
-			isFirstPackage = true;
-
+		
 			_timer = new System.Windows.Threading.DispatcherTimer();
 			_timer.Tick += OnTimerTick;
 			_timer.Interval = INTERVAL;

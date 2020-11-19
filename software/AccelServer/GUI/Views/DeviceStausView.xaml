@@ -18,7 +18,7 @@
                 <Label   Content="{Binding DeviceIp}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
             <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="95" >
-                <Label   Content="Пакеты" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
+                <Label   Content="{Binding PackageCount}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
             
             

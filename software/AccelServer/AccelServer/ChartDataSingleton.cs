@@ -121,6 +121,14 @@ namespace ImuServer
             return cnt;
         }
 
+        public int ReceivedMeasurementCount(int id)
+        {
+            var cnt = 0;
+            if (_packageInfoDict!= null && _packageInfoDict.ContainsKey(id))
+                cnt = _packageInfoDict[id].package_cnt;
+            return cnt;
+        }
+
         public void Clear()
         {
             foreach (var o in _packageInfoDict.Values) { o.Clear(); }
