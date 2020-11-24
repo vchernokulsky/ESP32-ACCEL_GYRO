@@ -9,7 +9,6 @@ namespace ImuServer
 	public class AccelServer : BindableBase
 	{
 		public static string UserName = "";
-		public static int SessionId = 0;
 
 		private IpBroadcaster controller;
 		private DeviceSynchronizer devSync;
@@ -17,8 +16,6 @@ namespace ImuServer
 		private Thread chkConn;
 		private Thread ipBroadcaster;
 		private Thread synchronizer;
-
-		private AppType appType;
 
 		public bool NoConnection = true;
 		
@@ -30,9 +27,7 @@ namespace ImuServer
 
 		public void SetAppType(AppType appType) 
 		{
-			this.appType = appType;
 			DBManager.Instance.SetAppType(appType);
-			SessionId = DBManager.Instance.GetUtils().GetSessionId();
 			devSync.SetAppType(appType);
 		}
 
@@ -84,7 +79,7 @@ namespace ImuServer
 
 		public void RunServer()
 		{
-			chkConn = ipBroadcaster = new Thread(new ThreadStart(CheckConnection));
+			chkConn = new Thread(new ThreadStart(CheckConnection));
 			chkConn.Start();
 		}
 
@@ -122,7 +117,7 @@ namespace ImuServer
 		}
 		public void StartReceiving()
 		{
-			SessionId++;
+			DBManager.Instance.GetUtils().SetSessionId();
 			ChartDataSingleton.Instance.Clear();
 		
 			_timer = new System.Windows.Threading.DispatcherTimer();

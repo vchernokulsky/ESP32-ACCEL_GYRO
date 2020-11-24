@@ -94,7 +94,7 @@ namespace ImuServer
                         if (_packageInfoDict[obj.id].cur_len == package_size)
                         {                         
                             _dataLists[obj.id].PutBytes(_packageInfoDict[obj.id].bytes);
-                            sqlUtils.AddValues(obj.id, AccelServer.SessionId, AccelServer.UserName, _dataLists[obj.id].agList.Last());
+                            sqlUtils.AddValues(obj.id, AccelServer.UserName, _dataLists[obj.id].agList.Last());
                             _packageInfoDict[obj.id].package_cnt++;
                             _packageInfoDict[obj.id].cur_len = 0;
                         }

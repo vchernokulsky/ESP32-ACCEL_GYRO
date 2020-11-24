@@ -29,12 +29,14 @@ namespace ImuServer
 
         private string paramsStr = "";
 
+        private int sessionId;
+
         public SQLUtils(SQLiteConnection conn)
         {
             _connection = conn;
         }
 
-        public void AddValues(int deviceId, int sessionId, string userName, IMUData imuData)
+        public void AddValues(int deviceId, string userName, IMUData imuData)
         {
             string curParams = string.Format(VALUES_TEMPLATE, deviceId, sessionId, imuData.Time.ToString(TIME_FORMAT), userName,
                 imuData.AcX.ToString(specifier, culture), imuData.AcY.ToString(specifier, culture), imuData.AcZ.ToString(specifier, culture), 
@@ -73,8 +75,11 @@ namespace ImuServer
             paramsStr = "";
             return result;
         }
-
-        public int GetSessionId()
+        public void SetSessionId()
+        {
+            sessionId = GetSessionId() + 1;
+        }
+        private int GetSessionId()
         {
             int ret = 0;
             if(_connection != null)
