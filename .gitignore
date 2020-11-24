@@ -8,3 +8,9 @@ software/.gitignore
 
 data/
 */venv/
+111/
+
+*.sqlite
+*.dxf
+*.pdf
+
