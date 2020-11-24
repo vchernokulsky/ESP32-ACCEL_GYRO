@@ -73,16 +73,13 @@ namespace ImuServer
 						byte[] bytes = new byte[5400];
 						bytesRec = handler.Receive(bytes);
 						totalRecv += bytesRec;
-						//byteList.Add(new ReceivedObject(id, bytesRec, bytes));
 						ChartDataSingleton.Instance.PutData(new ReceivedObject(id, bytesRec, bytes));
 
                         if (!gettingData)
                         {
 							gettingData = true;
-							RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+							RaisePropertyChanged(String.Concat("Device", id.ToString()));
 						}
-						//Console.WriteLine( "Received {0} bytes", bytesRec);
-						//Console.WriteLine( "TOTAL RECEIVED {0} bytes", totalRecv);
 					}
 						
 					handler.Shutdown(SocketShutdown.Both);
@@ -90,16 +87,10 @@ namespace ImuServer
 					if (gettingData)
 					{
 						gettingData = false;
-						RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+						RaisePropertyChanged(String.Concat("Device", id.ToString()));
 					}
 					if (byteList.Count > 0)
-					{
-						//Console.WriteLine( "byteList len {0} ", byteList.Count);
-						//ProcessData();
 						byteList = new List<ReceivedObject>();
-					} else {
-						//Console.WriteLine( "=== STOPPED ===");
-					}
 				}
 			}
 			catch(Exception ex)
@@ -107,7 +98,7 @@ namespace ImuServer
 				if (gettingData)
 				{
 					gettingData = false;
-					RaisePropertyChanged(String.Concat("DeviceColor", id.ToString()));
+					RaisePropertyChanged(String.Concat("Device", id.ToString()));
 				}
 				Console.WriteLine(ex.Message);
 			}

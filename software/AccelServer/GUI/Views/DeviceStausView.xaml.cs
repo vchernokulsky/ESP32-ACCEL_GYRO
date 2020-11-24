@@ -18,9 +18,9 @@ namespace GUI
     /// <summary>
     /// Логика взаимодействия для SpinnerView.xaml
     /// </summary>
-    public partial class SpinnerView : UserControl
+    public partial class DeviceStatusView : UserControl
     {
-        public SpinnerView()
+        public DeviceStatusView()
         {
             InitializeComponent();
         }

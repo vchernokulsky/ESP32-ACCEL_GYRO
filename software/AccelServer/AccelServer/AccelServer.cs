@@ -14,8 +14,6 @@ namespace ImuServer
 		private IpBroadcaster controller;
 		private DeviceSynchronizer devSync;
 
-		private bool isFirstPackage = true;
-
 		private Thread chkConn;
 		private Thread ipBroadcaster;
 		private Thread synchronizer;
@@ -106,6 +104,12 @@ namespace ImuServer
 		{
 			var t1 = DateTime.Now;
 			var isProcessed = ChartDataSingleton.Instance.ProcessData();
+			RaisePropertyChanged("Device1");
+			RaisePropertyChanged("Device2");
+			RaisePropertyChanged("Device3");
+			RaisePropertyChanged("Device4");
+			RaisePropertyChanged("Device5");
+			RaisePropertyChanged("Device6");
 			Console.WriteLine("Process data: {0}ms", (DateTime.Now-t1).TotalMilliseconds);
 
 			if (!DataReceiver.running && !isProcessed)
@@ -114,31 +118,19 @@ namespace ImuServer
 				RaisePropertyChanged("StartEnabled");
 			}
 
-			if (isFirstPackage && ChartDataSingleton.Instance.Count(1) > 1000)
-			{
-				RaisePropertyChanged("SeriesCollection");
-				RaisePropertyChanged("Labels");
-				RaisePropertyChanged("Chart1");
-				isFirstPackage = false;
-				Console.WriteLine("FIRST PACKAGE RECIEVED!!!");
-			}
 			
 		}
 		public void StartReceiving()
 		{
 			SessionId++;
 			ChartDataSingleton.Instance.Clear();
-			isFirstPackage = true;
-
+		
 			_timer = new System.Windows.Threading.DispatcherTimer();
 			_timer.Tick += OnTimerTick;
 			_timer.Interval = INTERVAL;
 			_timer.Start();
 
 			DataReceiver.running = true;
-			RaisePropertyChanged("SeriesCollection");
-			RaisePropertyChanged("Labels");
-			RaisePropertyChanged("Chart1");
 			RaisePropertyChanged("StartEnabled");
 			RaisePropertyChanged("StopEnabled");
 		}
@@ -170,6 +162,14 @@ namespace ImuServer
 	
 			Console.WriteLine ("finised");
 		}
+
+		public DeviceInfo GetDeviceInfo(int id)
+        {
+			DeviceInfo ret = null; 
+			if(devSync!= null && devSync.deviceList!= null && devSync.deviceList.ContainsKey(id))
+				ret = devSync.deviceList[id];
+			return ret;
+        }
 	}
 }
 

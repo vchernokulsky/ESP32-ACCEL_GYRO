@@ -245,9 +245,10 @@ namespace ImuServer
 
 							info.data_receiver = data_receiver;
 							deviceList.Add(info.Id, info);
+							RaisePropertyChanged(String.Concat("Device", info.Id.ToString()));
 							deviceList[info.Id].data_receiver.Start();
 
-							RaisePropertyChanged(String.Concat("DeviceColor", info.Id.ToString()));
+							RaisePropertyChanged(String.Concat("Device", info.Id.ToString()));
 
 
 							PortInfo portInfo = new PortInfo(info.Port);

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace GUI
 {
     /// <summary>
-    /// Логика взаимодействия для SlideButtonsView.xaml
+    /// Логика взаимодействия для SpinnerView.xaml
     /// </summary>
-    public partial class SlideButtonsView : UserControl
+    public partial class DeviceStatusHeaderView : UserControl
     {
-        public SlideButtonsView()
+        public DeviceStatusHeaderView()
         {
             InitializeComponent();
         }

@@ -1,8 +1,6 @@
 ﻿using ImuServer;
 using Prism.Commands;
 using Prism.Mvvm;
-using System.Windows;
-using System.Windows.Media;
 
 namespace GUI
 {
@@ -10,19 +8,12 @@ namespace GUI
     {
         private AccelServer accelServer = new AccelServer(15000);
 
-        private DeviseStatus Device1;
-        private DeviseStatus Device2;
-        private DeviseStatus Device3;
-        private DeviseStatus Device4;
-        private DeviseStatus Device5;
-        private DeviseStatus Device6;
-
-        private ChartControlVM chart1;
-        private ChartControlVM chart2;
-        private ChartControlVM chart3;
-        private ChartControlVM chart4;
-        private ChartControlVM chart5;
-        private ChartControlVM chart6;
+        private DeviseStatus device1;
+        private DeviseStatus device2;
+        private DeviseStatus device3;
+        private DeviseStatus device4;
+        private DeviseStatus device5;
+        private DeviseStatus device6;
 
         private string userName;
 
@@ -51,14 +42,12 @@ namespace GUI
             Device5 = new DeviseStatus(5, accelServer) { Title = "Устройство №5" };
             Device6 = new DeviseStatus(6, accelServer) { Title = "Устройство №6" };
 
-            chart1 = new ChartControlVM(1, appType);
-            chart2 = new ChartControlVM(2, appType);
-            chart3 = new ChartControlVM(3, appType);
-            chart4 = new ChartControlVM(4, appType);
-            chart5 = new ChartControlVM(5, appType);
-            chart6 = new ChartControlVM(6, appType);
-
-
+            Device1.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            Device2.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            Device3.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            Device4.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            Device5.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            Device6.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
 
             ExtraDeviceVis = (appType == AppType.AccelerationMeasurement) ? true : false;
             LblGroup = (appType == AppType.AccelerationMeasurement) ? "Груз" : "Бревна";
@@ -71,28 +60,31 @@ namespace GUI
         public DelegateCommand<object> OnClosing { get; }
 
         public bool NoConnection => accelServer.NoConnection;
-        public bool StopEnabled => DataReceiver.running;
+        public bool StopEnabled { get { 
+                RaisePropertyChanged("Device1");
+                RaisePropertyChanged("Device2");
+                RaisePropertyChanged("Device3");
+                RaisePropertyChanged("Device4");
+                RaisePropertyChanged("Device5");
+                RaisePropertyChanged("Device6");
+                return DataReceiver.running; } } 
         public bool StartEnabled => (!(NoConnection || DataReceiver.running));
 
 
-        public Brush DeviceColor1 => Device1.StatusColor;
-        public Brush DeviceColor2 => Device2.StatusColor;
-        public Brush DeviceColor3 => Device3.StatusColor;
-        public Brush DeviceColor4 => Device4.StatusColor;
-        public Brush DeviceColor5 => Device5.StatusColor;
-        public Brush DeviceColor6 => Device6.StatusColor;
 
-        public ChartControlVM Chart1 { get => chart1; set { chart1 = value; RaisePropertyChanged("Chart1"); } }
-        public ChartControlVM Chart2 { get => chart2; set { chart1 = value; RaisePropertyChanged("Chart2"); } }
-        public ChartControlVM Chart3 { get => chart3; set { chart1 = value; RaisePropertyChanged("Chart3"); } }
-        public ChartControlVM Chart4 { get => chart4; set { chart1 = value; RaisePropertyChanged("Chart4"); } }
-        public ChartControlVM Chart5 { get => chart5; set { chart1 = value; RaisePropertyChanged("Chart5"); } }
-        public ChartControlVM Chart6 { get => chart6; set { chart1 = value; RaisePropertyChanged("Chart6"); } }
 
         public string UserName { get => userName; set { userName = value; AccelServer.UserName = value; } }
 
         public bool ExtraDeviceVis { get => extraDeviceVis; set { extraDeviceVis = value; RaisePropertyChanged("ExtraDeviceVis"); } }
 
         public string LblGroup { get => lblGroup; set { lblGroup = value; RaisePropertyChanged("LblGroup"); } }
+
+        public DeviseStatus Device1 { get { device1.update(); return device1; } set { device1 = value; RaisePropertyChanged("Device1"); } }
+        public DeviseStatus Device2 { get { device2.update(); return device2; } set { device2 = value; RaisePropertyChanged("Device2"); } }
+        public DeviseStatus Device3 { get { device3.update(); return device3; } set { device3 = value; RaisePropertyChanged("Device3"); } }
+        public DeviseStatus Device4 { get { device4.update(); return device4; } set { device4 = value; RaisePropertyChanged("Device4"); } }
+        public DeviseStatus Device5 { get { device5.update(); return device5; } set { device5 = value; RaisePropertyChanged("Device5"); } }
+        public DeviseStatus Device6 { get { device6.update(); return device6; } set { device6 = value; RaisePropertyChanged("Device6"); } }
+
     }
 }
