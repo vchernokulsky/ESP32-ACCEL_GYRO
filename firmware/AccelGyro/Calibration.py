@@ -1,13 +1,12 @@
-import utime
 import math
+from LedBlinker import *
+
 
 class Calibration(object):
 
     def __init__(self, acc, led):
         self.led = led
-        self.led_val = 0
-        self.led_max = 50
-        self.led_cnt = self.led_max
+        self.led.set_state(CALIBRATION_STATE)
 
         self.gyro_offs = {'x': 0, 'y': 0, 'z': 0}
         self.accel_offs = {'y': 0, 'x': 0, 'z': 0}
@@ -47,11 +46,7 @@ class Calibration(object):
             data_offs['x'] += data['GyX']
             data_offs['y'] += data['GyY']
             data_offs['z'] += data['GyZ']
-            self.led_cnt -= 1
-            if self.led_cnt <= 0:
-                self.led_val ^= 1
-                self.led(self.led_val)
-                self.led_cnt = self.led_max
+            self.led.led_blink()
         data_offs['x'] /= 100
         data_offs['y'] /= 100
         data_offs['z'] /= 100
@@ -71,11 +66,7 @@ class Calibration(object):
             data['x'] = (data['x'] + acc['x']) / 2
             data['y'] = (data['y'] + acc['y']) / 2
             data['z'] = (data['z'] + acc['z']) / 2
-            self.led_cnt -= 1
-            if self.led_cnt <= 0:
-                self.led_val ^= 1
-                self.led(self.led_val)
-                self.led_cnt = self.led_max
+            self.led.led_blink()
         data['z'] = data['z'] - self.accel_scale
         return data
 
@@ -98,11 +89,7 @@ class Calibration(object):
                     data_offs_min['y'] = data['y']
                 if data['z'] < data_offs_min['z']:
                     data_offs_min['z'] = data['z']
-            self.led_cnt -= 1
-            if self.led_cnt <= 0:
-                self.led_val ^= 1
-                self.led(self.led_val)
-                self.led_cnt = self.led_max
+                self.led.led_blink()
         data = {
                 'x': data_offs_min['x'] + (data_offs_max['x'] - data_offs_min['x']) / 2,
                 'y': data_offs_min['y'] + (data_offs_max['y'] - data_offs_min['y']) / 2,
@@ -115,5 +102,5 @@ class Calibration(object):
         self.accel_offs = self.get_accel_offs_avg()
         print("gyro_offs = ", self.gyro_offs)
         print("accel_offs = ", self.accel_offs)
-        self.led(0)
+        self.led.set_state(CALIBRATED_STATE)
         return self.gyro_offs, self.accel_offs
