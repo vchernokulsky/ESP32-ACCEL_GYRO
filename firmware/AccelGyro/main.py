@@ -7,6 +7,7 @@ from Config import *
 import usocket as socket
 import network
 import ujson
+import utime
 
 from Calibration import Calibration
 from LedBlinker import *
@@ -41,14 +42,11 @@ def init_network(led, network_name='IntemsLab', network_password='Embedded32'):
     return sta_if.ifconfig()[0]
 
 
-def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
+def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000):
     global chrg
     sock = None
-    led = machine.Pin(27, machine.Pin.OUT)
-    led_val = 0
-    err_cnt = 0
+    led.set_state(SENDING_STATE)
     count_to_restart = 0
-    led(led_val)
     while True:
         try:
             total_send = 0
@@ -56,12 +54,12 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
             sock.connect((host, port))
             sock.settimeout(0)
             while True:
-                recv_bytes = sock.read(128)
-                if recv_bytes is not None and len(recv_bytes)>0:
-                    print("recv")
-                    print(recv_bytes)
-                else:
-                    print("NOT RCVED")
+                # recv_bytes = sock.read(128)
+                # if recv_bytes is not None and len(recv_bytes)>0:
+                #     print("recv")
+                #     print(recv_bytes)
+                # else:
+                #     print("NOT RCVED")
                 values = bytes()
                 t1 = utime.ticks_ms()
                 cnt = 0
@@ -75,8 +73,7 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
                     cnt += 1
                 t3 = utime.ticks_ms()
                 sock.send(values)
-                led_val ^= 1
-                led(led_val)
+                led.send_blink()
                 t4 = utime.ticks_ms()
 
                 total_send += len(values)
@@ -87,20 +84,15 @@ def send_amount(acc, amount=300, host='192.168.55.116', port=5000):
                 print('loop_time = ' + str(utime.ticks_diff(t3, t1)))
                 print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
                 print(" ")
-                err_cnt = 0
 
         except Exception as e:
             print(e)
             chrg.check_charge()
-            err_cnt += 1
+            led.led_blink()
             if e.args[0] == 113:
                 count_to_restart += 20
             else:
                 count_to_restart += 1
-            if err_cnt >= 20:
-                led_val ^= 1
-                # led(led_val)
-                err_cnt = 0
             utime.sleep_ms(2)
             if sock is not None:
                 sock.close()
@@ -171,8 +163,7 @@ def main():
             print(jbytes)
             server_port = sync_info(server_ip, jbytes)
             if server_port is not None:
-                # send_amount(acc, host=server_ip, port=server_port)
-                send_amount(acc, host="192.168.0.126", port=11511)
+                send_amount(acc, led, host=server_ip, port=server_port)
         except Exception as e:
             chrg.check_charge()
             print(e)
