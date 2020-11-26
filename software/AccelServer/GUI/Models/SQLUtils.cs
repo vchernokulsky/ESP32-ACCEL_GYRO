@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GUI
 {
@@ -36,7 +32,7 @@ namespace GUI
             _connection = conn;
         }
 
-        public void AddValues(int deviceId, string userName, IMUData imuData)
+        public void AddValues(int deviceId, string userName, int sessionId, IMUData imuData)
         {
             string curParams = string.Format(VALUES_TEMPLATE, deviceId, sessionId, imuData.Time.ToString(TIME_FORMAT), userName,
                 imuData.AcX.ToString(specifier, culture), imuData.AcY.ToString(specifier, culture), imuData.AcZ.ToString(specifier, culture), 
@@ -75,11 +71,8 @@ namespace GUI
             paramsStr = "";
             return result;
         }
-        public void SetSessionId()
-        {
-            sessionId = GetSessionId() + 1;
-        }
-        private int GetSessionId()
+        
+        public int GetSessionId()
         {
             int ret = 0;
             if(_connection != null)

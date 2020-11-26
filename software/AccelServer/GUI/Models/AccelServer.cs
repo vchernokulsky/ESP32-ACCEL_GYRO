@@ -40,7 +40,7 @@ namespace GUI
 
 		public void StartReceiving()
 		{
-			DBManager.Instance.GetUtils().SetSessionId();
+			ChartDataSingleton.Instance.SetSessionId();
 			ChartDataSingleton.Instance.Clear();
 			_timer = new System.Windows.Threading.DispatcherTimer();
 			_timer.Tick += OnTimerTick;

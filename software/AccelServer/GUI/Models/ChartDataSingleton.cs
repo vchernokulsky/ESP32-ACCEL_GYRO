@@ -34,6 +34,7 @@ namespace GUI
         public int lastProcessedId = 0;
 
         public string userName = "";
+        public int sessionId = 0;
 
         private ChartDataSingleton()
         {
@@ -95,7 +96,7 @@ namespace GUI
                         bytes_proceed += copy_len;
                         if (_packageInfoDict[obj.id].cur_len == package_size)
                         {                         
-                            sqlUtils.AddValues(obj.id, userName, _dataLists[obj.id].GetImuData(_packageInfoDict[obj.id].bytes));
+                            sqlUtils.AddValues(obj.id, userName, sessionId, _dataLists[obj.id].GetImuData(_packageInfoDict[obj.id].bytes));
                             _packageInfoDict[obj.id].package_cnt++;
                             _packageInfoDict[obj.id].cur_len = 0;
                         }
@@ -125,6 +126,11 @@ namespace GUI
         public void Clear()
         {
             foreach (var o in _packageInfoDict.Values) { o.Clear(); }
+        }
+
+        public void SetSessionId()
+        {
+            sessionId = DBManager.Instance.GetUtils().GetSessionId() + 1;
         }
     }
 }
