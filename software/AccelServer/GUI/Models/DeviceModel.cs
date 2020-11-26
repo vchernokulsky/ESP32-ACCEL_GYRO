@@ -9,7 +9,7 @@ namespace GUI
     {
         NotReady, Synchronized, DataReceiving
     }
-    public class DeviseStatus : BindableBase
+    public class DeviceModel : BindableBase
     {
         private int id;
         private AccelServer accelServer;
@@ -23,7 +23,7 @@ namespace GUI
         private Brush[] colors = { Brushes.Red, Brushes.Yellow, Brushes.Green };
         private string[] status = { "не подключено", "подключено", "прием" };
 
-        public DeviseStatus(int id, ImuServer.AccelServer accelServer)
+        public DeviceModel(int id, ImuServer.AccelServer accelServer)
         {
             this.id = id;
             this.accelServer = accelServer;

@@ -10,18 +10,18 @@ namespace ImuServer
 	{
 		public static string UserName = "";
 
-		private IpBroadcaster controller;
+		private IpBroadcaster ipBroadcaster;
 		private DeviceSynchronizer devSync;
 
 		private Thread chkConn;
-		private Thread ipBroadcaster;
+		private Thread ipBroadcasterThread;
 		private Thread synchronizer;
 
 		public bool NoConnection = true;
 		
 		public AccelServer(int broadcasterPort)
 		{
-			controller = new IpBroadcaster(broadcasterPort);
+			ipBroadcaster = new IpBroadcaster(broadcasterPort);
 			devSync = new DeviceSynchronizer();
 		}
 
@@ -86,8 +86,8 @@ namespace ImuServer
 
 		public void StartThreads()
 		{
-			ipBroadcaster = new Thread(new ThreadStart(controller.IpBroadcast));
-			ipBroadcaster.Start();
+			ipBroadcasterThread = new Thread(new ThreadStart(ipBroadcaster.IpBroadcast));
+			ipBroadcasterThread.Start();
 			
 			synchronizer = new Thread(new ThreadStart(devSync.StartListening));
 			synchronizer.Start();
@@ -150,7 +150,7 @@ namespace ImuServer
 			Console.WriteLine ("finishing...");
 
 			StopThread(chkConn);
-			StopThread(ipBroadcaster);
+			StopThread(ipBroadcasterThread);
 			if(devSync != null)
 				devSync.FinishReceiving ();
 			StopThread(synchronizer);

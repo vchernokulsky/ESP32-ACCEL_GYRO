@@ -4,10 +4,9 @@ using Prism.Mvvm;
 
 namespace GUI
 {
-    public class MainControlVM : BindableBase
+    public class MainControlModel : BindableBase
     {
-        private AccelServer accelServer = new AccelServer(15000);
-
+       
         private DeviceModel device1;
         private DeviceModel device2;
         private DeviceModel device3;
@@ -22,13 +21,8 @@ namespace GUI
 
 
 
-        public MainControlVM(AppType appType)
+        public MainControlModel(AppType appType)
         {
-            accelServer.SetAppType(appType);
-            accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            accelServer.SetPropetyRaise();
-
-
             OnContentRendered = new DelegateCommand(() => accelServer.RunServer());
             OnStartClicked = new DelegateCommand(() => accelServer.StartReceiving());
             OnStopClicked = new DelegateCommand(() => accelServer.StopReceiving());

@@ -129,6 +129,7 @@
       <DependentUpon>MainControlView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainControlVM.cs" />
+    <Compile Include="Models\MainControlModel.cs" />
     <Compile Include="Views\DeviceStausHeaderView.xaml.cs">
       <DependentUpon>DeviceStausHeaderView.xaml</DependentUpon>
     </Compile>
@@ -139,7 +140,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="ViewModels\DeviseStatus.cs" />
+    <Compile Include="Models\DeviceModel.cs" />
     <Page Include="Views\DeviceStausHeaderView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
