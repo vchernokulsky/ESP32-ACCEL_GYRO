@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-namespace ImuServer
+namespace GUI
 {
     class PackageInfo
     {

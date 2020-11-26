@@ -2,7 +2,7 @@
 using System.Data.SQLite;
 using System.IO;
 
-namespace ImuServer
+namespace GUI
 {
     public class DBManager
     {
