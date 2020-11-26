@@ -54,6 +54,7 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000):
             sock.connect((host, port))
             sock.settimeout(0)
             while True:
+                print("loop")
                 # recv_bytes = sock.read(128)
                 # if recv_bytes is not None and len(recv_bytes)>0:
                 #     print("recv")
@@ -66,7 +67,6 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000):
                 while cnt < amount:
                     raw_val = acc.get_raw_values()
                     d = acc.raw2dict_2(raw_val)
-                    print(d)
                     t2 = utime.ticks_ms()
                     pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
                     values += pkg
@@ -91,6 +91,8 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000):
             led.led_blink()
             if e.args[0] == 113:
                 count_to_restart += 20
+            elif e.args[0] == 104:
+                count_to_restart += 50
             else:
                 count_to_restart += 1
             utime.sleep_ms(2)

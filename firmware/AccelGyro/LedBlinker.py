@@ -21,6 +21,7 @@ SENDING_STATE = 7
 # синхронизация с сервером (отправка информации об устройсте, получение порта для отправки данных)
 #       - медленно мигает (3с)
 # передача данных - мигает быстро два раза, небольшая пауза
+# готов к передаче - так же как при передаче, но медленней
 class LedBlinker(object):
     def __init__(self):
         self.led = machine.Pin(LED_PIN, machine.Pin.OUT)
@@ -33,7 +34,7 @@ class LedBlinker(object):
         self.sending_val_arr = [1, 0, 1, 0, 0, 0]
         self.sending_val_id = 0
 
-        self.sending_divider = 10
+        self.sending_divider = 5
         self.sending_cnt = 10
 
     def set_state(self, state):
