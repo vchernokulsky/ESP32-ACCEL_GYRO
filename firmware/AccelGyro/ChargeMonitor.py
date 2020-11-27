@@ -11,11 +11,11 @@ class ChargeMonitor(object):
         self.stat1 = machine.Pin(35, machine.Pin.IN)
         self.stat2 = machine.Pin(33, machine.Pin.IN)
         self.vbus = machine.Pin(34, machine.Pin.IN)
-        self.last_time = utime.ticks_ms()
+        self.last_time = None
 
     def check_charge(self):
         cur_time = utime.ticks_ms()
-        if cur_time - self.last_time >= self.TIME_SLEEP:
+        if self.last_time is None or cur_time - self.last_time >= self.TIME_SLEEP:
             self.set_status()
             self.last_time = cur_time
 
