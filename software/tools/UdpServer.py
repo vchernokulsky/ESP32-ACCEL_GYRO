@@ -17,8 +17,8 @@ server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 # Set a timeout so the socket does not block
 # indefinitely when trying to receive data.
 server.settimeout(0.2)
-message = b"your very important message"
+message = b"192.168.0.187"
 while True:
-    server.sendto(message, ('<broadcast>', 9876))
+    server.sendto(message, ('<broadcast>', 15000))
     print("message sent!")
     time.sleep(1)
