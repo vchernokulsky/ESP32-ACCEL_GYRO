@@ -82,6 +82,9 @@
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Prism, Version=7.2.0.1422, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.2.0.1422\lib\net45\Prism.dll</HintPath>
     </Reference>
@@ -129,6 +132,22 @@
       <DependentUpon>MainControlView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainControlVM.cs" />
+    <Compile Include="Models\AccelServer.cs" />
+    <Compile Include="Models\AppType.cs" />
+    <Compile Include="Models\ChartDataSingleton.cs" />
+    <Compile Include="Models\DataReceiver.cs" />
+    <Compile Include="Models\DBManager.cs" />
+    <Compile Include="Models\IMUData.cs" />
+    <Compile Include="Models\IpBroadcaster.cs" />
+    <Compile Include="Models\MpuCalibraion.cs" />
+    <Compile Include="Models\NetHelper.cs" />
+    <Compile Include="Models\SQLUtils.cs" />
+    <Compile Include="Models\Structures\DeviceInfo.cs" />
+    <Compile Include="Models\DeviceSynchronizer.cs" />
+    <Compile Include="Models\GUI\MainControlModel.cs" />
+    <Compile Include="Models\Structures\Coordinates.cs" />
+    <Compile Include="Models\Structures\PortInfo.cs" />
+    <Compile Include="Models\Structures\ReceivedObject.cs" />
     <Compile Include="Views\DeviceStausHeaderView.xaml.cs">
       <DependentUpon>DeviceStausHeaderView.xaml</DependentUpon>
     </Compile>
@@ -139,7 +158,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="ViewModels\DeviseStatus.cs" />
+    <Compile Include="Models\GUI\DeviceModel.cs" />
     <Page Include="Views\DeviceStausHeaderView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -167,17 +186,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AccelServer\ImuServer.csproj">
-      <Project>{611FE8AF-F31E-4351-AC26-B319E6C359D2}</Project>
-      <Name>ImuServer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

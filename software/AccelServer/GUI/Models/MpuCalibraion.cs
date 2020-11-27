@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace ImuServer
+namespace GUI
 {
-	public class CalibrationCoeffitients
+    public class CalibrationCoeffitients
 	{
 		public float AccX { get; set; }
 		public float AccY { get; set; }

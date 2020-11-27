@@ -152,10 +152,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AccelServer\ImuServer.csproj">
-      <Project>{611fe8af-f31e-4351-ac26-b319e6c359d2}</Project>
-      <Name>ImuServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GUI\GUI.csproj">
       <Project>{2526d5a4-bae8-4993-91e3-4a7e3f7f5bee}</Project>
       <Name>GUI</Name>

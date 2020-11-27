@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ImuServer
+namespace GUI
 {
 	public class IMUDataListDecorator
 	{
