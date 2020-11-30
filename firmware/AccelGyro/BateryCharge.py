@@ -1,6 +1,8 @@
 import machine
 import utime
 
+from I2cHelper import I2cHelper
+
 STC3100_ADDRESS = 0x70  # STC3100 8-bit address byte
 STC3100_SLAVE_ADDRESS = 0xE0  # STC3100 7-bit address byte
 
@@ -79,7 +81,7 @@ def conv(val, factor):
 
 class ChargeController(object):
     def __init__(self, i2c, address=0x70):
-        self.iic = i2c
+        self.i2cHelper = I2cHelper(i2c)
         self.addr = address
 
     def init_device(self):
@@ -141,21 +143,13 @@ class ChargeController(object):
         self.write_byte(STC3100_REG_MODE, 0)
 
     def read_byte(self, reg):
-        self.iic.start()
-        buf = self.iic.readfrom_mem(STC3100_ADDRESS, reg, 1)
-        self.iic.stop()
-        return buf
+        return self.i2cHelper.read_byte(self.addr, reg)
 
     def get_raw_values(self):
-        self.iic.start()
-        a = self.iic.readfrom_mem(self.addr, 0x02, 10)
-        self.iic.stop()
-        return a
+        return self.i2cHelper.read_byte_array(self.addr, STC3100_REG_CHARGE_LOW, 10)
 
     def write_byte(self, reg, val):
-        self.iic.start()
-        self.iic.writeto_mem(STC3100_ADDRESS, reg, bytearray(val))
-        self.iic.stop()
+        self.i2cHelper.write_byte(self.addr, reg, val)
 
 
 def run_read():
