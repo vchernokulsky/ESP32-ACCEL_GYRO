@@ -88,6 +88,11 @@ class ChargeController(object):
         self.addr = address
 
     def init_device(self):
+        scan_res = self.i2cHelper.iic.scan()
+        if STC3100_ADDRESS not in scan_res:
+            print("Charge controller was not inited")
+            return STC3100_ERR
+
         # first, check the presence of the STC3100 by reading first byte of dev. ID
         dev_id = ord(self.read_byte(STC3100_REG_ID0))
         if dev_id != 0x10:
@@ -151,35 +156,32 @@ class ChargeController(object):
     def get_raw_values(self):
         return self.i2cHelper.read_byte_array(self.addr, STC3100_REG_CHARGE_LOW, 10)
 
-    def get_charge_percent(self):
+    def get_voltage(self):
         raw = self.i2cHelper.read_byte_array(self.addr, STC3100_REG_VOLTAGE_LOW, 2)
         voltage_val = (raw[1] << 8) + raw[0]
         voltage_val &= 0x0fff  # mask unused bits
         if voltage_val >= 0x0800:
             voltage_val -= 0x1000  # convert to signed value
         batt_voltage = conv(voltage_val, VoltageFactor)  # result in mV
-        return round((batt_voltage - MIN_VOLTAGE)/(MAX_VOLTAGE - MIN_VOLTAGE) * 100)
+        return batt_voltage
+
+    def get_current(self):
+        raw = self.i2cHelper.read_byte_array(self.addr, STC3100_REG_CURRENT_LOW, 2)
+        current_val = (raw[1] << 8) + raw[0]
+        current_val &= 0x3fff  # mask unused bits
+        if current_val >= 0x2000:
+            current_val -= 0x4000  # convert to signed value
+        batt_current = conv(current_val, CurrentFactor)  # result in mA
+        return batt_current
+
+    def get_charge_percent(self):
+        return round((self.get_voltage() - MIN_VOLTAGE)/(MAX_VOLTAGE - MIN_VOLTAGE) * 100)
+
+    def is_charge(self):
+        return self.get_current() > 0
 
     def write_byte(self, reg, val):
         self.i2cHelper.write_byte(self.addr, reg, val)
-
-
-def run_read():
-    i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
-    scan_res = i2c.scan()
-    print("scan_res: {}".format(scan_res))
-    charge = None
-    if STC3100_ADDRESS in scan_res:
-        charge = ChargeController(i2c)
-        if charge.init_device() == STC3100_OK:
-            while True:
-                print(charge.get_dict_values())
-                print("charge: {}%".format(charge.get_charge_percent()))
-                utime.sleep_ms(1000)
-        else:
-            print("Charge controller was not inited")
-    else:
-        print("no STC_3100 in i2c devices")
 
 
 """

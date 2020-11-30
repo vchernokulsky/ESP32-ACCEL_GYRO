@@ -10,14 +10,10 @@ import ujson
 import utime
 
 from Calibration import Calibration
+from I2cHelper import I2cHelper
 from LedBlinker import *
 
-chrg = ChargeMonitor()
 
-
-def init_acc():
-    i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
-    return Accel(i2c)
 
 
 ## Documentation for a function.
@@ -27,7 +23,6 @@ def init_acc():
 #  This parameters should be configured with WIFI-router.
 #  Don't change hardcoded params WIFI-router configuration recommended.
 def init_network(led, network_name='IntemsLab', network_password='Embedded32'):
-    global chrg
     led.set_state(NETWORK_CONNECTION_STATE)
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
@@ -35,7 +30,6 @@ def init_network(led, network_name='IntemsLab', network_password='Embedded32'):
         print('connecting to network...')
         sta_if.connect(network_name, network_password)
         while not sta_if.isconnected():
-            chrg.check_charge()
             led.led_blink()
     print('network config:', sta_if.ifconfig())
     led.set_state(NETWORK_CONNECTED_STATE)
@@ -43,7 +37,6 @@ def init_network(led, network_name='IntemsLab', network_password='Embedded32'):
 
 
 def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000):
-    global chrg
     sock = None
     led.set_state(SENDING_STATE)
     count_to_restart = 0
@@ -87,7 +80,6 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000):
 
         except Exception as e:
             print(e)
-            chrg.check_charge()
             led.led_blink()
             if e.args[0] == 113:
                 count_to_restart += 20
@@ -148,11 +140,9 @@ def sync_info(server_ip, jbytes, server_port=9875):
     return port
 
 
-def main():
-    global chrg
+def main_loop(i2c):
     led = LedBlinker()
-    chrg.check_charge()
-    acc = init_acc()
+    acc = Accel(i2c)
     gyro_offset, acc_offset = calibrate(acc, led)
     while True:
         try:
@@ -167,13 +157,31 @@ def main():
             if server_port is not None:
                 send_amount(acc, led, host=server_ip, port=server_port)
         except Exception as e:
-            chrg.check_charge()
             print(e)
 
 
 def calibrate(acc, led):
     c = Calibration(acc, led)
     return c.calibration()
+
+
+def main():
+    while True:
+        i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
+        charge_monitor = ChargeMonitor(i2c)
+        if not charge_monitor.init():
+            print("no charge controller device")
+        else:
+            while True:
+                if charge_monitor.is_charging():
+                    charge_monitor.set_charge_leds()
+                    machine.deepsleep(60 * 1000)
+                else:
+                    main_loop(i2c)
+
+
+
+
 
 
 
