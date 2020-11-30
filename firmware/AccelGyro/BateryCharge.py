@@ -3,6 +3,9 @@ import utime
 
 from I2cHelper import I2cHelper
 
+MIN_VOLTAGE = 3000  # in mV
+MAX_VOLTAGE = 4100  # in mV
+
 STC3100_ADDRESS = 0x70  # STC3100 8-bit address byte
 STC3100_SLAVE_ADDRESS = 0xE0  # STC3100 7-bit address byte
 
@@ -148,6 +151,15 @@ class ChargeController(object):
     def get_raw_values(self):
         return self.i2cHelper.read_byte_array(self.addr, STC3100_REG_CHARGE_LOW, 10)
 
+    def get_charge_percent(self):
+        raw = self.i2cHelper.read_byte_array(self.addr, STC3100_REG_VOLTAGE_LOW, 2)
+        voltage_val = (raw[1] << 8) + raw[0]
+        voltage_val &= 0x0fff  # mask unused bits
+        if voltage_val >= 0x0800:
+            voltage_val -= 0x1000  # convert to signed value
+        batt_voltage = conv(voltage_val, VoltageFactor)  # result in mV
+        return round((batt_voltage - MIN_VOLTAGE)/(MAX_VOLTAGE - MIN_VOLTAGE) * 100)
+
     def write_byte(self, reg, val):
         self.i2cHelper.write_byte(self.addr, reg, val)
 
@@ -162,6 +174,7 @@ def run_read():
         if charge.init_device() == STC3100_OK:
             while True:
                 print(charge.get_dict_values())
+                print("charge: {}%".format(charge.get_charge_percent()))
                 utime.sleep_ms(1000)
         else:
             print("Charge controller was not inited")
