@@ -14,8 +14,6 @@ from I2cHelper import I2cHelper
 from LedBlinker import *
 
 
-
-
 ## Documentation for a function.
 #  @param network_name wireless network SSID
 #  @param network_password wireless network password
@@ -36,24 +34,39 @@ def init_network(led, network_name='IntemsLab', network_password='Embedded32'):
     return sta_if.ifconfig()[0]
 
 
-def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000):
+def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_port=5001):
     sock = None
     led.set_state(SENDING_STATE)
     count_to_restart = 0
+    is_runinng = False
+    run_msg = "socket_start"
+    stop_msg ="socket_stopp"
     while True:
         try:
             total_send = 0
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((host, port))
-            sock.settimeout(0)
+
+            command_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            command_sock.connect((host, command_port))
+
+            while not is_runinng:
+                recv_bytes = command_sock.recv(32)
+                if recv_bytes is not None and len(recv_bytes) > 0:
+                    recv_str = recv_bytes.decode("utf-8")
+                    if recv_str == run_msg:
+                        is_runinng = True
+                        command_sock.send(run_msg.encode("utf-8"))
+                    else:
+                        print("wrong msg: {}".format(recv_str))
+                        utime.sleep_ms(100)
+                else:
+                    print("NOT RCVED")
+                    utime.sleep_ms(100)
+
+
             while True:
                 print("loop")
-                # recv_bytes = sock.read(128)
-                # if recv_bytes is not None and len(recv_bytes)>0:
-                #     print("recv")
-                #     print(recv_bytes)
-                # else:
-                #     print("NOT RCVED")
                 values = bytes()
                 t1 = utime.ticks_ms()
                 cnt = 0
@@ -127,17 +140,20 @@ def sync_info(server_ip, jbytes, server_port=9875):
     sock.connect((server_ip, server_port))
     sock.send(jbytes)
     port = None
+    command_port = None
     sock.settimeout(3)
     try:
         data = sock.recv(1024)
         jdict = ujson.loads(data.decode("utf-8"))
+        print(jdict)
         if "Port" in jdict:
             port = jdict["Port"]
+        if "CommandPort" in jdict:
+            command_port = jdict["CommandPort"]
     except Exception as e:
         print(e)
-    print(port)
     sock.close()
-    return port
+    return port, command_port
 
 
 def main_loop(i2c, charge_monitor):
@@ -156,9 +172,9 @@ def main_loop(i2c, charge_monitor):
                      'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
             jbytes = ujson.dumps(jdict).encode("utf-8")
             print(jbytes)
-            server_port = sync_info(server_ip, jbytes)
+            server_port, command_port = sync_info(server_ip, jbytes)
             if server_port is not None:
-                send_amount(acc, led, host=server_ip, port=server_port)
+                send_amount(acc, led, host=server_ip, port=server_port, command_port=command_port)
         except Exception as e:
             print(e)
 
@@ -181,10 +197,3 @@ def main():
                     machine.deepsleep(60 * 1000)
                 else:
                     main_loop(i2c, charge_monitor)
-
-
-
-
-
-
-
