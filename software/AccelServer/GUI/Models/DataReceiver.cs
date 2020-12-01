@@ -74,24 +74,24 @@ namespace GUI
 						bytesRec = handler.Receive(bytes);
 						ChartDataSingleton.Instance.PutData(new ReceivedObject(id, bytesRec, bytes));							
 					}
+					
+                    while (device_running)
+                    {
+                        comandHandler.Send(Encoding.UTF8.GetBytes(stopMsg));
+                        byte[] bytes = new byte[32];
+                        bytesRec = comandHandler.Receive(bytes);
+                        string recvdMsg = Encoding.UTF8.GetString(bytes);
+                        if (recvdMsg.StartsWith(stopMsg))
+                        {
+                            device_running = false;
+                        }
+                        else
+                        {
+                            Thread.Sleep(100);
+                        }
+                    }
+
 					Thread.Sleep(100);
-					//while (device_stop)
-					//{
-					//	comandHandler.Send(Encoding.UTF8.GetBytes(stopMsg));
-					//	byte[] bytes = new byte[32];
-					//	bytesRec = handler.Receive(bytes);
-					//	string recvdMsg = Encoding.UTF8.GetString(bytes);
-					//	if (recvdMsg.Equals(stopMsg))
-					//	{
-					//		device_running = false;
-					//	}
-					//	else
-					//	{
-					//		Thread.Sleep(100);
-					//	}
-					//}
-
-
 
 				}
 				handler.Shutdown(SocketShutdown.Both);
