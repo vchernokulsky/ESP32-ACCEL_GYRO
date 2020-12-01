@@ -140,7 +140,7 @@ def sync_info(server_ip, jbytes, server_port=9875):
     return port
 
 
-def main_loop(i2c):
+def main_loop(i2c, charge_monitor):
     led = LedBlinker()
     acc = Accel(i2c)
     gyro_offset, acc_offset = calibrate(acc, led)
@@ -150,7 +150,10 @@ def main_loop(i2c):
             server_ip = get_server_ip(led)
             if server_ip is None:
                 continue
-            jdict = {'Id': DeviceId, 'Type': DeviceType, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(), 'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
+            charge = charge_monitor.charge_percent()
+            jdict = {'Id': DeviceId, 'Type': DeviceType, 'Ip': self_ip, 'SyncTicks': utime.ticks_ms(),
+                     'BatteryCharge': charge,
+                     'GyroOffset': gyro_offset, 'AccelOffset': acc_offset}
             jbytes = ujson.dumps(jdict).encode("utf-8")
             print(jbytes)
             server_port = sync_info(server_ip, jbytes)
@@ -177,7 +180,7 @@ def main():
                     charge_monitor.set_charge_leds()
                     machine.deepsleep(60 * 1000)
                 else:
-                    main_loop(i2c)
+                    main_loop(i2c, charge_monitor)
 
 
 

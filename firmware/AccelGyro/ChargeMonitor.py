@@ -24,6 +24,9 @@ class ChargeMonitor(object):
     def is_charging(self):
         self.battery_charge.is_charge()
 
+    def charge_percent(self):
+        return self.battery_charge.get_charge_percent()
+
     def check_charge(self):
         cur_time = utime.ticks_ms()
         if self.last_time is None or cur_time - self.last_time >= self.TIME_SLEEP:
