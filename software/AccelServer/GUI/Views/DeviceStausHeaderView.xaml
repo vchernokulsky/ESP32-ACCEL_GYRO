@@ -8,17 +8,20 @@
             >
     <Grid>
         <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="95" >
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
                 <Label Content="Имя" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
-            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="95" >
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
                 <Label   Content="Статус" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
-            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="95" >
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
                 <Label   Content="IP-адрес" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
-            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="95" >
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
                 <Label   Content="Пакеты" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
+            </Border>
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
+                <Label   Content="Заряд батареи(%)" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
         </StackPanel>
     </Grid>

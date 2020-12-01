@@ -8,17 +8,20 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
         <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Border BorderBrush="Black" Background="{Binding Path=StatusColor}" BorderThickness="0.5" Height="26" Width="95" >
+            <Border BorderBrush="Black" Background="{Binding Path=StatusColor}" BorderThickness="0.5" Height="26" Width="110" >
                 <Label Content="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
-            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="95" >
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
                 <Label   Content="{Binding StatusString}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
-            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="95" >
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
                 <Label   Content="{Binding DeviceIp}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
-            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="95" >
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
                 <Label   Content="{Binding PackageCount}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
+            </Border>
+            <Border BorderBrush="Black" Background="White" BorderThickness="0.5" Height="26" Width="110" >
+                <Label   Content="{Binding BatteryChargeStr}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" />
             </Border>
             
             

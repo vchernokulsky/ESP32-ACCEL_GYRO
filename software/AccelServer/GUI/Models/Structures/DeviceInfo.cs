@@ -9,6 +9,7 @@ namespace GUI
 		public int Type { get; set; }
 		public string Ip { get; set; }
 		public int SyncTicks { get; set; }
+		public int BatteryCharge { get; set; }
 
 		public Coordinates AccelOffset { get; set; }
 		public Coordinates GyroOffset { get; set; }

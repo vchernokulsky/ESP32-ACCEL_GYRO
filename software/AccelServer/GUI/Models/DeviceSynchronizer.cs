@@ -20,7 +20,7 @@ namespace GUI
 		public StringBuilder sb = new StringBuilder();  
 	}
 
-	public class DeviceSynchronizer: BindableBase
+	public class DeviceSynchronizer
 	{
 		// Thread signal.
 		private static Mutex mut = new Mutex();
@@ -192,6 +192,8 @@ namespace GUI
 
 						device.Status = States.Synchronized;
 						device.DeviceIp = info.Ip;
+						device.BatteryCharge = info.BatteryCharge;
+
 
 						deviceList[info.Id].data_receiver.Start();
 
