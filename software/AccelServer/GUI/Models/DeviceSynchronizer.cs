@@ -168,7 +168,7 @@ namespace GUI
 					info.SyncTime = cur_time;
 					ChartDataSingleton.Instance.SetSyncTime(info.Id, info.SyncTime, info.SyncTicks);
 
-					PortInfo portInfo = new PortInfo(deviceList[info.Id].Port);
+					PortInfo portInfo = new PortInfo(deviceList[info.Id].Port, deviceList[info.Id].CommandPort);
 					String output = JsonConvert.SerializeObject(portInfo);
 					Send(handler, output);
 				}
@@ -178,9 +178,11 @@ namespace GUI
 					{
 						MpuCalibraion.Instance.SetOffset(info.Id, info.AccelOffset, info.GyroOffset);
 						info.Port = cur_device_port++;
+						info.CommandPort = cur_device_port++;
+
 						info.SyncTime = cur_time;
 						DeviceModel device = model.GetDeviceById(info.Id);
-						info.dt_recv = new DataReceiver(device, info.Id, info.Port);
+						info.dt_recv = new DataReceiver(device, info.Id, info.Port, info.CommandPort);
 						ChartDataSingleton.Instance.SetSyncTime(info.Id, info.SyncTime, info.SyncTicks);
 
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
@@ -197,7 +199,7 @@ namespace GUI
 
 						deviceList[info.Id].data_receiver.Start();
 
-						PortInfo portInfo = new PortInfo(info.Port);
+						PortInfo portInfo = new PortInfo(info.Port, info.CommandPort);
 						String output = JsonConvert.SerializeObject(portInfo);
 						Send(handler, output);
 					}

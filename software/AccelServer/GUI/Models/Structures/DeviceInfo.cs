@@ -16,6 +16,7 @@ namespace GUI
 
 		public DateTime SyncTime { get; set; }
 		public int Port { get; set; }
+		public int CommandPort { get; set; }
 
 		public DataReceiver dt_recv { get; set; }
 		public Thread data_receiver { get; set; }

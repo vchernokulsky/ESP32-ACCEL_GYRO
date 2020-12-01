@@ -57,7 +57,8 @@ namespace GUI
 		public void StopServer()
 		{
 			Console.WriteLine("finishing...");
-			_timer.Stop();
+			if(_timer !=null && _timer.IsEnabled)
+				_timer.Stop();
 			StopThread(chkConn);
 			StopThread(ipBroadcasterThread);
 			if (devSync != null)
