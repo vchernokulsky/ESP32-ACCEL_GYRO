@@ -40,7 +40,7 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_
     count_to_restart = 0
     is_runinng = False
     run_msg = "socket_start"
-    stop_msg ="socket_stopp"
+    stop_msg = "socket_stopp"
     while True:
         try:
             total_send = 0
@@ -50,46 +50,65 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_
             command_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             command_sock.connect((host, command_port))
 
-            while not is_runinng:
-                recv_bytes = command_sock.recv(32)
-                if recv_bytes is not None and len(recv_bytes) > 0:
-                    recv_str = recv_bytes.decode("utf-8")
-                    if recv_str == run_msg:
-                        is_runinng = True
-                        command_sock.send(run_msg.encode("utf-8"))
-                    else:
-                        print("wrong msg: {}".format(recv_str))
-                        utime.sleep_ms(100)
-                else:
-                    print("NOT RCVED")
-                    utime.sleep_ms(100)
-
-
             while True:
-                print("loop")
-                values = bytes()
-                t1 = utime.ticks_ms()
-                cnt = 0
-                while cnt < amount:
-                    raw_val = acc.get_raw_values()
-                    d = acc.raw2dict_2(raw_val)
-                    t2 = utime.ticks_ms()
-                    pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
-                    values += pkg
-                    cnt += 1
-                t3 = utime.ticks_ms()
-                sock.send(values)
-                led.send_blink()
-                t4 = utime.ticks_ms()
+                command_sock.setblocking(0)
+                print("waiting start")
+                while not is_runinng:
+                    recv_bytes = command_sock.read(32)
+                    if recv_bytes is not None and len(recv_bytes) > 0:
+                        recv_str = recv_bytes.decode("utf-8")
+                        print("msg: {}".format(recv_str))
+                        if recv_str == run_msg:
+                            is_runinng = True
+                            command_sock.send(run_msg.encode("utf-8"))
+                        else:
+                            print("wrong msg: {}".format(recv_str))
+                            utime.sleep_ms(100)
+                    else:
+                        print("NOT RCVED")
+                        utime.sleep_ms(100)
 
-                total_send += len(values)
+                while is_runinng:
+                    print("loop")
+                    recv_bytes = command_sock.read(32)
+                    if recv_bytes is not None and len(recv_bytes) > 0:
+                        recv_str = recv_bytes.decode("utf-8")
+                        print("msg: {}".format(recv_str))
+                        if recv_str == stop_msg:
+                            is_runinng = False
+                            command_sock.send(stop_msg.encode("utf-8"))
+                            break
+                        else:
+                            print("wrong msg: {}".format(recv_str))
+                            utime.sleep_ms(100)
+                    else:
+                        print("no command")
 
-                print('count = ' + str(cnt))
-                print('sent_bytes = ' + str(len(values)))
-                print('total_send = ' + str(total_send))
-                print('loop_time = ' + str(utime.ticks_diff(t3, t1)))
-                print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
-                print(" ")
+
+
+                    values = bytes()
+                    t1 = utime.ticks_ms()
+                    cnt = 0
+                    while cnt < amount:
+                        raw_val = acc.get_raw_values()
+                        d = acc.raw2dict_2(raw_val)
+                        t2 = utime.ticks_ms()
+                        pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
+                        values += pkg
+                        cnt += 1
+                    t3 = utime.ticks_ms()
+                    sock.send(values)
+                    led.send_blink()
+                    t4 = utime.ticks_ms()
+
+                    total_send += len(values)
+
+                    print('count = ' + str(cnt))
+                    print('sent_bytes = ' + str(len(values)))
+                    print('total_send = ' + str(total_send))
+                    print('loop_time = ' + str(utime.ticks_diff(t3, t1)))
+                    print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
+                    print(" ")
 
         except Exception as e:
             print(e)
