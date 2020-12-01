@@ -128,9 +128,10 @@ namespace GUI
             foreach (var o in _packageInfoDict.Values) { o.Clear(); }
         }
 
-        public void SetSessionId()
+        public int SetSessionId()
         {
             sessionId = DBManager.Instance.GetUtils().GetSessionId() + 1;
+            return sessionId;
         }
     }
 }

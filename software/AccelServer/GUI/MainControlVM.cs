@@ -43,6 +43,8 @@ namespace GUI
         public DeviceModel Device5 => model.Device5;
         public DeviceModel Device6 => model.Device6;
 
+        public string SessionIdStr => model.SessionIdStr;
+
         public string UserName { get => model.UserName; set { model.UserName = value; ChartDataSingleton.Instance.userName = value; } }
 
     }

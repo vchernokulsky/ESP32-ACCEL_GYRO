@@ -8,6 +8,7 @@ namespace GUI
         private bool noConnection;
         private bool isRunning;
         private bool dataProcessed;
+        private int sessionId;
         private string userName;
 
         private DeviceModel device1;
@@ -83,6 +84,17 @@ namespace GUI
         public DeviceModel Device4 { get => device4; set { device4 = value; RaisePropertyChanged("Device4"); } }
         public DeviceModel Device5 { get => device5; set { device5 = value; RaisePropertyChanged("Device5"); } }
         public DeviceModel Device6 { get => device6; set { device6 = value; RaisePropertyChanged("Device6"); } }
+
+        public int SessionId { get => sessionId; set {
+                sessionId = value;
+                RaisePropertyChanged("SessionIdStr"); } }
+        public string SessionIdStr { 
+            get {
+                if (SessionId == 0)
+                    return "-/-";
+                else
+                    return SessionId.ToString(); 
+            } }
 
         public DeviceModel GetDeviceById(int id)
         {
