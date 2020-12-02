@@ -1,6 +1,7 @@
 ## @package AccelGyro
 #  Documentation for this module.
 
+
 from ChargeMonitor import ChargeMonitor
 from Accelerometer import Accelerometer as Accel
 from Config import *
@@ -13,6 +14,10 @@ from Calibration import Calibration
 from I2cHelper import I2cHelper
 from LedBlinker import *
 
+COUNT_TO_WAIT = 100
+
+RUN_MSG = "socket_start"
+STOP_MSG = "socket_stopp"
 
 ## Documentation for a function.
 #  @param network_name wireless network SSID
@@ -34,13 +39,61 @@ def init_network(led, network_name='IntemsLab', network_password='Embedded32'):
     return sta_if.ifconfig()[0]
 
 
+def create_pkg(acc, amount):
+    values = bytes()
+    cnt = 0
+    while cnt < amount:
+        raw_val = acc.get_raw_values()
+        d = acc.raw2dict_2(raw_val)
+        t2 = utime.ticks_ms()
+        pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
+        values += pkg
+        cnt += 1
+    return values, cnt
+
+
+def handle_command(command_sock, receiving, cur_count):
+    is_runinng = receiving
+    count_to_restart = cur_count
+    sock_closed = False
+    try:
+        recv_bytes = command_sock.read(32)
+        if recv_bytes is not None and len(recv_bytes) > 0:
+            recv_str = recv_bytes.decode("utf-8")
+            print("msg: {}".format(recv_str))
+            if recv_str == RUN_MSG:
+                is_runinng = True
+                command_sock.sendall(RUN_MSG.encode("utf-8"))
+            elif recv_str == STOP_MSG:
+                is_runinng = False
+                command_sock.sendall(STOP_MSG.encode("utf-8"))
+            else:
+                print("wrong msg: {}".format(recv_str))
+                count_to_restart += 1
+                utime.sleep_ms(100)
+        else:
+            print("no command")
+            if not is_runinng:
+                count_to_restart += 1
+            utime.sleep_ms(100)
+    except Exception as e:
+        print(e)
+        if command_sock is not None:
+            command_sock.close()
+            sock_closed = True
+    return is_runinng, count_to_restart, sock_closed
+
+
 def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_port=5001):
     sock = None
+    command_sock = None
     led.set_state(SENDING_STATE)
-    count_to_restart = 0
+
     is_runinng = False
-    run_msg = "socket_start"
-    stop_msg = "socket_stopp"
+
+    count_to_restart = 0
+    exception_count = 0
+
     while True:
         try:
             total_send = 0
@@ -49,55 +102,30 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_
 
             command_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             command_sock.connect((host, command_port))
+            command_sock.setblocking(0)
 
             while True:
-                command_sock.setblocking(0)
-                print("waiting start")
-                while not is_runinng:
-                    recv_bytes = command_sock.read(32)
-                    if recv_bytes is not None and len(recv_bytes) > 0:
-                        recv_str = recv_bytes.decode("utf-8")
-                        print("msg: {}".format(recv_str))
-                        if recv_str == run_msg:
-                            is_runinng = True
-                            command_sock.send(run_msg.encode("utf-8"))
-                        else:
-                            print("wrong msg: {}".format(recv_str))
-                            utime.sleep_ms(100)
-                    else:
-                        print("NOT RCVED")
-                        utime.sleep_ms(100)
+                print("loop")
 
-                while is_runinng:
-                    print("loop")
-                    recv_bytes = command_sock.read(32)
-                    if recv_bytes is not None and len(recv_bytes) > 0:
-                        recv_str = recv_bytes.decode("utf-8")
-                        print("msg: {}".format(recv_str))
-                        if recv_str == stop_msg:
-                            is_runinng = False
-                            command_sock.send(stop_msg.encode("utf-8"))
-                            break
-                        else:
-                            print("wrong msg: {}".format(recv_str))
-                            utime.sleep_ms(100)
-                    else:
-                        print("no command")
+                is_runinng, count_to_restart, soc_closed = handle_command(command_sock, is_runinng, count_to_restart)
 
+                if count_to_restart >= COUNT_TO_WAIT:
+                    if sock is not None:
+                        sock.close()
+                    if command_sock is not None:
+                        command_sock.close()
+                    break
 
+                if soc_closed:
+                    command_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    command_sock.connect((host, command_port))
+                    command_sock.setblocking(0)
 
-                    values = bytes()
+                if is_runinng:
                     t1 = utime.ticks_ms()
-                    cnt = 0
-                    while cnt < amount:
-                        raw_val = acc.get_raw_values()
-                        d = acc.raw2dict_2(raw_val)
-                        t2 = utime.ticks_ms()
-                        pkg = t2.to_bytes(4, 'little') + bytes(raw_val)
-                        values += pkg
-                        cnt += 1
+                    values, cnt = create_pkg(acc, amount)
                     t3 = utime.ticks_ms()
-                    sock.send(values)
+                    sock.sendall(values)
                     led.send_blink()
                     t4 = utime.ticks_ms()
 
@@ -110,19 +138,27 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_
                     print('socket_loop_time = ' + str(utime.ticks_diff(t4, t1)))
                     print(" ")
 
+            if sock is not None:
+                sock.close()
+            if command_sock is not None:
+                command_sock.close()
+            if count_to_restart >= COUNT_TO_WAIT:
+                break
         except Exception as e:
             print(e)
             led.led_blink()
             if e.args[0] == 113:
-                count_to_restart += 20
+                exception_count += 20
             elif e.args[0] == 104:
-                count_to_restart += 50
+                exception_count += 50
             else:
-                count_to_restart += 1
+                exception_count += 1
             utime.sleep_ms(2)
             if sock is not None:
                 sock.close()
-            if count_to_restart >= 50:
+            if command_sock is not None:
+                command_sock.close()
+            if exception_count >= 50:
                 break
 
 
