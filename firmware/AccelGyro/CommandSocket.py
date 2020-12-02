@@ -1,15 +1,20 @@
 import socket
+import ujson
+
 import utime
 
 RUN_MSG = "socket_start"
 STOP_MSG = "socket_stopp"
+ASK_MSG = "socket_is_ok"
+
 COUNT_TO_WAIT = 100
 
 
 class CommandSocket(object):
-    def __init__(self, host, port):
+    def __init__(self, host, port, charge_monitor):
         self.host = host
         self.port = port
+        self.charge_monitor = charge_monitor
 
         self.is_running = False
         self.need_reconnect = True
@@ -42,6 +47,8 @@ class CommandSocket(object):
                 elif recv_str == STOP_MSG:
                     self.is_running = False
                     self.command_sock.sendall(STOP_MSG.encode("utf-8"))
+                elif recv_str == ASK_MSG:
+                    self.send_charge()
                 else:
                     print("wrong msg: {}".format(recv_str))
                     self.effort_count += 1
@@ -54,4 +61,10 @@ class CommandSocket(object):
         except Exception as e:
             print(e)
             self.close()
+
+    def send_charge(self):
+        charge = self.charge_monitor.charge_percent()
+        jdict = {'BatteryCharge': charge}
+        jbytes = ujson.dumps(jdict).encode("utf-8")
+        self.command_sock.sendall(jbytes)
 
