@@ -1,9 +1,9 @@
 ## @package AccelGyro
 #  Documentation for this module.
 
-
 from ChargeMonitor import ChargeMonitor
 from Accelerometer import Accelerometer as Accel
+from CommandSocket import CommandSocket
 from Config import *
 import usocket as socket
 import network
@@ -13,11 +13,6 @@ import utime
 from Calibration import Calibration
 from I2cHelper import I2cHelper
 from LedBlinker import *
-
-COUNT_TO_WAIT = 100
-
-RUN_MSG = "socket_start"
-STOP_MSG = "socket_stopp"
 
 ## Documentation for a function.
 #  @param network_name wireless network SSID
@@ -52,46 +47,11 @@ def create_pkg(acc, amount):
     return values, cnt
 
 
-def handle_command(command_sock, receiving, cur_count):
-    is_runinng = receiving
-    count_to_restart = cur_count
-    sock_closed = False
-    try:
-        recv_bytes = command_sock.read(32)
-        if recv_bytes is not None and len(recv_bytes) > 0:
-            recv_str = recv_bytes.decode("utf-8")
-            print("msg: {}".format(recv_str))
-            if recv_str == RUN_MSG:
-                is_runinng = True
-                command_sock.sendall(RUN_MSG.encode("utf-8"))
-            elif recv_str == STOP_MSG:
-                is_runinng = False
-                command_sock.sendall(STOP_MSG.encode("utf-8"))
-            else:
-                print("wrong msg: {}".format(recv_str))
-                count_to_restart += 1
-                utime.sleep_ms(100)
-        else:
-            print("no command")
-            if not is_runinng:
-                count_to_restart += 1
-            utime.sleep_ms(100)
-    except Exception as e:
-        print(e)
-        if command_sock is not None:
-            command_sock.close()
-            sock_closed = True
-    return is_runinng, count_to_restart, sock_closed
-
-
 def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_port=5001):
     sock = None
-    command_sock = None
     led.set_state(SENDING_STATE)
 
-    is_runinng = False
-
-    count_to_restart = 0
+    command_sock = CommandSocket(host, command_port)
     exception_count = 0
 
     while True:
@@ -99,29 +59,20 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_
             total_send = 0
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((host, port))
-
-            command_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            command_sock.connect((host, command_port))
-            command_sock.setblocking(0)
-
+            CommandSocket.effort_count = 0
             while True:
                 print("loop")
 
-                is_runinng, count_to_restart, soc_closed = handle_command(command_sock, is_runinng, count_to_restart)
-
-                if count_to_restart >= COUNT_TO_WAIT:
+                if command_sock.need_reconnect:
+                    command_sock.connect()
+                command_sock.handle_command()
+                if command_sock.need_restart():
                     if sock is not None:
                         sock.close()
-                    if command_sock is not None:
-                        command_sock.close()
+                    command_sock.close()
                     break
 
-                if soc_closed:
-                    command_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    command_sock.connect((host, command_port))
-                    command_sock.setblocking(0)
-
-                if is_runinng:
+                if command_sock.is_running:
                     t1 = utime.ticks_ms()
                     values, cnt = create_pkg(acc, amount)
                     t3 = utime.ticks_ms()
@@ -140,9 +91,8 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_
 
             if sock is not None:
                 sock.close()
-            if command_sock is not None:
-                command_sock.close()
-            if count_to_restart >= COUNT_TO_WAIT:
+            command_sock.close()
+            if command_sock.need_restart():
                 break
         except Exception as e:
             print(e)
@@ -156,8 +106,7 @@ def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_
             utime.sleep_ms(2)
             if sock is not None:
                 sock.close()
-            if command_sock is not None:
-                command_sock.close()
+            command_sock.close()
             if exception_count >= 50:
                 break
 
