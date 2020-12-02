@@ -9,19 +9,19 @@ MAX_VOLTAGE = 4100  # in mV
 STC3100_ADDRESS = 0x70  # STC3100 8-bit address byte
 STC3100_SLAVE_ADDRESS = 0xE0  # STC3100 7-bit address byte
 
-SENSERESISTOR = 33  # sense resistor value in milliOhms (10min, 100max)
+SENSERESISTOR = 20  # sense resistor value in milliOhms (10min, 100max)
 
-CurrentFactor = (48210 / SENSERESISTOR)
-# LSB=11.77uV/R= ~48210/R/4096 - convert to mA
+CurrentFactor = (11.77 / SENSERESISTOR)
+# LSB=11.77uV/R= convert to uA
 
-ChargeCountFactor = (27443 / SENSERESISTOR)
-# LSB=6.7uVh/R ~27443/R/4096 - converter to mAh
+ChargeCountFactor = (6.7 / SENSERESISTOR)
+# LSB=6.7uVh/R ~27443/R/4096 - converter to uAh
 
-VoltageFactor = 9994
-# LSB=2.44mV ~9994/4096 - convert to mV
+VoltageFactor = 4.44
+# LSB=2.44mV
 
-TemperatureFactor = 5120
-# LSB=0.125°C ~5120/4096 - convert to 0.1°C
+TemperatureFactor = 1.25
+# LSB=0.125°C
 
 STC3100_OK = 0
 STC3100_ERR = -1
@@ -79,7 +79,7 @@ STC3100_REG_RAM30 = 0x3E
 # * Return         : result = value * factor / 4096
 # *******************************************************************************
 def conv(val, factor):
-    return round((val * factor) / 4096)
+    return round(val * factor)
 
 
 class ChargeController(object):
@@ -114,7 +114,7 @@ class ChargeController(object):
         # charge count
         print(raw)
         charge_count_raw = (raw[1] << 8) + raw[0]
-        BattChargeCount = conv(charge_count_raw, ChargeCountFactor)  # result in mAh
+        BattChargeCount = conv(charge_count_raw, ChargeCountFactor)  # result in uAh
 
         # conversion_counter
         BattCounter = (raw[3] << 8) + raw[2]
@@ -124,7 +124,7 @@ class ChargeController(object):
         current_val &= 0x3fff  # mask unused bits
         if current_val >= 0x2000:
             current_val -= 0x4000  # convert to signed value
-        BattCurrent = conv(current_val, CurrentFactor)  # result in mA
+        BattCurrent = conv(current_val, CurrentFactor)  # result in uA
 
         # voltage
         voltage_val = (raw[7] << 8) + raw[6]
