@@ -11,9 +11,13 @@ namespace GUI
 	public class DataReceiver
 	{
 		private int id;
-		private int port;
-		private int port2;
+
 		private DeviceModel device;
+		private SocketHelper receiverSocket;
+		private CommandSocket commandSocket;
+
+		private bool needLoop;
+		private bool finished;
 
 
 
@@ -21,31 +25,50 @@ namespace GUI
 		{
 			device = _device;
 			this.id = id;
-			this.port = port;
-			this.port2 = port2;
+
+			needLoop = false;
+			finished = true;
+
+
+			receiverSocket = new SocketHelper(port);
+			commandSocket = new CommandSocket(port2);
 		}
+
+		public void Abort()
+        {
+			receiverSocket.Close();
+			commandSocket.Close();
+			needLoop = false;
+        }
+
+		public void WaitFinishing()
+        {
+            while (!finished)
+            {
+				Thread.Sleep(10);
+            }
+        }
 			
 		public void StartListening()
 		{
-			IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
-			Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-			CommandSocket commandSocket = new CommandSocket(port2);
+			
 			try
-			{			
-				listenSocket.Bind(ipPoint);
-				listenSocket.Listen(10);
+			{
+				receiverSocket.Connect();
 				Console.WriteLine("DataReceiver: Waiting for connection...");
-				Socket handler = listenSocket.Accept();
-				
-				while (true)
+
+				needLoop = true;
+				finished = false;
+				while (needLoop)
 				{
 
 					commandSocket.Connect();
-					int bytesRec = 0; 
-
-                    while (device.NeedToReceive && !commandSocket.DeviceRunning)
+					int bytesRec = 0;
+					//Console.WriteLine(String.Format("needLoop={0} && device.NeedToReceive = {1} && commandSocket.DeviceRunning = {2}", needLoop, device.NeedToReceive, commandSocket.DeviceRunning));
+					while (needLoop && device.NeedToReceive && !commandSocket.DeviceRunning)
                     {
+						Console.WriteLine("Sending start Command");
 						SocketError err = commandSocket.SendStart();
 						if(err == SocketError.TimedOut)
                         {
@@ -61,21 +84,23 @@ namespace GUI
 						}					
 					}
 
-					if (!commandSocket.DeviceRunning)
+					if (needLoop && !commandSocket.DeviceRunning)
                     {
 						continue;
                     }
 
-					while (device.NeedToReceive)
+					while (needLoop && device.NeedToReceive)
 					{
+						Console.WriteLine("receiving data");
 						device.StartReceiving();
 						byte[] bytes = new byte[5400];
-						bytesRec = handler.Receive(bytes);
+						bytesRec = receiverSocket.Receive(bytes);
 						ChartDataSingleton.Instance.PutData(new ReceivedObject(id, bytesRec, bytes));							
 					}
 
-					while (commandSocket.DeviceRunning)
+					while (needLoop && commandSocket.DeviceRunning)
 					{
+						Console.WriteLine("Sending stop Command");
 						SocketError err = commandSocket.SendStop();
 						if (err == SocketError.TimedOut)
 						{
@@ -94,20 +119,25 @@ namespace GUI
 					Thread.Sleep(100);
 
 				}
-				handler.Shutdown(SocketShutdown.Both);
-				handler.Close();
+				finished = true;
 
+				
+			}
+			catch (ThreadAbortException ex)
+			{
+				receiverSocket.Close();
 				commandSocket.Close();
 				device.StopReceiving();
+				Console.WriteLine("Thread is aborted and the code is " + ex.ExceptionState);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
+				receiverSocket.Close();
+				commandSocket.Close();
 				device.StopReceiving();
 				Console.WriteLine(ex.Message);
 			}
 		}
-
-	
 
 	}
 }

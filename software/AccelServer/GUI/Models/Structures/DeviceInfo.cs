@@ -20,5 +20,15 @@ namespace GUI
 
 		public DataReceiver dt_recv { get; set; }
 		public Thread data_receiver { get; set; }
+
+		public void UpdateFromReceived(DeviceInfo info)
+        {
+			this.Type = info.Type;
+			this.Ip = info.Ip;
+			this.SyncTicks = info.SyncTicks;
+			this.BatteryCharge = info.BatteryCharge;
+			this.GyroOffset = info.GyroOffset;
+			this.AccelOffset = info.AccelOffset;
+        }
 	}
 }

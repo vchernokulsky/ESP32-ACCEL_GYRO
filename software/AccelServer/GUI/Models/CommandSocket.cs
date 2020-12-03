@@ -8,52 +8,24 @@ using System.Threading.Tasks;
 
 namespace GUI
 {
-    class CommandSocket
+    class CommandSocket : SocketHelper
     {
         private const string runMsg = "socket_start";
         private const string stopMsg = "socket_stopp";
         private const string askMsg = "socket_is_ok";
 
-        private int port;
-
-        private Socket commandSocket;
-        private Socket commandHandler;
-
         private bool deviceRunning;
-        private bool needReconnect;
+ 
 
         public bool DeviceRunning { get => deviceRunning; set => deviceRunning = value; }
 
-        public CommandSocket(int port)
+        public CommandSocket(int port): base(port)
         {
-            this.port = port;
-            commandSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            deviceRunning = false;
-            needReconnect = true;
+
+            this.deviceRunning = false;
         }
 
-        public void Connect()
-        {
-            if (needReconnect)
-            {
-                IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
-                commandSocket.Bind(ipPoint);
-                commandSocket.Listen(10);
-                commandHandler = commandSocket.Accept();
-                needReconnect = false;
-            }
-        }
-
-        public void Close()
-        {
-            if(commandHandler != null)
-            {
-                commandHandler.Shutdown(SocketShutdown.Both);
-                commandHandler.Close();
-                needReconnect = true;
-            }
-        }
-
+      
         public SocketError SendStart()
         {
             return SendMsg(runMsg, true);
@@ -88,9 +60,10 @@ namespace GUI
             string recvdMsg = null;
             try
             {
-                commandHandler.Send(Encoding.UTF8.GetBytes(msg));
+                
+                socketHandler.Send(Encoding.UTF8.GetBytes(msg));
                 byte[] bytes = new byte[32];
-                int bytesRec = commandHandler.Receive(bytes);
+                int bytesRec = socketHandler.Receive(bytes);
                 recvdMsg = Encoding.UTF8.GetString(bytes);
             }
             catch (Exception ex)

@@ -142,6 +142,7 @@
     <Compile Include="Models\IpBroadcaster.cs" />
     <Compile Include="Models\MpuCalibraion.cs" />
     <Compile Include="Models\NetHelper.cs" />
+    <Compile Include="Models\SocketHelper.cs" />
     <Compile Include="Models\SQLUtils.cs" />
     <Compile Include="Models\Structures\DeviceInfo.cs" />
     <Compile Include="Models\DeviceSynchronizer.cs" />
