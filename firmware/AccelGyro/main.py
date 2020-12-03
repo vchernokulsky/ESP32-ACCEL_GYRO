@@ -47,11 +47,11 @@ def create_pkg(acc, amount):
     return values, cnt
 
 
-def send_amount(acc, led, amount=300, host='192.168.55.116', port=5000, command_port=5001):
+def send_amount(acc, led, charge_monitor, amount=300, host='192.168.55.116', port=5000, command_port=5001):
     sock = None
     led.set_state(SENDING_STATE)
 
-    command_sock = CommandSocket(host, command_port)
+    command_sock = CommandSocket(host, command_port, charge_monitor)
     exception_count = 0
 
     while True:
@@ -178,7 +178,7 @@ def main_loop(i2c, charge_monitor):
             print(jbytes)
             server_port, command_port = sync_info(server_ip, jbytes)
             if server_port is not None:
-                send_amount(acc, led, host=server_ip, port=server_port, command_port=command_port)
+                send_amount(acc, led, charge_monitor, host=server_ip, port=server_port, command_port=command_port)
         except Exception as e:
             print(e)
 

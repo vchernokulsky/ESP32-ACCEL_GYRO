@@ -26,6 +26,7 @@ class CommandSocket(object):
         self.command_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.command_sock.connect((self.host, self.port))
         self.command_sock.setblocking(0)
+        self.need_reconnect = False
 
     def close(self):
         self.need_reconnect = True
