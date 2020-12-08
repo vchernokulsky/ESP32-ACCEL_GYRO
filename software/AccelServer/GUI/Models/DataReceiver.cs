@@ -16,7 +16,7 @@ namespace GUI
 		STOP_COMMAND,
 		RECEIVING,
 		FINISHING,
-		ABORT
+		ERROR_STATE
 	}
 
 	public class DataReceiver
@@ -96,9 +96,14 @@ namespace GUI
 						break;
 					case ReceiverState.RECEIVING:
 						if (device.NeedToReceive)
-							Receive();
-						else
+						{
+							if (Receive().Equals(SocketError.SocketError))
+								State = ReceiverState.ERROR_STATE;
+						}else
+                        {
 							State = ReceiverState.STOP_COMMAND;
+                        }
+
 						break;
 					case ReceiverState.STOP_COMMAND:
 						//State may be changed to:
@@ -109,6 +114,12 @@ namespace GUI
 
 						State = ReceiverState.IDLE;
 						Finished = true;
+						break;
+
+					case ReceiverState.ERROR_STATE:
+						device.SetNotReady();
+						Console.WriteLine("Wait reconnection");
+						Thread.Sleep(10);
 						break;
 
 
@@ -178,8 +189,9 @@ namespace GUI
 			}
 		}
 
-		private void Receive()
+		private SocketError Receive()
         {
+			SocketError result = SocketError.SocketError;
 			//Console.WriteLine("receiving data");
 			device.StartReceiving();
 			try
@@ -187,10 +199,12 @@ namespace GUI
 				byte[] bytes = new byte[5400];
 				int bytesRec = receiverSocket.Receive(bytes);
 				ChartDataSingleton.Instance.PutData(new ReceivedObject(id, bytesRec, bytes));
+				result = SocketError.Success;
 			} catch (Exception ex)
             {
 				Console.WriteLine(ex.Message);
             }
+			return result;
 		}
 
 		public void StartListening()

@@ -58,6 +58,7 @@ namespace GUI
             {
                 Socket listener = (Socket)ar.AsyncState;
                 socketHandler = listener.EndAccept(ar);
+                socketHandler.ReceiveTimeout = 3000;
             }
             catch (Exception ex)
             {
