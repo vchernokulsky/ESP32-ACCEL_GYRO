@@ -59,6 +59,7 @@ def send_amount(acc, led, charge_monitor, amount=300, host='192.168.55.116', por
             total_send = 0
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((host, port))
+            utime.sleep_ms(1000)
             CommandSocket.effort_count = 0
             while True:
                 print("loop")
@@ -76,11 +77,11 @@ def send_amount(acc, led, charge_monitor, amount=300, host='192.168.55.116', por
                     t1 = utime.ticks_ms()
                     values, cnt = create_pkg(acc, amount)
                     t3 = utime.ticks_ms()
-                    sock.sendall(values)
+                    total_send += sock.send(values)
                     led.send_blink()
                     t4 = utime.ticks_ms()
 
-                    total_send += len(values)
+                    # total_send += len(values)
 
                     print('count = ' + str(cnt))
                     print('sent_bytes = ' + str(len(values)))
@@ -177,6 +178,7 @@ def main_loop(i2c, charge_monitor):
             jbytes = ujson.dumps(jdict).encode("utf-8")
             print(jbytes)
             server_port, command_port = sync_info(server_ip, jbytes)
+            utime.sleep_ms(500)
             if server_port is not None:
                 send_amount(acc, led, charge_monitor, host=server_ip, port=server_port, command_port=command_port)
         except Exception as e:
