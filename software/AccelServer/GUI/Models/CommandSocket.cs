@@ -36,6 +36,11 @@ namespace GUI
             return SendMsg(stopMsg, false);
         }
 
+        public string SendAskMsg()
+        {
+            return SendReseive(askMsg);
+        }
+
         private SocketError SendMsg(string sendMsg, bool runningValueOnSuccess)
         {
             string recvdStr = SendReseive(sendMsg);

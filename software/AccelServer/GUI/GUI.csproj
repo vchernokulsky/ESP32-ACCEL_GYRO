@@ -134,6 +134,7 @@
     <Compile Include="MainControlVM.cs" />
     <Compile Include="Models\AccelServer.cs" />
     <Compile Include="Models\AppType.cs" />
+    <Compile Include="Models\ChargeGetter.cs" />
     <Compile Include="Models\ChartDataSingleton.cs" />
     <Compile Include="Models\CommandSocket.cs" />
     <Compile Include="Models\DataReceiver.cs" />

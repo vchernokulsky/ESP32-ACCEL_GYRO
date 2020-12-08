@@ -26,6 +26,7 @@ namespace GUI
 		private DeviceModel device;
 		private SocketHelper receiverSocket;
 		private CommandSocket commandSocket;
+		private ChargeGetter _chargeGetter;
 
 		private bool needLoop;
 		private bool finished;
@@ -48,10 +49,13 @@ namespace GUI
 
 			receiverSocket = new SocketHelper(port);
 			commandSocket = new CommandSocket(port2);
+			_chargeGetter = new ChargeGetter(commandSocket);
 		}
 
 		public void Abort()
         {
+			receiverSocket.Close(true);
+			commandSocket.Close(true);
 			State = ReceiverState.FINISHING;
 			//receiverSocket.Close(true);
 			//commandSocket.Close(true);
@@ -82,6 +86,8 @@ namespace GUI
 					case ReceiverState.WAIT_FOR_RECEIVE:
                         if (device.NeedToReceive)
 							State = ReceiverState.START_COMMAND;
+                        else 
+							AskCommand();
 						break;
 					case ReceiverState.START_COMMAND:
 						//State may be changed to:
@@ -100,8 +106,7 @@ namespace GUI
 						State = StopCommand();
 						break;
 					case ReceiverState.FINISHING:
-                        receiverSocket.Close(true);
-                        commandSocket.Close(true);
+
 						State = ReceiverState.IDLE;
 						Finished = true;
 						break;
@@ -151,6 +156,26 @@ namespace GUI
 					break;
 			}
 			return result;
+		}
+
+		private void AskCommand()
+		{
+			commandSocket.Connect();
+			SocketError err = _chargeGetter.SyncCharge();
+			switch (err)
+			{
+				case SocketError.Success:
+					device.BatteryCharge = _chargeGetter.Charge;
+					device.SetSynchronized();
+					break;
+				case SocketError.SocketError:
+					commandSocket.Close();
+					device.SetNotReady();
+					break;
+				case SocketError.TimedOut:
+					Thread.Sleep(10);
+					break;
+			}
 		}
 
 		private void Receive()

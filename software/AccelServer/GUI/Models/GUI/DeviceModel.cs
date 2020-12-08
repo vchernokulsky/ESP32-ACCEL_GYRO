@@ -61,6 +61,18 @@ namespace GUI
                 Status = States.Synchronized;
         }
 
+        public void SetSynchronized()
+        {
+            if (Status != States.Synchronized)
+                Status = States.Synchronized;
+        }
+
+        public void SetNotReady()
+        {
+            if (Status != States.NotReady)
+                Status = States.NotReady;
+        }
+
         public bool NeedToReceive => parent.IsRunning;
 
         public int BatteryCharge { get => batteryCharge; set { batteryCharge = value; RaisePropertyChanged("BatteryChargeStr"); } }
