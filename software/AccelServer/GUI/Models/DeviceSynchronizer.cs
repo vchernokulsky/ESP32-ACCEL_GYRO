@@ -175,6 +175,7 @@ namespace GUI
 						info.CommandPort = cur_device_port++;
 						info.dt_recv = new DataReceiver(device, info.Id, info.Port, info.CommandPort);
 						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.Loop));
+						data_receiver.Name = device.Title;
 						info.data_receiver = data_receiver;
 						info.data_receiver.Start();
 						deviceList.Add(info.Id, info);
