@@ -22,7 +22,7 @@ namespace GUI
         public SocketHelper(int port)
         {
             this.port = port;
-            localSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            
             needReconnect = true;
         }
 
@@ -30,20 +30,24 @@ namespace GUI
         {
             if (needReconnect)
             {
+                localSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
                 localSocket.Bind(ipPoint);
                 localSocket.Listen(10);
+                Console.WriteLine("SocketHelper | Wait for connection...");
                 socketHandler = localSocket.Accept();
+                Console.WriteLine("SocketHelper | Connected");
                 needReconnect = false;
             }
         }
 
-        public void Close()
+        public void Close(bool forceClose=false)
         {
-            if (!needReconnect && socketHandler != null)
+            if ((forceClose || !needReconnect) && socketHandler != null)
             {
                 socketHandler.Shutdown(SocketShutdown.Both);
                 socketHandler.Close();
+                localSocket.Close();
                 needReconnect = true;
             }
         }

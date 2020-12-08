@@ -170,29 +170,37 @@ namespace GUI
 
 					if (!isReconection)
                     {
+						Console.WriteLine("NEW CONNECTION");
 						info.Port = cur_device_port++;
 						info.CommandPort = cur_device_port++;
 						info.dt_recv = new DataReceiver(device, info.Id, info.Port, info.CommandPort);
+						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.Loop));
+						info.data_receiver = data_receiver;
+						info.data_receiver.Start();
 						deviceList.Add(info.Id, info);
 					} 
 					else
                     {
 						deviceList[info.Id].UpdateFromReceived(info);
+						Console.WriteLine("TRY ABORT");
 						deviceList[info.Id].dt_recv.Abort();
+						Console.WriteLine("ABORTED");
+
+						Console.WriteLine("FINISHING");
 						deviceList[info.Id].dt_recv.WaitFinishing();
+						Console.WriteLine("FINISHED");
 					}
 					DeviceInfo savedInfo = deviceList[info.Id];
 					MpuCalibraion.Instance.SetOffset(savedInfo.Id, savedInfo.AccelOffset, savedInfo.GyroOffset);
 					savedInfo.SyncTime = cur_time;
 					ChartDataSingleton.Instance.SetSyncTime(savedInfo.Id, savedInfo.SyncTime, savedInfo.SyncTicks);
-					Thread data_receiver = new Thread(new ThreadStart(savedInfo.dt_recv.StartListening));
-					savedInfo.data_receiver = data_receiver;
+
 
 					device.Status = States.Synchronized;
 					device.DeviceIp = savedInfo.Ip;
 					device.BatteryCharge = savedInfo.BatteryCharge;
 
-					deviceList[savedInfo.Id].data_receiver.Start();
+					
 
 					PortInfo portInfo = new PortInfo(savedInfo.Port, savedInfo.CommandPort);
 					String output = JsonConvert.SerializeObject(portInfo);
