@@ -182,9 +182,15 @@ namespace GUI
         {
 			//Console.WriteLine("receiving data");
 			device.StartReceiving();
-			byte[] bytes = new byte[5400];
-			int bytesRec = receiverSocket.Receive(bytes);
-			ChartDataSingleton.Instance.PutData(new ReceivedObject(id, bytesRec, bytes));
+			try
+			{
+				byte[] bytes = new byte[5400];
+				int bytesRec = receiverSocket.Receive(bytes);
+				ChartDataSingleton.Instance.PutData(new ReceivedObject(id, bytesRec, bytes));
+			} catch (Exception ex)
+            {
+				Console.WriteLine(ex.Message);
+            }
 		}
 
 		public void StartListening()
