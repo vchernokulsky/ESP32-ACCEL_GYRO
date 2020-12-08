@@ -20,11 +20,10 @@ namespace GUI
 		public StringBuilder sb = new StringBuilder();  
 	}
 
-	public class DeviceSynchronizer: BindableBase
+	public class DeviceSynchronizer
 	{
 		// Thread signal.
 		private static Mutex mut = new Mutex();
-		private List<Thread> dataRcvList;
 		public ManualResetEvent allDone = new ManualResetEvent(false);
 		public Dictionary<int, DeviceInfo> deviceList = new Dictionary<int, DeviceInfo>();
 		public int cur_device_port = 10000;
@@ -33,14 +32,14 @@ namespace GUI
 		private int deviceCnt;
 		private MainControlModel model;
 		public DeviceSynchronizer() {
-			dataRcvList = new List<Thread> ();
+			
 		}
 
 		public void FinishReceiving()
 		{
-			foreach (Thread t in dataRcvList) {
-				t.Abort ();
-				t.Join ();
+			foreach (KeyValuePair<int, DeviceInfo> info in deviceList) {
+				info.Value.dt_recv.Abort();
+				info.Value.dt_recv.WaitFinishing();
 			}
 		}
 
@@ -160,51 +159,64 @@ namespace GUI
 			try
 			{
 				DeviceInfo info = JsonConvert.DeserializeObject<DeviceInfo>(content);
-
+				Console.WriteLine("TRY LOCK");
 				mut.WaitOne();
-				if (deviceList.ContainsKey(info.Id))
+				Console.WriteLine("LOCK");
+				if (info.Id <= deviceCnt)
 				{
-					Console.WriteLine("device with id={0} has synchronized", info.Id);
-					info.SyncTime = cur_time;
-					ChartDataSingleton.Instance.SetSyncTime(info.Id, info.SyncTime, info.SyncTicks);
+		
+					DeviceModel device = model.GetDeviceById(info.Id);
+					bool isReconection = deviceList.ContainsKey(info.Id);
 
-					PortInfo portInfo = new PortInfo(deviceList[info.Id].Port);
+					if (!isReconection)
+                    {
+						Console.WriteLine("NEW CONNECTION");
+						info.Port = cur_device_port++;
+						info.CommandPort = cur_device_port++;
+						info.dt_recv = new DataReceiver(device, info.Id, info.Port, info.CommandPort);
+						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.Loop));
+						data_receiver.Name = device.Title;
+						info.data_receiver = data_receiver;
+						info.data_receiver.Start();
+						deviceList.Add(info.Id, info);
+					} 
+					else
+                    {
+						deviceList[info.Id].UpdateFromReceived(info);
+						Console.WriteLine("TRY ABORT");
+						deviceList[info.Id].dt_recv.Abort();
+						Console.WriteLine("ABORTED");
+
+						Console.WriteLine("FINISHING");
+						deviceList[info.Id].dt_recv.WaitFinishing();
+						Console.WriteLine("FINISHED");
+					}
+					DeviceInfo savedInfo = deviceList[info.Id];
+					MpuCalibraion.Instance.SetOffset(savedInfo.Id, savedInfo.AccelOffset, savedInfo.GyroOffset);
+					savedInfo.SyncTime = cur_time;
+					ChartDataSingleton.Instance.SetSyncTime(savedInfo.Id, savedInfo.SyncTime, savedInfo.SyncTicks);
+
+
+					device.Status = States.Synchronized;
+					device.DeviceIp = savedInfo.Ip;
+					device.BatteryCharge = savedInfo.BatteryCharge;
+
+					
+
+					PortInfo portInfo = new PortInfo(savedInfo.Port, savedInfo.CommandPort);
 					String output = JsonConvert.SerializeObject(portInfo);
 					Send(handler, output);
+
 				}
-				else
-				{
-					if (info.Id <= deviceCnt)
-					{
-						MpuCalibraion.Instance.SetOffset(info.Id, info.AccelOffset, info.GyroOffset);
-						info.Port = cur_device_port++;
-						info.SyncTime = cur_time;
-						DeviceModel device = model.GetDeviceById(info.Id);
-						info.dt_recv = new DataReceiver(device, info.Id, info.Port);
-						ChartDataSingleton.Instance.SetSyncTime(info.Id, info.SyncTime, info.SyncTicks);
-
-						Thread data_receiver = new Thread(new ThreadStart(info.dt_recv.StartListening));
-						dataRcvList.Add(data_receiver);
-
-						info.data_receiver = data_receiver;
-						deviceList.Add(info.Id, info);
-						
-
-						device.Status = States.Synchronized;
-						device.DeviceIp = info.Ip;
-
-						deviceList[info.Id].data_receiver.Start();
-
-						PortInfo portInfo = new PortInfo(info.Port);
-						String output = JsonConvert.SerializeObject(portInfo);
-						Send(handler, output);
-					}
-				}
-				mut.ReleaseMutex();
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("{0} Exception caught.", e);
+			}
+			finally
+            {
+				mut.ReleaseMutex();
+				Console.WriteLine("UNLOCK");
 			}
 		}
 	}

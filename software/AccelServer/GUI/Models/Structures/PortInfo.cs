@@ -3,10 +3,12 @@
     public class PortInfo
 	{
 		public int Port { get; set; }
+		public int CommandPort { get; set; }
 
-		public PortInfo(int n)
+		public PortInfo(int port, int commandPort)
 		{
-			Port = n;
+			Port = port;
+			CommandPort = commandPort;
 		}
 	}
 }

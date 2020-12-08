@@ -16,6 +16,7 @@ namespace GUI
         private string title;
         private string deviceIp;
         private string packageCount;
+        private int batteryCharge;
 
         private MainControlModel parent;
         private Brush[] colors = { Brushes.Red, Brushes.Yellow, Brushes.Green };
@@ -29,6 +30,7 @@ namespace GUI
             DeviceIp = "---.---.---.---";
             Status = States.NotReady;
             PackageCount = "0";
+            BatteryCharge = -1;
         }
         
         public string Title { get { return title; } set { title = value; RaisePropertyChanged("Title"); } }
@@ -61,5 +63,14 @@ namespace GUI
 
         public bool NeedToReceive => parent.IsRunning;
 
+        public int BatteryCharge { get => batteryCharge; set { batteryCharge = value; RaisePropertyChanged("BatteryChargeStr"); } }
+
+        public string BatteryChargeStr { get {
+                if (BatteryCharge < 0)
+                    return "-/-";
+                else
+                    return BatteryCharge.ToString();
+            } 
+        }
     }
 }

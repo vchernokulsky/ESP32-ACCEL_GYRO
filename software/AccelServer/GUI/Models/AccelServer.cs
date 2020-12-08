@@ -57,7 +57,8 @@ namespace GUI
 		public void StopServer()
 		{
 			Console.WriteLine("finishing...");
-			_timer.Stop();
+			if(_timer !=null && _timer.IsEnabled)
+				_timer.Stop();
 			StopThread(chkConn);
 			StopThread(ipBroadcasterThread);
 			if (devSync != null)
@@ -106,7 +107,7 @@ namespace GUI
 			var t1 = DateTime.Now;
 			model.DataProcessing = ChartDataSingleton.Instance.ProcessData();
 			updatePackageCount();
-			Console.WriteLine("Process data: {0}ms", (DateTime.Now-t1).TotalMilliseconds);
+			// Console.WriteLine("Process data: {0}ms", (DateTime.Now-t1).TotalMilliseconds);
 
 			if (!model.IsRunning && !model.DataProcessing)
 			{

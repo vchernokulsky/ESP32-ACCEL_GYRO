@@ -103,13 +103,14 @@ namespace GUI
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        Console.WriteLine("Process data exception:" + ex.Message);
                     }
                 }
                 sqlUtils.InsertValues();
             }
             else
             {
+                Console.WriteLine("Process data: cannot dequeue");
                 isProcessed = _queues.Count > 0;
             }
             return isProcessed;

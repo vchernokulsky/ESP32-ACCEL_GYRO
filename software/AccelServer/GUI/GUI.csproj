@@ -135,12 +135,14 @@
     <Compile Include="Models\AccelServer.cs" />
     <Compile Include="Models\AppType.cs" />
     <Compile Include="Models\ChartDataSingleton.cs" />
+    <Compile Include="Models\CommandSocket.cs" />
     <Compile Include="Models\DataReceiver.cs" />
     <Compile Include="Models\DBManager.cs" />
     <Compile Include="Models\IMUData.cs" />
     <Compile Include="Models\IpBroadcaster.cs" />
     <Compile Include="Models\MpuCalibraion.cs" />
     <Compile Include="Models\NetHelper.cs" />
+    <Compile Include="Models\SocketHelper.cs" />
     <Compile Include="Models\SQLUtils.cs" />
     <Compile Include="Models\Structures\DeviceInfo.cs" />
     <Compile Include="Models\DeviceSynchronizer.cs" />
