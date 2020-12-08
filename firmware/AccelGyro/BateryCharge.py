@@ -17,7 +17,7 @@ CurrentFactor = (11.77 / SENSERESISTOR)
 ChargeCountFactor = (6.7 / SENSERESISTOR)
 # LSB=6.7uVh/R ~27443/R/4096 - converter to uAh
 
-VoltageFactor = 4.44
+VoltageFactor = 2.44
 # LSB=2.44mV
 
 TemperatureFactor = 1.25
