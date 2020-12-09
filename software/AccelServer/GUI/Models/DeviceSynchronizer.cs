@@ -28,72 +28,135 @@ namespace GUI
 		public Dictionary<int, DeviceInfo> deviceList = new Dictionary<int, DeviceInfo>();
 		public int cur_device_port = 10000;
 
-
+        private Socket listener;
+        private Socket handler;
 		private int deviceCnt;
 		private MainControlModel model;
-		public DeviceSynchronizer() {
-			
-		}
+
+        private bool needRun;
+        private bool isRunning;
+		public DeviceSynchronizer()
+        {
+            needRun = true;
+        }
+
+        public void Abort()
+        {
+            if (handler != null && handler.Connected)
+            {
+				handler.Shutdown(SocketShutdown.Both);
+				handler.Close();
+            }
+            else
+            {
+                listener?.Close();
+            }
+
+            needRun = false;
+        }
+
+        public void WaitFinishing()
+        {
+            while (isRunning)
+            {
+                Thread.Sleep(10);
+            }
+        }
 
 		public void FinishReceiving()
 		{
 			foreach (KeyValuePair<int, DeviceInfo> info in deviceList) {
-				info.Value.dt_recv.Abort();
-				info.Value.dt_recv.WaitFinishing();
+				info.Value.dt_recv.Finish();
+				info.Value.dt_recv.WaitThreadFinishing();
 			}
 		}
 
 		public void StartListening() {
 			var localEndPoint = NetHelper.GetEndPointIPv4(9875);
 			// Create a TCP/IP socket.
-			Socket listener = new Socket(AddressFamily.InterNetwork,
+			listener = new Socket(AddressFamily.InterNetwork,
 				SocketType.Stream, ProtocolType.Tcp );
 
 			// Bind the socket to the local endpoint and listen for ed43247f-6f4e-41fe-a559-b393adb6458cincoming connections.
-			try {
-				listener.Bind(localEndPoint);
-				listener.Listen(100);
+            try
+            {
+                listener.Bind(localEndPoint);
+                listener.Listen(100);
+                isRunning = true;
+                while (needRun)
+                {
+                    if (!Accept(listener))
+                    {
+                        break;
+                    }
+                }
 
-				while (true) {
-					// Set the event to nonsignaled state.
-					allDone.Reset();
-
-					// Start an asynchronous socket to listen for connections.
-					Console.WriteLine("Waiting for a connection...");
-					listener.BeginAccept(new AsyncCallback(AcceptCallback), listener );
-
-					// Wait until a connection is made before continuing.
-					allDone.WaitOne();
-				}
-
-			} catch (Exception e) {
-				Console.WriteLine(e.ToString());
-			}
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            finally
+            {
+                isRunning = false;
+            }
 
 			Console.WriteLine("\nPress ENTER to continue...");
 			Console.Read();
 
 		}
 
+        private bool Accept(Socket listener)
+        {
+            var result = false;
+            try
+            {
+                allDone.Reset();
+
+                // Start an asynchronous socket to listen for connections.
+                Console.WriteLine("Waiting for a connection...");
+                listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
+
+                // Wait until a connection is made before continuing.
+                allDone.WaitOne();
+                result = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return result;
+        }
+
 		public void AcceptCallback(IAsyncResult ar) {
-			// Signal the main thread to continue.
-			allDone.Set();
+            try
+            {
+                // Signal the main thread to continue.
+                allDone.Set();
 
-			// Get the socket that handles the client request.
-			Socket listener = (Socket) ar.AsyncState;
-			Socket handler = listener.EndAccept(ar);
+                // Get the socket that handles the client request.
+                Socket curListener = (Socket)ar.AsyncState;
+				handler = curListener.EndAccept(ar);
+                Socket curHandler = handler;
+	
 
-			// Create the state object.
-			StateObject state = new StateObject();
-			state.workSocket = handler;
-			handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0,
-				new AsyncCallback(ReadCallback), state);
+
+                // Create the state object.
+                StateObject state = new StateObject {workSocket = curHandler};
+                curHandler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReadCallback), state);
+			}
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                allDone.Set();
+            }
+
 		}
 
 		public void ReadCallback(IAsyncResult ar) {
-			String content = String.Empty;
-
-			// Retrieve the state object and the handler socket
+            // Retrieve the state object and the handler socket
 			// from the asynchronous state object.
 			StateObject state = (StateObject) ar.AsyncState;
 			Socket handler = state.workSocket;
@@ -109,7 +172,7 @@ namespace GUI
 
 				// Check for end-of-file tag. If it is not there, read 
 				// more data.
-				content = state.sb.ToString();
+				var content = state.sb.ToString();
 
 				// All the data has been read from the 
 				// client. Display it on the console.

@@ -1,131 +1,114 @@
 ﻿using ImuServer;
 using System;
-using System.Diagnostics;
 using System.Threading;
 
-
-namespace GUI
+namespace GUI.Models
 {
     public class AccelServer
 	{
-		private MainControlModel model;
+		private MainControlModel _model;
 
-		private IpBroadcaster ipBroadcaster;
-		private DeviceSynchronizer devSync;
+		private readonly IpBroadcaster _ipBroadcaster;
+		private readonly DeviceSynchronizer _devSync;
+        private WifiChecker _wifiChecker;
 
-		private Thread chkConn;
-		private Thread ipBroadcasterThread;
-		private Thread synchronizer;
+		private Thread _chkConn;
+		private Thread _ipBroadcasterThread;
+		private Thread _synchronizer;
 
 		private readonly TimeSpan _interval = new TimeSpan(0, 0, 0, 0, 100);
 		private System.Windows.Threading.DispatcherTimer _timer;
-        private Thread checkWifiConnection;
+        private Thread _checkWifiConnection;
 
         public AccelServer(int broadcasterPort)
 		{			
-			ipBroadcaster = new IpBroadcaster(broadcasterPort);
-			devSync = new DeviceSynchronizer();
+			_ipBroadcaster = new IpBroadcaster(broadcasterPort);
+			_devSync = new DeviceSynchronizer();
 		}
 
 		public void Setup(AppType appType, MainControlModel model) 
 		{
-			this.model = model;
-			devSync.SetAppType(appType, this.model);
+			this._model = model;
+			_devSync.SetAppType(appType, this._model);
+			_wifiChecker = new WifiChecker(_model);
 		}
 
 		public void RunServer()
 		{
-            chkConn = new Thread(new ThreadStart(CheckConnection)) {Name = "CheckConnectionStartThreads"};
-            chkConn.Start();
+            _chkConn = new Thread(new ThreadStart(CheckConnection)) {Name = "CheckConnectionStartThreads"};
+            _chkConn.Start();
 		}
 
 		public void StartReceiving()
 		{
-			model.SessionId = ChartDataSingleton.Instance.SetSessionId();
+			_model.SessionId = ChartDataSingleton.Instance.SetSessionId();
 			ChartDataSingleton.Instance.Clear();
 			_timer = new System.Windows.Threading.DispatcherTimer();
 			_timer.Tick += OnTimerTick;
 			_timer.Interval = _interval;
 			_timer.Start();
-			model.IsRunning = true;
+			_model.IsRunning = true;
 		}
 
 		public void StopReceiving()
 		{
-			model.IsRunning = false;
+			_model.IsRunning = false;
 		}
 
 		public void StopServer()
 		{
-			Console.WriteLine("finishing...");
+			Console.WriteLine(@"finishing...");
 			if(_timer !=null && _timer.IsEnabled)
 				_timer.Stop();
-			StopThread(chkConn);
-			StopThread(ipBroadcasterThread);
-            devSync?.FinishReceiving();
-            StopThread(synchronizer);
 
-			Console.WriteLine("finised");
+           
+			_wifiChecker.Abort();
+			_wifiChecker.WaitFinishing();
+            StopThread(_checkWifiConnection);
+
+            _ipBroadcaster?.Abort();
+			_ipBroadcaster?.WaitFinishing();
+			StopThread(_ipBroadcasterThread);
+
+            _devSync?.FinishReceiving();
+            _devSync?.Abort();
+            _devSync?.WaitFinishing();
+            StopThread(_synchronizer);
+
+			Console.WriteLine(@"finished");
 		}
 
 
 
-        private bool IsConnected()
-        {
-            bool result = false;
-            try
-            {
-                var endpoint = NetHelper.GetEndPointIPv4(10000);
-                result = endpoint != null;
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-
-            return result;
-        }
+       
 
 		private void CheckConnection()
 		{
-			model.NoConnection = true;
-			while (!IsConnected())
-            {
-                Thread.Sleep(3000);
-            }
-			model.NoConnection = false;
-			StartThreads();
+			if (_wifiChecker.WaitUntilConnected()) 
+                StartThreads();
 		}
 
 		
 		private void StartThreads()
 		{
-			ipBroadcasterThread = new Thread(new ThreadStart(ipBroadcaster.IpBroadcast)){Name = "IpBroadcaster"};
-			ipBroadcasterThread.Start();
+			_ipBroadcasterThread = new Thread(new ThreadStart(_ipBroadcaster.IpBroadcast)){Name = "IpBroadcaster"};
+			_ipBroadcasterThread.Start();
 			
-			synchronizer = new Thread(new ThreadStart(devSync.StartListening)){Name = "DeviceSynchromizer"};
-			synchronizer.Start();
+			_synchronizer = new Thread(new ThreadStart(_devSync.StartListening)){Name = "DeviceSynchromizer"};
+			_synchronizer.Start();
 
-			checkWifiConnection = new Thread(new ThreadStart(WifiChecker)){Name = "WifiChecker"};
-			checkWifiConnection.Start();
+			_checkWifiConnection = new Thread(new ThreadStart(_wifiChecker.WifiMonitor)){Name = "WifiMonitor" };
+			_checkWifiConnection.Start();
 		}
 
-        private void WifiChecker()
-        {
-            while (true)
-            {
-                model.NoConnection = !IsConnected();
-				Thread.Sleep(10000);
-            }
-        }
+       
 
         private void OnTimerTick(object sender, EventArgs e)
 		{
-            model.DataProcessing = ChartDataSingleton.Instance.ProcessData();
+            _model.DataProcessing = ChartDataSingleton.Instance.ProcessData();
 			UpdatePackageCount();
 
-            if (!model.IsRunning && !model.DataProcessing)
+            if (!_model.IsRunning && !_model.DataProcessing)
 			{
 				_timer.Stop();
 			}	
@@ -144,22 +127,22 @@ namespace GUI
 			switch (id)
             {
                 case 1:
-                    model.Device1.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
+                    _model.Device1.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
                     break;
                 case 2:
-                    model.Device2.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
+                    _model.Device2.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
                     break;
                 case 3:
-                    model.Device3.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
+                    _model.Device3.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
                     break;
                 case 4:
-                    model.Device4.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
+                    _model.Device4.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
                     break;
                 case 5:
-                    model.Device5.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
+                    _model.Device5.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
                     break;
                 case 6:
-                    model.Device6.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
+                    _model.Device6.PackageCount = ChartDataSingleton.Instance.ReceivedMeasurementCount(id).ToString();
                     break;
             }
         }

@@ -1,28 +1,27 @@
-﻿using ImuServer;
+﻿using GUI.Models;
+using ImuServer;
 using Prism.Commands;
 using Prism.Mvvm;
 
 namespace GUI
 {
-    public class MainControlVM : BindableBase
+    public class MainControlVm : BindableBase
     {
        
-        private MainControlModel model = new MainControlModel();
-        private AccelServer accelServer = new AccelServer(15000);
+        private readonly MainControlModel _model = new MainControlModel();
+        private readonly AccelServer _accelServer = new AccelServer(15000);
 
-        public MainControlVM(AppType appType)
+        public MainControlVm(AppType appType)
         {
-            model.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            model.IsAccelMeasurementApp = (appType == AppType.AccelerationMeasurement);
+            _model.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            _model.IsAccelMeasurementApp = (appType == AppType.AccelerationMeasurement);
 
-            accelServer.Setup(appType, model);
-            //accelServer.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            //accelServer.SetPropetyRaise();
-
-            OnContentRendered = new DelegateCommand(() => accelServer.RunServer());
-            OnStartClicked = new DelegateCommand(() => accelServer.StartReceiving());
-            OnStopClicked = new DelegateCommand(() => accelServer.StopReceiving());
-            OnClosing = new DelegateCommand<object>(obj => accelServer.StopServer());
+            _accelServer.Setup(appType, _model);
+            
+            OnContentRendered = new DelegateCommand(() => _accelServer.RunServer());
+            OnStartClicked = new DelegateCommand(() => _accelServer.StartReceiving());
+            OnStopClicked = new DelegateCommand(() => _accelServer.StopReceiving());
+            OnClosing = new DelegateCommand<object>(obj => _accelServer.StopServer());
 
         }
 
@@ -31,21 +30,21 @@ namespace GUI
         public DelegateCommand OnStopClicked { get; }
         public DelegateCommand<object> OnClosing { get; }
 
-        public bool NoConnection => model.NoConnection;
-        public bool StopEnabled => model.StopEnabled;
-        public bool StartEnabled => model.StartEnabled;  
-        public bool ExtraDeviceVis => model.ExtraDeviceVis;
-        public string LblGroup => model.LblGroup;
-        public DeviceModel Device1 => model.Device1;
-        public DeviceModel Device2 => model.Device2;
-        public DeviceModel Device3 => model.Device3;
-        public DeviceModel Device4 => model.Device4;
-        public DeviceModel Device5 => model.Device5;
-        public DeviceModel Device6 => model.Device6;
+        public bool NoConnection => _model.NoConnection;
+        public bool StopEnabled => _model.StopEnabled;
+        public bool StartEnabled => _model.StartEnabled;  
+        public bool ExtraDeviceVis => _model.ExtraDeviceVis;
+        public string LblGroup => _model.LblGroup;
+        public DeviceModel Device1 => _model.Device1;
+        public DeviceModel Device2 => _model.Device2;
+        public DeviceModel Device3 => _model.Device3;
+        public DeviceModel Device4 => _model.Device4;
+        public DeviceModel Device5 => _model.Device5;
+        public DeviceModel Device6 => _model.Device6;
 
-        public string SessionIdStr => model.SessionIdStr;
+        public string SessionIdStr => _model.SessionIdStr;
 
-        public string UserName { get => model.UserName; set { model.UserName = value; ChartDataSingleton.Instance.userName = value; } }
+        public string UserName { get => _model.UserName; set { _model.UserName = value; ChartDataSingleton.Instance.userName = value; } }
 
     }
 }

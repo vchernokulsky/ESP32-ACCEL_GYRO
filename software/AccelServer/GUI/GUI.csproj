@@ -151,6 +151,7 @@
     <Compile Include="Models\Structures\Coordinates.cs" />
     <Compile Include="Models\Structures\PortInfo.cs" />
     <Compile Include="Models\Structures\ReceivedObject.cs" />
+    <Compile Include="Models\WifiChecker.cs" />
     <Compile Include="Views\DeviceStausHeaderView.xaml.cs">
       <DependentUpon>DeviceStausHeaderView.xaml</DependentUpon>
     </Compile>

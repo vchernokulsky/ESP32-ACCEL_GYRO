@@ -5,23 +5,23 @@ using Prism.Mvvm;
 
 namespace AnglesMeasurement
 {
-    class MainWindowVM : BindableBase
+    internal class MainWindowVm : BindableBase
     {
         private AppType APP_TYPE = AppType.AnglesMeasurement;
-        private MainControlVM mainControlVM;
+        private MainControlVm _mainControlVm;
         public DelegateCommand OnContentRendered { get; }
         public DelegateCommand<object> OnClosing { get; }
-        public MainControlVM MainControlVM { get => mainControlVM; set { mainControlVM = value; RaisePropertyChanged("MainControlVM"); } }
+        public MainControlVm MainControlVm { get => _mainControlVm; set { _mainControlVm = value; RaisePropertyChanged("MainControlVm"); } }
 
-        public MainWindowVM()
+        public MainWindowVm()
         {
             DBManager.Instance.Init("AnglesMeasurement.sqlite");
 
-            MainControlVM = new MainControlVM(APP_TYPE);
-            MainControlVM.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            OnContentRendered = MainControlVM.OnContentRendered;
-            OnClosing = MainControlVM.OnClosing;
-            RaisePropertyChanged("MainControlVM");
+            MainControlVm = new MainControlVm(APP_TYPE);
+            MainControlVm.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            OnContentRendered = MainControlVm.OnContentRendered;
+            OnClosing = MainControlVm.OnClosing;
+            RaisePropertyChanged("MainControlVm");
         }
     }
 }

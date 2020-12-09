@@ -33,21 +33,28 @@ namespace GUI
         {
             if (needReconnect)
             {
+                try
+                {
+                    localSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
+                    localSocket.Bind(ipPoint);
+                    localSocket.Listen(10);
+                    Console.WriteLine("SocketHelper | Wait for connection...");
 
-                localSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
-                localSocket.Bind(ipPoint);
-                localSocket.Listen(10);
-                Console.WriteLine("SocketHelper | Wait for connection...");
-               
-                allDone.Reset();
+                    allDone.Reset();
 
-                localSocket.BeginAccept(new AsyncCallback(AcceptCallback), localSocket);
-                // Wait until a connection is made and processed before continuing.
-                allDone.WaitOne();
+                    localSocket.BeginAccept(new AsyncCallback(AcceptCallback), localSocket);
+                    // Wait until a connection is made and processed before continuing.
+                    allDone.WaitOne();
 
-                Console.WriteLine("SocketHelper | Connected");
-                needReconnect = false;
+                    Console.WriteLine("SocketHelper | Connected");
+                    needReconnect = false;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                
             }
         }
 
@@ -68,6 +75,20 @@ namespace GUI
             {
                 allDone.Set();
             }
+        }
+
+        public void Abort()
+        {
+            if (socketHandler != null && socketHandler.Connected)
+            {
+                socketHandler.Shutdown(SocketShutdown.Both);
+                socketHandler.Close();
+            }
+            else
+            {
+                localSocket?.Close();
+            }
+            needReconnect = true;
         }
 
         public void Close(bool forceClose=false)
