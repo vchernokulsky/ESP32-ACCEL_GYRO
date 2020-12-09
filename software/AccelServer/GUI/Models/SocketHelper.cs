@@ -31,30 +31,27 @@ namespace GUI
 
         public void Connect()
         {
-            if (needReconnect)
+            if (!needReconnect) return;
+            try
             {
-                try
-                {
-                    localSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
-                    localSocket.Bind(ipPoint);
-                    localSocket.Listen(10);
-                    Console.WriteLine("SocketHelper | Wait for connection...");
+                localSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                IPEndPoint ipPoint = NetHelper.GetEndPointIPv4(port);
+                localSocket.Bind(ipPoint);
+                localSocket.Listen(10);
+                Console.WriteLine("SocketHelper | Wait for connection...");
 
-                    allDone.Reset();
+                allDone.Reset();
 
-                    localSocket.BeginAccept(new AsyncCallback(AcceptCallback), localSocket);
-                    // Wait until a connection is made and processed before continuing.
-                    allDone.WaitOne();
+                localSocket.BeginAccept(new AsyncCallback(AcceptCallback), localSocket);
+                // Wait until a connection is made and processed before continuing.
+                allDone.WaitOne();
 
-                    Console.WriteLine("SocketHelper | Connected");
-                    needReconnect = false;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-                
+                Console.WriteLine("SocketHelper | Connected");
+                needReconnect = false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 
@@ -63,18 +60,17 @@ namespace GUI
             // Get the socket that handles the client request.
             try
             {
+                allDone.Set();
                 Socket listener = (Socket)ar.AsyncState;
                 socketHandler = listener.EndAccept(ar);
                 socketHandler.ReceiveTimeout = 3000;
             }
             catch (Exception ex)
             {
+                allDone.Set();
                 Console.WriteLine(ex.Message);
             }
-            finally
-            {
-                allDone.Set();
-            }
+           
         }
 
         public void Abort()

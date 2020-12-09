@@ -58,7 +58,23 @@ namespace GUI
 
             receiverSocket.Close(true);
             commandSocket.Close(true);
-			State = ReceiverState.FINISHING;
+
+            //receiverSocket.Abort();
+            //commandSocket.Abort();
+            if (device.NeedToReceive)
+            {
+                State = ReceiverState.ERROR_STATE;
+                receiverSocket.Close(true);
+                commandSocket.Close(true);
+				Thread.Sleep(10);
+                Finished = true;
+            }
+            else
+            {
+                State = ReceiverState.FINISHING;
+
+            }
+            
 			//receiverSocket.Close(true);
 			//commandSocket.Close(true);
 			//needLoop = false;
@@ -218,6 +234,7 @@ namespace GUI
 			SocketError result = SocketError.SocketError;
 			//Console.WriteLine("receiving data");
 			device.StartReceiving();
+			receiverSocket.Connect();
 			try
 			{
 				byte[] bytes = new byte[5400];

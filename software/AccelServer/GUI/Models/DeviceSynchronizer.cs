@@ -221,7 +221,7 @@ namespace GUI
         {
 			try
 			{
-				DeviceInfo info = JsonConvert.DeserializeObject<DeviceInfo>(content);
+                DeviceInfo info = JsonConvert.DeserializeObject<DeviceInfo>(content);
 				Console.WriteLine("TRY LOCK");
 				mut.WaitOne();
 				Console.WriteLine("LOCK");
@@ -229,6 +229,7 @@ namespace GUI
 				{
 		
 					DeviceModel device = model.GetDeviceById(info.Id);
+					device.SetNotReady();
 					bool isReconection = deviceList.ContainsKey(info.Id);
 
 					if (!isReconection)
