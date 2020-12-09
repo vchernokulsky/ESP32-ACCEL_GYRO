@@ -105,7 +105,10 @@ namespace GUI
 
 					case ReceiverState.WAIT_FOR_RECEIVE:
                         if (device.NeedToReceive)
-							State = ReceiverState.START_COMMAND;
+                        {
+                            State = ReceiverState.START_COMMAND;
+							receiverSocket.Flush();
+                        }
                         else 
 							AskCommand();
 						break;

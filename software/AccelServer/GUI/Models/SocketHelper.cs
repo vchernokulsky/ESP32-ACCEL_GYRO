@@ -116,5 +116,26 @@ namespace GUI
         {
             return socketHandler.Receive(bytes);
         }
+
+        public void Flush()
+        {
+            try
+            {
+                if (socketHandler == null || !socketHandler.Connected) return;
+                var count = socketHandler.Available;
+                var totalReceived = 0;
+                var data = new byte[count];
+                if (count <= 0) return;
+                while (totalReceived < count)
+                {
+                    totalReceived += socketHandler.Receive(data);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+        }
     }
 }
