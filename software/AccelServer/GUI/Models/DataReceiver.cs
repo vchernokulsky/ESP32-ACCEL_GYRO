@@ -55,29 +55,10 @@ namespace GUI
 
 		public void Abort()
         {
-
-            receiverSocket.Close(true);
+            State = ReceiverState.FINISHING;
+			receiverSocket.Close(true);
             commandSocket.Close(true);
-
-            //receiverSocket.Abort();
-            //commandSocket.Abort();
-            if (device.NeedToReceive)
-            {
-                State = ReceiverState.ERROR_STATE;
-                receiverSocket.Close(true);
-                commandSocket.Close(true);
-				Thread.Sleep(10);
-                Finished = true;
-            }
-            else
-            {
-                State = ReceiverState.FINISHING;
-
-            }
-            
-			//receiverSocket.Close(true);
-			//commandSocket.Close(true);
-			//needLoop = false;
+            Thread.Sleep(10);
         }
 
         public void Finish()
@@ -153,6 +134,7 @@ namespace GUI
 
 						State = ReceiverState.IDLE;
 						Finished = true;
+                        Thread.Sleep(10);
 						break;
 
 					case ReceiverState.ERROR_STATE:
@@ -173,6 +155,8 @@ namespace GUI
 
 			commandSocket.Connect();
 			SocketError err = commandSocket.SendStart();
+            if (State == ReceiverState.FINISHING)
+                return State;
 			switch (err)
             {
 				case SocketError.Success:
@@ -194,6 +178,8 @@ namespace GUI
 
 			commandSocket.Connect();
 			SocketError err = commandSocket.SendStop();
+            if (State == ReceiverState.FINISHING)
+                return State;
 			switch (err)
 			{
 				case SocketError.Success:
@@ -213,7 +199,7 @@ namespace GUI
 		{
 			commandSocket.Connect();
 			SocketError err = _chargeGetter.SyncCharge();
-			switch (err)
+            switch (err)
 			{
 				case SocketError.Success:
 					device.BatteryCharge = _chargeGetter.Charge;
