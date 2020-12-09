@@ -39,6 +39,7 @@ namespace GUI
         {
             get => noConnection; set
             {
+                if (value == noConnection) return;
                 noConnection = value;
                 RaisePropertyChanged("NoConnection");
                 RaisePropertyChanged("StartEnabled");
@@ -61,11 +62,9 @@ namespace GUI
         {
             get => dataProcessed; set
             {
-                if (value != dataProcessed)
-                {
-                    dataProcessed = value;
-                    RaisePropertyChanged("StartEnabled");
-                }
+                if (value == dataProcessed) return;
+                dataProcessed = value;
+                RaisePropertyChanged("StartEnabled");
 
             }
         }
@@ -88,13 +87,7 @@ namespace GUI
         public int SessionId { get => sessionId; set {
                 sessionId = value;
                 RaisePropertyChanged("SessionIdStr"); } }
-        public string SessionIdStr { 
-            get {
-                if (SessionId == 0)
-                    return "-/-";
-                else
-                    return SessionId.ToString(); 
-            } }
+        public string SessionIdStr => SessionId == 0 ? "-/-" : SessionId.ToString();
 
         public DeviceModel GetDeviceById(int id)
         {

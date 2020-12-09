@@ -118,7 +118,7 @@ namespace GUI
 
 					case ReceiverState.ERROR_STATE:
 						device.SetNotReady();
-						Console.WriteLine("Wait reconnection");
+						Console.WriteLine(@"Wait reconnection");
 						Thread.Sleep(10);
 						break;
 
@@ -219,8 +219,7 @@ namespace GUI
 				while (needLoop)
 				{
 					commandSocket.Connect();
-					int bytesRec = 0;
-					//Console.WriteLine(String.Format("needLoop={0} && device.NeedToReceive = {1} && commandSocket.DeviceRunning = {2}", needLoop, device.NeedToReceive, commandSocket.DeviceRunning));
+                    //Console.WriteLine(String.Format("needLoop={0} && device.NeedToReceive = {1} && commandSocket.DeviceRunning = {2}", needLoop, device.NeedToReceive, commandSocket.DeviceRunning));
 					while (needLoop && device.NeedToReceive && !commandSocket.DeviceRunning)
 					{
 						Console.WriteLine("Sending start Command");
@@ -249,7 +248,7 @@ namespace GUI
 						Console.WriteLine("receiving data");
 						device.StartReceiving();
 						byte[] bytes = new byte[5400];
-						bytesRec = receiverSocket.Receive(bytes);
+						var bytesRec = receiverSocket.Receive(bytes);
 						ChartDataSingleton.Instance.PutData(new ReceivedObject(id, bytesRec, bytes));
 					}
 

@@ -38,12 +38,12 @@ namespace GUI
 
         public string SendAskMsg()
         {
-            return SendReseive(askMsg);
+            return SendReceive(askMsg);
         }
 
         private SocketError SendMsg(string sendMsg, bool runningValueOnSuccess)
         {
-            string recvdStr = SendReseive(sendMsg);
+            string recvdStr = SendReceive(sendMsg);
             if (recvdStr == null)
             {
                 Close();
@@ -60,7 +60,7 @@ namespace GUI
             }
         }
 
-        private string SendReseive(string msg)
+        private string SendReceive(string msg)
         {
             string recvdMsg = null;
             try
