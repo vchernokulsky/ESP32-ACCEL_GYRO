@@ -22,7 +22,8 @@ class ChargeMonitor(object):
         return self.battery_charge.init_device() == STC3100_OK
 
     def is_charging(self):
-        self.battery_charge.is_charge()
+        # return self.battery_charge.is_charge()
+        return self.vbus.value() == 0
 
     def charge_percent(self):
         return self.battery_charge.get_charge_percent()
@@ -70,8 +71,11 @@ class ChargeMonitor(object):
         elif charge < 65:
             self.blink_yellow(count, delay)
         # GREEN LED
-        else:
+        elif charge < 90:
             self.blink_green(count, delay)
+        else:
+            self.ledG(1)
+            utime.sleep_ms(2 * count * delay)
 
     def blink_red(self, count, delay):
         val = 0

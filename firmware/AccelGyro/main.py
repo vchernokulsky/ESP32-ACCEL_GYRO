@@ -200,6 +200,6 @@ def main():
             while True:
                 if charge_monitor.is_charging():
                     charge_monitor.set_charge_leds()
-                    machine.deepsleep(60 * 1000)
+                    machine.deepsleep(15 * 1000)
                 else:
                     main_loop(i2c, charge_monitor)

@@ -102,9 +102,9 @@ class ChargeController(object):
         ctr_reg = self.read_byte(STC3100_REG_CTRL)
         print(ctr_reg)
         # write 0x02 into the REG_CTRL to reset the accumulator and counter and clear the PORDET bit,
-        self.write_byte(STC3100_REG_CTRL, 0x02)
+        self.write_byte_ack(STC3100_REG_CTRL, 0x02)
         # then 0x10 into the REG_MODE register to start the STC3100 in 14-bit resolution mode.
-        self.write_byte(STC3100_REG_MODE, 0x10)
+        self.write_byte_ack(STC3100_REG_MODE, 0x10)
         return STC3100_OK
 
     def get_dict_values(self):
@@ -182,6 +182,9 @@ class ChargeController(object):
 
     def write_byte(self, reg, val):
         self.i2cHelper.write_byte(self.addr, reg, val)
+
+    def write_byte_ack(self, reg, val):
+        self.i2cHelper.write_byte_ack(self.addr, reg, val)
 
 
 """
