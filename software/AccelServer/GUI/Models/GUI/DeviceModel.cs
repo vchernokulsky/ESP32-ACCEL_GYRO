@@ -75,14 +75,8 @@ namespace GUI
 
         public bool NeedToReceive => parent.IsRunning;
 
-        public int BatteryCharge { get => batteryCharge; set { batteryCharge = value; RaisePropertyChanged("BatteryChargeStr"); } }
+        public int BatteryCharge { get => batteryCharge; set { batteryCharge = value; RaisePropertyChanged($"BatteryChargeStr"); } }
 
-        public string BatteryChargeStr { get {
-                if (BatteryCharge < 0)
-                    return "-/-";
-                else
-                    return BatteryCharge.ToString();
-            } 
-        }
+        public string BatteryChargeStr => BatteryCharge < 0 ? "-/-" : BatteryCharge.ToString();
     }
 }

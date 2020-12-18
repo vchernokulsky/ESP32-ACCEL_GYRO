@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using GUI.Models;
 using ImuServer;
 
 namespace GUI
@@ -208,6 +209,7 @@ namespace GUI
 				case SocketError.SocketError:
 					commandSocket.Close();
 					device.SetNotReady();
+					_chargeGetter.Reset();
 					break;
 				case SocketError.TimedOut:
 					Thread.Sleep(10);

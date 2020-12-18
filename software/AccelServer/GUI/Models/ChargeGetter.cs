@@ -1,12 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace GUI
+namespace GUI.Models
 {
     class ChargeInfo
     {
@@ -14,69 +10,62 @@ namespace GUI
     }
     class ChargeGetter
     {
-        private const int TIMEOUT_COUNT = 3;
-        private int _timeout;
+        private const int TimeoutCount = 3;
+        private readonly int _timeout;
         private DateTime _lastSync;
-        private CommandSocket _commandSocket;
+        private readonly CommandSocket _commandSocket;
         private SocketError _curState;
         private int _errorCount;
-        private int _charge;
 
-        public int Charge { get => _charge; set => _charge = value; }
+        public int Charge { get; set; }
 
-        public ChargeGetter(CommandSocket commandSocket, int timout=5000)
+        public ChargeGetter(CommandSocket commandSocket, int timeout=5000)
         {
             _commandSocket = commandSocket;
-            _timeout = timout;
-            _curState = SocketError.TimedOut;
+            _timeout = timeout;
+            _curState = SocketError.Success;
             _errorCount = 0;
             _lastSync = DateTime.Now;
         }
 
         private int GetCharge()
         {
-            int result = -1;
+            var content = _commandSocket.SendAskMsg();
+            var info = JsonConvert.DeserializeObject<ChargeInfo>(content);
+            if(info != null)
+            {
+                var result = info.BatteryCharge;
+                _lastSync = DateTime.Now;
+                return result;
+            }
+            else
+            {
+                throw new Exception("no Json");
+            }
+        }
 
-            string content = _commandSocket.SendAskMsg();
-            try
-            {
-                ChargeInfo info = JsonConvert.DeserializeObject<ChargeInfo>(content);
-                if(info != null)
-                {
-                    result = info.BatteryCharge;
-                    _lastSync = DateTime.Now;
-                }
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            
-            return result;
-            
+        public void Reset()
+        {
+            _errorCount = 0;
+            _curState = SocketError.TimedOut;
         }
 
         public SocketError SyncCharge()
         {
-            if (DateTime.Now.Subtract(_lastSync).TotalMilliseconds > _timeout)
+            //if (DateTime.Now.Subtract(_lastSync).TotalMilliseconds > _timeout)
+            if (!(DateTime.Now.Subtract(_lastSync).TotalMilliseconds < _timeout)) return _curState;
+            try
             {
-                int charge = GetCharge();
-                if (charge >= 0)
-                {
-                    Charge = charge;
-                    _curState = SocketError.Success;
-                }
-                else
-                {
-                    _errorCount += 1;
-                    if (_errorCount >= TIMEOUT_COUNT)
-                    {
-                        _curState = SocketError.SocketError;
-                    } else
-                    {
-                        _curState = SocketError.TimedOut;
-                    }
-                }
+                var charge = GetCharge();
+                Charge = charge;
+                _curState = SocketError.Success;
+                _errorCount = 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                _errorCount += 1;
+                _curState = _errorCount >= TimeoutCount ? SocketError.SocketError : SocketError.TimedOut;
             }
             return _curState;
         }
