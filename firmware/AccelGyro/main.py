@@ -99,16 +99,20 @@ def send_amount(acc, led, charge_monitor, amount=300, host='192.168.55.116', por
             print(e)
             led.led_blink()
             if e.args[0] == 113:
-                exception_count += 20
+                exception_count += 501
+                print("ERROR 113")
             elif e.args[0] == 104:
-                exception_count += 50
+                exception_count += 1001
+                print("ERROR 104")
             else:
                 exception_count += 1
+                print("ERROR")
+                print(e)
             utime.sleep_ms(2)
             if sock is not None:
                 sock.close()
             command_sock.close()
-            if exception_count >= 50:
+            if exception_count >= 1000:
                 break
 
 
@@ -191,6 +195,7 @@ def calibrate(acc, led):
 
 
 def main():
+    debug = True
     while True:
         i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
         charge_monitor = ChargeMonitor(i2c)
@@ -198,7 +203,7 @@ def main():
             print("no charge controller device")
         else:
             while True:
-                if charge_monitor.is_charging():
+                if not debug and charge_monitor.is_charging():
                     charge_monitor.set_charge_leds()
                     machine.deepsleep(15 * 1000)
                 else:

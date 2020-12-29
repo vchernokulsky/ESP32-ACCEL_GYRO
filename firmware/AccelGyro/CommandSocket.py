@@ -7,7 +7,7 @@ RUN_MSG = "socket_start"
 STOP_MSG = "socket_stopp"
 ASK_MSG = "socket_is_ok"
 
-COUNT_TO_WAIT = 100
+COUNT_TO_WAIT = 5000
 
 
 class CommandSocket(object):
