@@ -207,4 +207,8 @@ def main():
                     charge_monitor.set_charge_leds()
                     machine.deepsleep(15 * 1000)
                 else:
-                    main_loop(i2c, charge_monitor)
+                    if charge_monitor.charge_percent() > 10:
+                        main_loop(i2c, charge_monitor)
+                    else:
+                        charge_monitor.blink_red(10, 500)
+                        utime.sleep_ms(500)
