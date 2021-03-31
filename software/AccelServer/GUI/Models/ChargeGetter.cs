@@ -53,7 +53,8 @@ namespace GUI.Models
         public SocketError SyncCharge()
         {
             //if (DateTime.Now.Subtract(_lastSync).TotalMilliseconds > _timeout)
-            if (!(DateTime.Now.Subtract(_lastSync).TotalMilliseconds < _timeout)) return _curState;
+            var ms = DateTime.Now.Subtract(_lastSync).TotalMilliseconds;
+            if (ms < _timeout) return _curState;
             try
             {
                 var charge = GetCharge();

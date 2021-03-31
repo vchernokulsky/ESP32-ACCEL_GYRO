@@ -80,9 +80,14 @@ namespace GUI
             var isProcessed = true;
             ReceivedObject obj;
             if(_queues.TryDequeue(out obj))
-            { 
-                if(!_dataLists.ContainsKey(obj.id))
-                    _dataLists[obj.id] = new IMUDataList(obj.id, _packageInfoDict[obj.id].SyncTime, _packageInfoDict[obj.id].SyncTicks);
+            {
+                if (!_dataLists.ContainsKey(obj.id))
+                {
+                    const int gmax = 4; //maximum of acceleration value on MPU6050 (2, 4, 8, 16)
+                    _dataLists[obj.id] = new IMUDataList(obj.id, _packageInfoDict[obj.id].SyncTime,
+                        _packageInfoDict[obj.id].SyncTicks, gmax);
+                }
+
                 lastProcessedId = obj.id;
                 int bytes_proceed = 0;
                 SQLUtils sqlUtils = DBManager.Instance.GetUtils();
