@@ -14,13 +14,14 @@ namespace GUI
 			IPAddress address = null;
 
 			//UGLY HACK for testing on dev machine
-			bool isEth;
-			var settings = ConfigurationManager.AppSettings;
+            var settings = ConfigurationManager.AppSettings;
 			string value = settings["Ethernet"];
-			if(bool.TryParse(value, out isEth) && isEth)
-				ipAddr = "192.168.0.118";
+            if (bool.TryParse(value, out var isEth) && isEth)
+            {
+                ipAddr = settings["FixedIP"];
+            }
 
-			if (ipAddr != null)
+            if (ipAddr != null)
 			{
 				try
 				{
